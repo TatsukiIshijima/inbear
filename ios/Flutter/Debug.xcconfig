@@ -1,1 +1,2 @@
 #include "Generated.xcconfig"
+OTHER_SWIFT_FLAGS = $(inherited) "-D" "DEBUG"
