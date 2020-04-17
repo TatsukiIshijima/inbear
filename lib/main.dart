@@ -20,7 +20,8 @@ class InbearApp extends StatelessWidget {
     return MaterialApp(
       title: 'inbear',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primaryColor: Colors.pink[200],
+        accentColor: Colors.pinkAccent
       ),
       home: LoginPage(),
     );
