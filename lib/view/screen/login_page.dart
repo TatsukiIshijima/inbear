@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
   final _passwordTextEditingController = TextEditingController();
 
   String _checkEmpty(String text) {
-    return text.isEmpty ? Strings.emptyStringError : null;
+    return text.isEmpty ? Strings.EmptyStringError : null;
   }
 
   @override

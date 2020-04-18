@@ -6,6 +6,9 @@ class Strings {
   static const PasswordLabelText = 'パスワード';
   static const CreateAccountLabelTitle = '新規登録はこちら';
   static const PasswordForgetLabelTitle = 'パスワードをお忘れの場合はこちら';
+  // 新規登録画面
+  static const RegisterButtonTitle = '登録';
+  static const NameLabelText = 'お名前';
 
-  static const emptyStringError = '必須項目です。';
+  static const EmptyStringError = '必須項目です。';
 }
