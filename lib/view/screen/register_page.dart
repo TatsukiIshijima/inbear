@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
@@ -91,6 +92,9 @@ class RegisterPage extends StatelessWidget {
                           if (_formKey.currentState.validate())
                             {
                               // TODO:登録処理
+                              // 仮でホーム画面へ遷移
+                              // FIXME:ホームに遷移しても戻るボタンが表示されて戻れる
+                              Routes.goToHome(context)
                             }
                         },
                       ),

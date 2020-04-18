@@ -9,6 +9,10 @@ class Strings {
   // 新規登録画面
   static const RegisterButtonTitle = '登録';
   static const NameLabelText = 'お名前';
+  // ホーム画面
+  static const HomeTitle = 'ホーム';
+  static const ScheduleTitle = 'スケジュール';
+  static const SettingsTitle = '設定';
 
   static const EmptyStringError = '必須項目です。';
 }
