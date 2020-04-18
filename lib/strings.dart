@@ -13,6 +13,9 @@ class Strings {
   static const HomeTitle = 'ホーム';
   static const ScheduleTitle = 'スケジュール';
   static const SettingsTitle = '設定';
+  // 設定画面
+  static const EventRegisterTitle = 'イベント登録';
+  static const LogoutTitle = 'ログアウト';
 
   static const EmptyStringError = '必須項目です。';
 }
