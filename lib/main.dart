@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:inbear_app/routes.dart';
+import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/splash_page.dart';
@@ -25,13 +26,14 @@ class InbearApp extends StatelessWidget {
       routes: <String, WidgetBuilder> {
         Routes.SplashPagePath: (_) => SplashPage(),
         Routes.LoginPagePath: (_) => LoginPage(),
-        Routes.RegisterPagePath: (_) => RegisterPage()
+        Routes.RegisterPagePath: (_) => RegisterPage(),
+        Routes.HomePagePath: (_) => HomePage(),
       },
       theme: ThemeData(
         primaryColor: Colors.pink[200],
         accentColor: Colors.pinkAccent
       ),
-      home: LoginPage(),
+      initialRoute: Routes.LoginPagePath,
     );
   }
 }

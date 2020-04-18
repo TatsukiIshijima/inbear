@@ -72,6 +72,8 @@ class LoginPage extends StatelessWidget {
                           if (_formKey.currentState.validate())
                             {
                               // TODO:ログイン処理
+                              // 仮でホーム画面へ遷移
+                              Routes.goToHome(context)
                             }
                         },
                       ),
