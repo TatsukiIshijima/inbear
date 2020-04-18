@@ -5,6 +5,7 @@ import 'package:inbear_app/view/widget/label_button.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 
+import '../../routes.dart';
 import '../../strings.dart';
 
 class LoginPage extends StatelessWidget {
@@ -93,9 +94,7 @@ class LoginPage extends StatelessWidget {
                 child: SafeArea(
                   child: LabelButton(
                     text: Strings.CreateAccountLabelTitle,
-                    onTap: () => {
-                      // TODO:新規登録画面へ遷移
-                    },
+                    onTap: () => Routes.goToRegisterFromLogin(context),
                   ),
                 ),
               )
