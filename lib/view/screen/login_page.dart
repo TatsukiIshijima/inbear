@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label_button.dart';
+import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
+import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -75,18 +77,32 @@ class LoginPage extends StatelessWidget {
                           height: 30,
                         ),
                         Consumer<LoginViewModel>(
-                          builder: (context, viewModel, child) {
-                            return RoundButton(
-                              minWidth: MediaQuery.of(context).size.width,
-                              text: Strings.LoginButtonTitle,
-                              backgroundColor: Colors.pink[200],
-                              onPressed: () async => {
-                                if (_formKey.currentState.validate()) {
-                                   await viewModel.signIn()
-                                }
-                              },
-                            );
-                          },
+                          builder: (context, viewModel, child) =>
+                              RoundButton(
+                                minWidth: MediaQuery.of(context).size.width,
+                                text: Strings.LoginButtonTitle,
+                                backgroundColor: Colors.pink[200],
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    await viewModel.signIn();
+                                    if (viewModel.authStatus == AuthStatus.Success) {
+                                      Routes.goToHome(context);
+                                    } else if (
+                                        viewModel.authStatus != AuthStatus.Authenticating ||
+                                        viewModel.authStatus != null) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return SingleButtonDialog(
+                                              title: Strings.LoginErrorTitle,
+                                              message: viewModel.toLoginErrorMessage(),
+                                            );
+                                          }
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
                         ),
                         SizedBox(
                           height: 10,
@@ -110,6 +126,21 @@ class LoginPage extends StatelessWidget {
                       onTap: () => Routes.goToRegisterFromLogin(context),
                     ),
                   ),
+                ),
+                Consumer<LoginViewModel>(
+                  builder: (context, viewModel, child) {
+                    if (viewModel.authStatus == AuthStatus.Authenticating) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Color.fromRGBO(0, 0, 0, 0.3)
+                        ),
+                        child: Center(
+                          child: Loading(),
+                        ),
+                      );
+                    }
+                    return Container();
+                  },
                 )
               ],
             ),
