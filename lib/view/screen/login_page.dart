@@ -15,8 +15,6 @@ class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
-  final _emailTextEditingController = TextEditingController();
-  final _passwordTextEditingController = TextEditingController();
 
   String _checkEmpty(String text) {
     return text.isEmpty ? Strings.EmptyStringError : null;
@@ -47,26 +45,31 @@ class LoginPage extends StatelessWidget {
                         SizedBox(
                           height: 30,
                         ),
-                        InputField(
-                          labelText: Strings.EmailLabelText,
-                          textInputType: TextInputType.emailAddress,
-                          textEditingController: _emailTextEditingController,
-                          validator: (text) => _checkEmpty(text),
-                          focusNode: _emailFocus,
-                          onFieldSubmitted: (text) =>
-                              FocusScope.of(context).requestFocus(_passwordFocus),
+                        Consumer<LoginViewModel>(
+                          builder: (context, viewModel, child) =>
+                            InputField(
+                              labelText: Strings.EmailLabelText,
+                              textInputType: TextInputType.emailAddress,
+                              textEditingController: viewModel.emailTextEditingController,
+                              validator: (text) => _checkEmpty(text),
+                              focusNode: _emailFocus,
+                              onFieldSubmitted: (text) => FocusScope.of(context).requestFocus(_passwordFocus),
+                            ),
                         ),
                         SizedBox(
                           height: 30,
                         ),
-                        InputField(
-                          labelText: Strings.PasswordLabelText,
-                          obscureText: true,
-                          textInputType: TextInputType.visiblePassword,
-                          textEditingController: _passwordTextEditingController,
-                          validator: (text) => _checkEmpty(text),
-                          focusNode: _passwordFocus,
-                          onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                        Consumer<LoginViewModel>(
+                          builder: (context, viewModel, child) =>
+                            InputField(
+                              labelText: Strings.PasswordLabelText,
+                              obscureText: true,
+                              textInputType: TextInputType.visiblePassword,
+                              textEditingController: viewModel.passwordTextEditingController,
+                              validator: (text) => _checkEmpty(text),
+                              focusNode: _passwordFocus,
+                              onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                            ),
                         ),
                         SizedBox(
                           height: 30,
@@ -77,14 +80,10 @@ class LoginPage extends StatelessWidget {
                               minWidth: MediaQuery.of(context).size.width,
                               text: Strings.LoginButtonTitle,
                               backgroundColor: Colors.pink[200],
-                              onPressed: () => {
-                                if (_formKey.currentState.validate())
-                                  {
-                                    // TODO:ログイン処理
-                                    viewModel.sample()
-                                    // 仮でホーム画面へ遷移
-                                    //Routes.goToHome(context)
-                                  }
+                              onPressed: () async => {
+                                if (_formKey.currentState.validate()) {
+                                   await viewModel.signIn()
+                                }
                               },
                             );
                           },
