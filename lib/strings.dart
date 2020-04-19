@@ -6,6 +6,7 @@ class Strings {
   static const PasswordLabelText = 'パスワード';
   static const CreateAccountLabelTitle = '新規登録はこちら';
   static const PasswordForgetLabelTitle = 'パスワードをお忘れの場合はこちら';
+  static const LoginErrorTitle = 'ログインエラー';
   // 新規登録画面
   static const RegisterButtonTitle = '登録';
   static const NameLabelText = 'お名前';
@@ -18,4 +19,12 @@ class Strings {
   static const LogoutTitle = 'ログアウト';
 
   static const EmptyStringError = '必須項目です。';
+  static const InvalidEmailError = '無効なメールアドレスです。';
+  static const WrongPasswordError = 'パスワードが間違っています。';
+  static const UserNotFoundError = 'アカウントが見つかりません。';
+  static const UserDisabledError = '無効なアカウントです';
+  static const TooManyRequestsError = 'アクセスが集中しています。\nしばらくしてからもう一度お試し下さい。';
+  static const GeneralError ='エラーが発生しました。\nしばらくしてからもう一度お試し下さい。';
+
+  static const PositiveButtonTitle = 'OK';
 }

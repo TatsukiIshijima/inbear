@@ -1,10 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/splash_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
 
@@ -14,7 +18,24 @@ void main() {
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
   );
 
-  runApp(InbearApp());
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = Firestore.instance;
+
+  runApp(
+    // アプリ全体で必要なものをProvider.createで生成,
+    // Provider.of　で使用したい時に呼び出す
+    MultiProvider(
+      providers: [
+        Provider(
+          create: (context) => UserRepository(
+            auth: _firebaseAuth,
+            db: _firestore
+          ),
+        ),
+      ],
+      child: InbearApp(),
+    )
+  );
 }
 
 class InbearApp extends StatelessWidget {
