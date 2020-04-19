@@ -18,14 +18,15 @@ class UserRepository implements UserRepositoryImpl {
   });
 
   @override
-  Future<void> signIn(String email, String password) async {
+  Future<String> signIn(String email, String password) async {
     try {
       await auth.signInWithEmailAndPassword(
           email: email,
           password: password
       );
+      return '';
     } catch (error) {
-      Future.error(error.code);
+      return error.code;
     }
   }
 
