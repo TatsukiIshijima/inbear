@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
-		49585DB72448A1F300978D15 /* GoogleService-Info-Production.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49585DB62448A1F300978D15 /* GoogleService-Info-Production.plist */; };
-		49585DB92448A20700978D15 /* GoogleService-Info-Development.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49585DB82448A20700978D15 /* GoogleService-Info-Development.plist */; };
 		49585DBB2448A2F700978D15 /* Flavor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49585DBA2448A2F700978D15 /* Flavor.swift */; };
 		49585DBD2448A41800978D15 /* BuildMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49585DBC2448A41800978D15 /* BuildMode.swift */; };
+		49CBDDE4244C8D4A00C11551 /* GoogleService-Info-Development.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49CBDDE2244C8D4A00C11551 /* GoogleService-Info-Development.plist */; };
+		49CBDDE5244C8D4A00C11551 /* GoogleService-Info-Production.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49CBDDE3244C8D4A00C11551 /* GoogleService-Info-Production.plist */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
@@ -45,10 +45,10 @@
 		49585DA82448715B00978D15 /* Debug-Production.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Debug-Production.xcconfig"; path = "Flutter/Debug-Production.xcconfig"; sourceTree = "<group>"; };
 		49585DB024487B8600978D15 /* Release-Development.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Release-Development.xcconfig"; path = "Flutter/Release-Development.xcconfig"; sourceTree = "<group>"; };
 		49585DB224487BB500978D15 /* Release-Production.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Release-Production.xcconfig"; path = "Flutter/Release-Production.xcconfig"; sourceTree = "<group>"; };
-		49585DB62448A1F300978D15 /* GoogleService-Info-Production.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Production.plist"; sourceTree = "<group>"; };
-		49585DB82448A20700978D15 /* GoogleService-Info-Development.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Development.plist"; sourceTree = "<group>"; };
 		49585DBA2448A2F700978D15 /* Flavor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Flavor.swift; sourceTree = "<group>"; };
 		49585DBC2448A41800978D15 /* BuildMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildMode.swift; sourceTree = "<group>"; };
+		49CBDDE2244C8D4A00C11551 /* GoogleService-Info-Development.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Development.plist"; sourceTree = "<group>"; };
+		49CBDDE3244C8D4A00C11551 /* GoogleService-Info-Production.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Production.plist"; sourceTree = "<group>"; };
 		674044A641DE5C850E9A30FB /* Pods-Runner.debug-production.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-production.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-production.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,19 +79,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		49585DB32448A0EE00978D15 /* Firebase */ = {
-			isa = PBXGroup;
-			children = (
-				49585DB82448A20700978D15 /* GoogleService-Info-Development.plist */,
-				49585DB62448A1F300978D15 /* GoogleService-Info-Production.plist */,
-			);
-			path = Firebase;
-			sourceTree = "<group>";
-		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
-				49585DB32448A0EE00978D15 /* Firebase */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -128,6 +118,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				49CBDDE2244C8D4A00C11551 /* GoogleService-Info-Development.plist */,
+				49CBDDE3244C8D4A00C11551 /* GoogleService-Info-Production.plist */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -180,13 +172,13 @@
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
 				DE10CDA2B39DF484D0E3A702 /* [CP] Check Pods Manifest.lock */,
-				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				785090B2AF025A27988DCBF9 /* [CP] Embed Pods Frameworks */,
+				49860D7A244D6C9900BDE49A /* Firebase Setting Script */,
 			);
 			buildRules = (
 			);
@@ -238,11 +230,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
-				49585DB92448A20700978D15 /* GoogleService-Info-Development.plist in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
-				49585DB72448A1F300978D15 /* GoogleService-Info-Production.plist in Resources */,
+				49CBDDE5244C8D4A00C11551 /* GoogleService-Info-Production.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				49CBDDE4244C8D4A00C11551 /* GoogleService-Info-Development.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -263,6 +255,24 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" thin";
 		};
+		49860D7A244D6C9900BDE49A /* Firebase Setting Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Firebase Setting Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/zsh;
+			shellScript = "rm -rf \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n\necho \"★★★\"\necho \"-----${CONFIGURATION}-----\"\necho \"-----${SRCROOT}-----\"\necho \"-----${BUILT_PRODUCTS_DIR}-----\"\necho \"-----${PRODUCT_NAME}-----\"\n\nif [ \"${CONFIGURATION}\" = \"Debug\" ] || [ \"${CONFIGURATION}\" = \"Debug-Development\" ] || [ \"${CONFIGURATION}\" = \"Debug-Production\" ]  ; then\n  cp \"$SRCROOT/Runner/GoogleService-Info-Development.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n  echo \"Development GoogleService-Info copied.\"\nelif [ \"${CONFIGURATION}\" = \"Release\" ] || [ \"${CONFIGURATION}\" = \"Production\" ] || [ \"${CONFIGURATION}\" = \"Release-Development\" ] || [ \"${CONFIGURATION}\" = \"Release-Production\" ]; then\n  cp \"$SRCROOT/Runner/GoogleService-Info-Production.plist\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n  echo \"Release GoogleService-Info copied.\"\nfi\n";
+		};
 		785090B2AF025A27988DCBF9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -277,20 +287,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		9740EEB61CF901F6004384FC /* Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Run Script";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
 		DE10CDA2B39DF484D0E3A702 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -352,7 +348,7 @@
 /* Begin XCBuildConfiguration section */
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
+			baseConfigurationReference = 49585DB224487BB500978D15 /* Release-Production.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -404,7 +400,7 @@
 		};
 		249021D4217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
+			baseConfigurationReference = 49585DB224487BB500978D15 /* Release-Production.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
