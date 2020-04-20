@@ -1,4 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:inbear_app/view/screen/home_page.dart';
+import 'package:inbear_app/view/screen/register_page.dart';
 
 class Routes {
   static const SplashPagePath = '/splash';
@@ -7,15 +10,23 @@ class Routes {
   static const HomePagePath = '/home';
 
   static void goToRegisterFromLogin(BuildContext context) {
-    Navigator.of(context).pushNamed(RegisterPagePath);
-  }
-
-  static void backToLoginFromRegister(BuildContext context) {
-    Navigator.of(context).pop();
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => RegisterPage(),
+        fullscreenDialog: true
+      )
+    );
   }
 
   static void goToHome(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(HomePagePath);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => HomePage(),
+          fullscreenDialog: true
+        ),
+        (_) => false);
   }
 
   static void goToLogin(BuildContext context) {
