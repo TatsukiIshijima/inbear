@@ -1,25 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label_button.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
-import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../routes.dart';
-import '../../strings.dart';
 
 class LoginPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
-  String _checkEmpty(String text) {
-    return text.isEmpty ? Strings.EmptyStringError : null;
+  String _checkEmpty(BuildContext context, String text) {
+    return text.isEmpty ? AppLocalizations.of(context).emptyError : null;
   }
 
   @override
@@ -50,10 +49,10 @@ class LoginPage extends StatelessWidget {
                         Consumer<LoginViewModel>(
                           builder: (context, viewModel, child) =>
                             InputField(
-                              labelText: Strings.EmailLabelText,
+                              labelText: AppLocalizations.of(context).emailLabelText,
                               textInputType: TextInputType.emailAddress,
                               textEditingController: viewModel.emailTextEditingController,
-                              validator: (text) => _checkEmpty(text),
+                              validator: (text) => _checkEmpty(context, text),
                               focusNode: _emailFocus,
                               onFieldSubmitted: (text) => FocusScope.of(context).requestFocus(_passwordFocus),
                             ),
@@ -64,11 +63,11 @@ class LoginPage extends StatelessWidget {
                         Consumer<LoginViewModel>(
                           builder: (context, viewModel, child) =>
                             InputField(
-                              labelText: Strings.PasswordLabelText,
+                              labelText: AppLocalizations.of(context).passwordLabelText,
                               obscureText: true,
                               textInputType: TextInputType.visiblePassword,
                               textEditingController: viewModel.passwordTextEditingController,
-                              validator: (text) => _checkEmpty(text),
+                              validator: (text) => _checkEmpty(context, text),
                               focusNode: _passwordFocus,
                               onFieldSubmitted: (text) => _passwordFocus.unfocus(),
                             ),
@@ -80,10 +79,12 @@ class LoginPage extends StatelessWidget {
                           builder: (context, viewModel, child) =>
                               RoundButton(
                                 minWidth: MediaQuery.of(context).size.width,
-                                text: Strings.LoginButtonTitle,
+                                text: AppLocalizations.of(context).loginButtonTitle,
                                 backgroundColor: Colors.pink[200],
                                 onPressed: () async {
                                   if (_formKey.currentState.validate()) {
+                                    Routes.goToHome(context);
+                                    /*
                                     await viewModel.signIn();
                                     if (viewModel.authStatus == AuthStatus.Success) {
                                       Routes.goToHome(context);
@@ -94,12 +95,15 @@ class LoginPage extends StatelessWidget {
                                           context: context,
                                           builder: (context) {
                                             return SingleButtonDialog(
-                                              title: Strings.LoginErrorTitle,
-                                              message: viewModel.toLoginErrorMessage(),
+                                              title: AppLocalizations.of(context).loginErrorTitle,
+                                              message: viewModel.toLoginErrorMessage(context),
+                                              positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
                                             );
                                           }
                                       );
                                     }
+
+                                     */
                                   }
                                 },
                               ),
@@ -108,7 +112,7 @@ class LoginPage extends StatelessWidget {
                           height: 10,
                         ),
                         LabelButton(
-                          text: Strings.PasswordForgetLabelTitle,
+                          text: AppLocalizations.of(context).passwordForgetLabelText,
                           onTap: () => {
                             // TODO:パスワード忘れ
                           },
@@ -122,7 +126,7 @@ class LoginPage extends StatelessWidget {
                   margin: EdgeInsets.only(bottom: 24),
                   child: SafeArea(
                     child: LabelButton(
-                      text: Strings.CreateAccountLabelTitle,
+                      text: AppLocalizations.of(context).createAccountLabelText,
                       onTap: () => Routes.goToRegisterFromLogin(context),
                     ),
                   ),

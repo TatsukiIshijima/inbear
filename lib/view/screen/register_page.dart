@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
-
-import '../../strings.dart';
 
 class RegisterPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -16,8 +15,8 @@ class RegisterPage extends StatelessWidget {
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
 
-  String _checkEmpty(String text) {
-    return text.isEmpty ? Strings.EmptyStringError : null;
+  String _checkEmpty(BuildContext context, String text) {
+    return text.isEmpty ? AppLocalizations.of(context).emptyError : null;
   }
 
   @override
@@ -49,10 +48,10 @@ class RegisterPage extends StatelessWidget {
                         height: 30,
                       ),
                       InputField(
-                        labelText: Strings.NameLabelText,
+                        labelText: AppLocalizations.of(context).nameLabelText,
                         textInputType: TextInputType.text,
                         textEditingController: _nameTextEditingController,
-                        validator: (text) => _checkEmpty(text),
+                        validator: (text) => _checkEmpty(context, text),
                         focusNode: _nameFocus,
                         onFieldSubmitted: (text) =>
                           FocusScope.of(context).requestFocus(_emailFocus),
@@ -61,10 +60,10 @@ class RegisterPage extends StatelessWidget {
                         height: 30,
                       ),
                       InputField(
-                        labelText: Strings.EmailLabelText,
+                        labelText: AppLocalizations.of(context).emailLabelText,
                         textInputType: TextInputType.emailAddress,
                         textEditingController: _emailTextEditingController,
-                        validator: (text) => _checkEmpty(text),
+                        validator: (text) => _checkEmpty(context, text),
                         focusNode: _emailFocus,
                         onFieldSubmitted: (text) =>
                             FocusScope.of(context).requestFocus(_passwordFocus),
@@ -73,11 +72,11 @@ class RegisterPage extends StatelessWidget {
                         height: 30,
                       ),
                       InputField(
-                        labelText: Strings.PasswordLabelText,
+                        labelText: AppLocalizations.of(context).passwordLabelText,
                         obscureText: true,
                         textInputType: TextInputType.visiblePassword,
                         textEditingController: _passwordTextEditingController,
-                        validator: (text) => _checkEmpty(text),
+                        validator: (text) => _checkEmpty(context, text),
                         focusNode: _passwordFocus,
                         onFieldSubmitted: (text) => _passwordFocus.unfocus(),
                       ),
@@ -86,7 +85,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       RoundButton(
                         minWidth: MediaQuery.of(context).size.width,
-                        text: Strings.RegisterButtonTitle,
+                        text: AppLocalizations.of(context).registerButtonTitle,
                         backgroundColor: Colors.pink[200],
                         onPressed: () => {
                           if (_formKey.currentState.validate())

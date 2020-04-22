@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
@@ -43,7 +46,15 @@ class InbearApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'inbear',
+      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).title,
+      localizationsDelegates: [
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('ja', ''),
+      ],
       routes: <String, WidgetBuilder> {
         Routes.SplashPagePath: (_) => SplashPage(),
         Routes.LoginPagePath: (_) => LoginPage(),

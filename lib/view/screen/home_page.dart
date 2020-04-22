@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/strings.dart';
 import 'package:inbear_app/view/screen/setting_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,9 +18,9 @@ class _HomePageState extends State<HomePage> {
     SettingPage()
   ];
   final List<String> _titleList = <String> [
-    Strings.HomeTitle,
-    Strings.ScheduleTitle,
-    Strings.SettingsTitle
+    'ホーム',
+    'スケジュール',
+    '設定'
   ];
 
   @override
@@ -45,15 +44,15 @@ class _HomePageState extends State<HomePage> {
           items: const <BottomNavigationBarItem> [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              title: Text(Strings.HomeTitle)
+              title: Text('ホーム')
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.schedule),
-              title: Text(Strings.ScheduleTitle)
+              title: Text('スケジュール')
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings),
-              title: Text(Strings.SettingsTitle)
+              title: Text('設定')
             )
           ],
           onTap: (int index) {
