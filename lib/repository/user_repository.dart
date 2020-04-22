@@ -1,26 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/model/user.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 class UserRepository implements UserRepositoryImpl {
 
-  final FirebaseAuth auth;
-  final Firestore db;
+  final FirebaseAuth _auth;
+  final Firestore _db;
   final String _userCollection = 'user';
 
-  UserRepository({
-    @required
-    this.auth,
-    @required
-    this.db
-  });
+  UserRepository(
+    this._auth,
+    this._db
+  );
 
   @override
   Future<String> signIn(String email, String password) async {
     try {
-      await auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
           email: email,
           password: password
       );
@@ -33,7 +30,7 @@ class UserRepository implements UserRepositoryImpl {
   @override
   Future<void> signUp(String name, String email, String password) async {
     try {
-      var result = await auth.signInWithEmailAndPassword(
+      var result = await _auth.signInWithEmailAndPassword(
           email: email,
           password: password
       );
@@ -41,7 +38,7 @@ class UserRepository implements UserRepositoryImpl {
         uid: result.user.uid,
         name: name
       );
-      db.collection(_userCollection)
+      _db.collection(_userCollection)
         .document(result.user.uid)
         .setData(user.toMap());
     } catch (error) {
@@ -51,12 +48,12 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<void> signOut() async {
-    await auth.signOut();
+    await _auth.signOut();
   }
 
   @override
   Future<String> isSignIn() async {
-    var currentUser = (await auth.currentUser());
+    var currentUser = (await _auth.currentUser());
     return currentUser != null ? currentUser.uid : '';
   }
 }

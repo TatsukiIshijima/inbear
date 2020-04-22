@@ -16,16 +16,15 @@ enum AuthStatus {
 
 class LoginViewModel extends ChangeNotifier {
 
-  final UserRepository userRepository;
+  final UserRepository _userRepository;
   final TextEditingController emailTextEditingController = TextEditingController();
   final TextEditingController passwordTextEditingController = TextEditingController();
 
   AuthStatus authStatus;
 
-  LoginViewModel({
-    @required
-    this.userRepository,
-  });
+  LoginViewModel(
+    this._userRepository,
+  );
 
   @override
   void dispose() {
@@ -38,7 +37,7 @@ class LoginViewModel extends ChangeNotifier {
     authStatus = AuthStatus.Authenticating;
     notifyListeners();
 
-    var result = await userRepository.signIn(
+    var result = await _userRepository.signIn(
         emailTextEditingController.text,
         passwordTextEditingController.text
     );

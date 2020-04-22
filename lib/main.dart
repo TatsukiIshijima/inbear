@@ -28,8 +28,8 @@ void main() {
       providers: [
         Provider(
           create: (context) => UserRepository(
-            auth: _firebaseAuth,
-            db: _firestore
+              _firebaseAuth,
+              _firestore
           ),
         ),
       ],
