@@ -26,7 +26,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => LoginViewModel(
-        userRepository: Provider.of<UserRepository>(context, listen: false)
+          Provider.of<UserRepository>(context, listen: false)
       ),
       child: Scaffold(
         body: SingleChildScrollView(
