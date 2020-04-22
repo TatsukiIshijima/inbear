@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/strings.dart';
 
 class SingleButtonDialog extends StatelessWidget {
 
   final String title;
   final String message;
+  final String positiveButtonTitle;
 
   SingleButtonDialog({
     this.title,
     this.message,
+    this.positiveButtonTitle,
   });
 
   Widget _androidAlertDialog(BuildContext context) {
@@ -20,7 +21,7 @@ class SingleButtonDialog extends StatelessWidget {
       content: Text(message),
       actions: <Widget>[
         FlatButton(
-          child: Text(Strings.PositiveButtonTitle),
+          child: Text(positiveButtonTitle),
           onPressed: () => Navigator.pop(context),
         )
       ],
@@ -33,7 +34,7 @@ class SingleButtonDialog extends StatelessWidget {
       content: Text(message),
       actions: <Widget>[
         CupertinoDialogAction(
-          child: Text(Strings.PositiveButtonTitle),
+          child: Text(positiveButtonTitle),
           onPressed: () => Navigator.pop(context),
         )
       ],

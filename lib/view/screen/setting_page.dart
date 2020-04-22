@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/strings.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/view/widget/title_icon_list_item.dart';
 
 class SettingPage extends StatelessWidget {
@@ -10,11 +10,11 @@ class SettingPage extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TitleAndIconListItem(
-            title: Strings.EventRegisterTitle,
+            title: AppLocalizations.of(context).eventRegisterTitle,
             iconData: Icons.today,
           ),
           TitleAndIconListItem(
-            title: Strings.LogoutTitle,
+            title: AppLocalizations.of(context).logoutTitle,
             iconData: Icons.exit_to_app,
           )
         ],
