@@ -14,12 +14,31 @@ import 'package:provider/provider.dart';
 import '../../routes.dart';
 
 class LoginPage extends StatelessWidget {
+
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
   String _checkEmpty(BuildContext context, String text) {
     return text.isEmpty ? AppLocalizations.of(context).emptyError : null;
+  }
+
+  String _toLoginErrorMessage(BuildContext context, AuthStatus authStatus) {
+    var resource = AppLocalizations.of(context);
+    switch(authStatus) {
+      case AuthStatus.ErrorInvalidEmail:
+        return resource.invalidEmailError;
+      case AuthStatus.ErrorWrongPassword:
+        return resource.wrongPasswordError;
+      case AuthStatus.ErrorUserNotFound:
+        return resource.userNotFoundError;
+      case AuthStatus.ErrorUserDisabled:
+        return resource.userDisabledError;
+      case AuthStatus.ErrorTooManyRequests:
+        return resource.tooManyRequestsError;
+      default:
+        return resource.generalError;
+    }
   }
 
   @override
@@ -139,8 +158,7 @@ class LoginPage extends StatelessWidget {
                             builder: (context) =>
                                 SingleButtonDialog(
                                   title: AppLocalizations.of(context).loginErrorTitle,
-                                  // TODO:変換メソッド
-                                  message: authStatus.toString(),
+                                  message: _toLoginErrorMessage(context, authStatus),
                                   positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
                               )
                         )
