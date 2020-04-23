@@ -56,4 +56,9 @@ class UserRepository implements UserRepositoryImpl {
     var currentUser = (await _auth.currentUser());
     return currentUser != null ? currentUser.uid : '';
   }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
 }
