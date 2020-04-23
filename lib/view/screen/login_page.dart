@@ -49,6 +49,7 @@ class LoginPage extends StatelessWidget {
           title: AppLocalizations.of(context).loginErrorTitle,
           message: _toLoginErrorMessage(context, authStatus),
           positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
+          onPressed: () => Navigator.pop(context),
         )
     );
   }

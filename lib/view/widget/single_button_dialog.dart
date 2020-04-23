@@ -8,11 +8,13 @@ class SingleButtonDialog extends StatelessWidget {
   final String title;
   final String message;
   final String positiveButtonTitle;
+  final VoidCallback onPressed;
 
   SingleButtonDialog({
     this.title,
     this.message,
     this.positiveButtonTitle,
+    this.onPressed,
   });
 
   Widget _androidAlertDialog(BuildContext context) {
@@ -22,7 +24,7 @@ class SingleButtonDialog extends StatelessWidget {
       actions: <Widget>[
         FlatButton(
           child: Text(positiveButtonTitle),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => onPressed(),
         )
       ],
     );
@@ -35,7 +37,7 @@ class SingleButtonDialog extends StatelessWidget {
       actions: <Widget>[
         CupertinoDialogAction(
           child: Text(positiveButtonTitle),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => onPressed(),
         )
       ],
     );
