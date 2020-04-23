@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 
 enum AuthStatus {
@@ -67,23 +66,5 @@ class LoginViewModel extends ChangeNotifier {
       }
     }
     notifyListeners();
-  }
-
-  String toLoginErrorMessage(BuildContext context) {
-    var resource = AppLocalizations.of(context);
-    switch(authStatus) {
-      case AuthStatus.ErrorInvalidEmail:
-        return resource.invalidEmailError;
-      case AuthStatus.ErrorWrongPassword:
-        return resource.wrongPasswordError;
-      case AuthStatus.ErrorUserNotFound:
-        return resource.userNotFoundError;
-      case AuthStatus.ErrorUserDisabled:
-        return resource.userDisabledError;
-      case AuthStatus.ErrorTooManyRequests:
-        return resource.tooManyRequestsError;
-      default:
-        return resource.generalError;
-    }
   }
 }

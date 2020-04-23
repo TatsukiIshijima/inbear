@@ -7,18 +7,50 @@ import 'package:inbear_app/view/widget/label_button.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
+import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 
 class LoginPage extends StatelessWidget {
+
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
   String _checkEmpty(BuildContext context, String text) {
     return text.isEmpty ? AppLocalizations.of(context).emptyError : null;
+  }
+
+  String _toLoginErrorMessage(BuildContext context, AuthStatus authStatus) {
+    var resource = AppLocalizations.of(context);
+    switch(authStatus) {
+      case AuthStatus.ErrorInvalidEmail:
+        return resource.invalidEmailError;
+      case AuthStatus.ErrorWrongPassword:
+        return resource.wrongPasswordError;
+      case AuthStatus.ErrorUserNotFound:
+        return resource.userNotFoundError;
+      case AuthStatus.ErrorUserDisabled:
+        return resource.userDisabledError;
+      case AuthStatus.ErrorTooManyRequests:
+        return resource.tooManyRequestsError;
+      default:
+        return resource.generalError;
+    }
+  }
+
+  void _showLoginError(BuildContext context, AuthStatus authStatus) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+        SingleButtonDialog(
+          title: AppLocalizations.of(context).loginErrorTitle,
+          message: _toLoginErrorMessage(context, authStatus),
+          positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
+        )
+    );
   }
 
   @override
@@ -46,31 +78,33 @@ class LoginPage extends StatelessWidget {
                         SizedBox(
                           height: 30,
                         ),
-                        Consumer<LoginViewModel>(
-                          builder: (context, viewModel, child) =>
-                            InputField(
-                              labelText: AppLocalizations.of(context).emailLabelText,
-                              textInputType: TextInputType.emailAddress,
-                              textEditingController: viewModel.emailTextEditingController,
-                              validator: (text) => _checkEmpty(context, text),
-                              focusNode: _emailFocus,
-                              onFieldSubmitted: (text) => FocusScope.of(context).requestFocus(_passwordFocus),
-                            ),
+                        Selector<LoginViewModel, TextEditingController>(
+                          selector: (context, viewModel) => viewModel.emailTextEditingController,
+                          builder: (context, textEditingController, child) =>
+                              InputField(
+                                labelText: AppLocalizations.of(context).emailLabelText,
+                                textInputType: TextInputType.emailAddress,
+                                textEditingController: textEditingController,
+                                validator: (text) => _checkEmpty(context, text),
+                                focusNode: _emailFocus,
+                                onFieldSubmitted: (text) => FocusScope.of(context).requestFocus(_passwordFocus),
+                              ),
                         ),
                         SizedBox(
                           height: 30,
                         ),
-                        Consumer<LoginViewModel>(
-                          builder: (context, viewModel, child) =>
-                            InputField(
-                              labelText: AppLocalizations.of(context).passwordLabelText,
-                              obscureText: true,
-                              textInputType: TextInputType.visiblePassword,
-                              textEditingController: viewModel.passwordTextEditingController,
-                              validator: (text) => _checkEmpty(context, text),
-                              focusNode: _passwordFocus,
-                              onFieldSubmitted: (text) => _passwordFocus.unfocus(),
-                            ),
+                        Selector<LoginViewModel, TextEditingController>(
+                          selector: (context, viewModel) => viewModel.passwordTextEditingController,
+                          builder: (context, textEditingController, child) =>
+                              InputField(
+                                labelText: AppLocalizations.of(context).passwordLabelText,
+                                obscureText: true,
+                                textInputType: TextInputType.visiblePassword,
+                                textEditingController: textEditingController,
+                                validator: (text) => _checkEmpty(context, text),
+                                focusNode: _passwordFocus,
+                                onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                              ),
                         ),
                         SizedBox(
                           height: 30,
@@ -83,27 +117,7 @@ class LoginPage extends StatelessWidget {
                                 backgroundColor: Colors.pink[200],
                                 onPressed: () async {
                                   if (_formKey.currentState.validate()) {
-                                    Routes.goToHome(context);
-                                    /*
                                     await viewModel.signIn();
-                                    if (viewModel.authStatus == AuthStatus.Success) {
-                                      Routes.goToHome(context);
-                                    } else if (
-                                        viewModel.authStatus != AuthStatus.Authenticating ||
-                                        viewModel.authStatus != null) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return SingleButtonDialog(
-                                              title: AppLocalizations.of(context).loginErrorTitle,
-                                              message: viewModel.toLoginErrorMessage(context),
-                                              positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
-                                            );
-                                          }
-                                      );
-                                    }
-
-                                     */
                                   }
                                 },
                               ),
@@ -131,21 +145,33 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Consumer<LoginViewModel>(
-                  builder: (context, viewModel, child) {
-                    if (viewModel.authStatus == AuthStatus.Authenticating) {
+
+                Selector<LoginViewModel, AuthStatus>(
+                  selector: (context, viewModel) => viewModel.authStatus,
+                  builder: (context, authStatus, child) {
+                    if (authStatus == AuthStatus.Success) {
+                      // ビルド前にメソッドが呼ばれるとエラーになるので
+                      // addPostFrameCallback で任意処理を実行
+                      // https://www.didierboelens.com/2019/04/addpostframecallback/
+                      WidgetsBinding.instance.addPostFrameCallback((_) =>
+                          Routes.goToHome(context));
+                    } else if (authStatus == AuthStatus.Authenticating) {
                       return Container(
                         decoration: BoxDecoration(
-                          color: Color.fromRGBO(0, 0, 0, 0.3)
+                            color: Color.fromRGBO(0, 0, 0, 0.3)
                         ),
                         child: Center(
                           child: Loading(),
                         ),
                       );
+                    } else if (authStatus != null) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) =>
+                        _showLoginError(context, authStatus)
+                      );
                     }
                     return Container();
                   },
-                )
+                ),
               ],
             ),
           ),
