@@ -134,8 +134,6 @@ class LoginPage extends StatelessWidget {
                       );
                     } else if (authStatus != null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      // FIXME:CupertinoAlertDialogの場合クラッシュ
-                      // https://jg-ravity.com/?p=833
                         showDialog(
                             context: context,
                             builder: (context) =>
