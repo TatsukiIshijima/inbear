@@ -41,6 +41,18 @@ class LoginPage extends StatelessWidget {
     }
   }
 
+  void _showLoginError(BuildContext context, AuthStatus authStatus) {
+    showDialog(
+      context: context,
+      builder: (context) =>
+        SingleButtonDialog(
+          title: AppLocalizations.of(context).loginErrorTitle,
+          message: _toLoginErrorMessage(context, authStatus),
+          positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -133,6 +145,7 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 Selector<LoginViewModel, AuthStatus>(
                   selector: (context, viewModel) => viewModel.authStatus,
                   builder: (context, authStatus, child) {
@@ -153,15 +166,7 @@ class LoginPage extends StatelessWidget {
                       );
                     } else if (authStatus != null) {
                       WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        showDialog(
-                            context: context,
-                            builder: (context) =>
-                                SingleButtonDialog(
-                                  title: AppLocalizations.of(context).loginErrorTitle,
-                                  message: _toLoginErrorMessage(context, authStatus),
-                                  positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
-                              )
-                        )
+                        _showLoginError(context, authStatus)
                       );
                     }
                     return Container();
