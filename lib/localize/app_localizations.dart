@@ -23,6 +23,12 @@ class AppLocalizations {
       // 新規登録画面
       'register_button_title': '登録',
       'name_label_text': 'お名前',
+      // パスワードリセット画面
+      'reset_password_title': 'パスワードリセット',
+      'reset_password_button_title': '送信',
+      'reset_password_description': 'パスワードリセットメールを送信します。アカウントに登録済のメールアドレスを入力してください。',
+      'reset_password_error_title': '送信エラー',
+      'reset_password_success_message': 'パスワードリセットメールを送信しました。',
       // ホーム画面
       'home_title': 'ホーム',
       'schedule_title': 'スケジュール',
@@ -57,6 +63,12 @@ class AppLocalizations {
 
   String get registerButtonTitle => _getText('register_button_title');
   String get nameLabelText => _getText('name_label_text');
+
+  String get resetPasswordTitle => _getText('reset_password_title');
+  String get resetPasswordButtonTitle => _getText('reset_password_button_title');
+  String get resetPasswordDescription => _getText('reset_password_description');
+  String get resetPasswordErrorTitle => _getText('reset_password_error_title');
+  String get resetPasswordSuccessMessage => _getText('reset_password_success_message');
 
   String get homeTitle => _getText('home_title');
   String get scheduleTitle => _getText('schedule_title');
