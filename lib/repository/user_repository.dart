@@ -58,7 +58,12 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> sendPasswordResetEmail(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+  Future<String> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return '';
+    } catch (error) {
+      return error.code;
+    }
   }
 }

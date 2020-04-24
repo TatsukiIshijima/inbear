@@ -3,5 +3,5 @@ class UserRepositoryImpl {
   Future<void> signUp(String name, String email, String password) {}
   Future<void> signOut() {}
   Future<String> isSignIn() {}
-  Future<void> sendPasswordResetEmail(String email) {}
+  Future<String> sendPasswordResetEmail(String email) {}
 }
