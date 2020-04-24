@@ -128,9 +128,7 @@ class LoginPage extends StatelessWidget {
                         ),
                         LabelButton(
                           text: AppLocalizations.of(context).passwordForgetLabelText,
-                          onTap: () => {
-                            // TODO:パスワード忘れ
-                          },
+                          onTap: () => Routes.goToResetPasswordFromLogin(context),
                         ),
                       ],
                     ),
