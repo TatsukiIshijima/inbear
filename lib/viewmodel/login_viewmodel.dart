@@ -2,16 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 
-enum AuthStatus {
-  Success,
-  Authenticating,
-  ErrorInvalidEmail,
-  ErrorWrongPassword,
-  ErrorUserNotFound,
-  ErrorUserDisabled,
-  ErrorTooManyRequests,
-  ErrorUnDefined,
-}
+import '../auth_status.dart';
 
 class LoginViewModel extends ChangeNotifier {
 

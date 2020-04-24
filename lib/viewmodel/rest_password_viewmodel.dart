@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/viewmodel/login_viewmodel.dart';
+
+import '../auth_status.dart';
 
 class ResetPasswordViewModel extends ChangeNotifier {
 

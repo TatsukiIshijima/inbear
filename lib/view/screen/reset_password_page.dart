@@ -7,9 +7,10 @@ import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
-import 'package:inbear_app/viewmodel/login_viewmodel.dart';
 import 'package:inbear_app/viewmodel/rest_password_viewmodel.dart';
 import 'package:provider/provider.dart';
+
+import '../../auth_status.dart';
 
 class ResetPasswordPage extends StatelessWidget {
 
@@ -38,9 +39,8 @@ class ResetPasswordContent extends StatelessWidget {
           title: authStatus != AuthStatus.Success ?
             resource.resetPasswordErrorTitle :
             '',
-          // TODO:エラーメッセージ統一化
           message: authStatus != AuthStatus.Success ?
-            authStatus.toString() :
+            AuthStatusExtension.toMessage(context, authStatus) :
             resource.resetPasswordSuccessMessage,
           positiveButtonTitle: resource.defaultPositiveButtonTitle,
           onPressed: () => Navigator.pop(context),

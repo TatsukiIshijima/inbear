@@ -11,6 +11,7 @@ import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import '../../auth_status.dart';
 import '../../routes.dart';
 
 class LoginPage extends StatelessWidget {
@@ -23,31 +24,13 @@ class LoginPage extends StatelessWidget {
     return text.isEmpty ? AppLocalizations.of(context).emptyError : null;
   }
 
-  String _toLoginErrorMessage(BuildContext context, AuthStatus authStatus) {
-    var resource = AppLocalizations.of(context);
-    switch(authStatus) {
-      case AuthStatus.ErrorInvalidEmail:
-        return resource.invalidEmailError;
-      case AuthStatus.ErrorWrongPassword:
-        return resource.wrongPasswordError;
-      case AuthStatus.ErrorUserNotFound:
-        return resource.userNotFoundError;
-      case AuthStatus.ErrorUserDisabled:
-        return resource.userDisabledError;
-      case AuthStatus.ErrorTooManyRequests:
-        return resource.tooManyRequestsError;
-      default:
-        return resource.generalError;
-    }
-  }
-
   void _showLoginError(BuildContext context, AuthStatus authStatus) {
     showDialog(
       context: context,
       builder: (context) =>
         SingleButtonDialog(
           title: AppLocalizations.of(context).loginErrorTitle,
-          message: _toLoginErrorMessage(context, authStatus),
+          message: AuthStatusExtension.toMessage(context, authStatus),
           positiveButtonTitle: AppLocalizations.of(context).defaultPositiveButtonTitle,
           onPressed: () => Navigator.pop(context),
         )
