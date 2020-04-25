@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
+import 'package:inbear_app/view/screen/reset_password_page.dart';
 
 class Routes {
   static const SplashPagePath = '/splash';
   static const LoginPagePath = '/login';
+  static const ResetPasswordPagePath = '/reset_password';
   static const RegisterPagePath = '/register';
   static const HomePagePath = '/home';
 
@@ -14,6 +16,16 @@ class Routes {
       context,
       MaterialPageRoute(
         builder: (BuildContext context) => RegisterPage(),
+        fullscreenDialog: true
+      )
+    );
+  }
+
+  static void goToResetPasswordFromLogin(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => ResetPasswordPage(),
         fullscreenDialog: true
       )
     );

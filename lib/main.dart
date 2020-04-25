@@ -11,6 +11,7 @@ import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
+import 'package:inbear_app/view/screen/reset_password_page.dart';
 import 'package:inbear_app/view/screen/splash_page.dart';
 import 'package:provider/provider.dart';
 
@@ -55,11 +56,12 @@ class InbearApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('ja', ''),
+        const Locale('ja'),
       ],
       routes: <String, WidgetBuilder> {
         Routes.SplashPagePath: (_) => SplashPage(),
         Routes.LoginPagePath: (_) => LoginPage(),
+        Routes.ResetPasswordPagePath: (_) => ResetPasswordPage(),
         Routes.RegisterPagePath: (_) => RegisterPage(),
         Routes.HomePagePath: (_) => HomePage(),
       },
