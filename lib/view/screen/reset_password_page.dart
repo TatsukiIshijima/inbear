@@ -53,8 +53,10 @@ class ResetPasswordContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ルートページでなければ、pushの時点で build が呼ばれ、
+    // pop の時点で viewModel の dispose が呼ばれている
     var resource = AppLocalizations.of(context);
-    var viewModel = Provider.of<ResetPasswordViewModel>(context);
+    var viewModel = Provider.of<ResetPasswordViewModel>(context, listen: false);
     return Stack(
         children: <Widget>[
           Container(
