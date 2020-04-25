@@ -52,7 +52,7 @@ class LoginPageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var resource = AppLocalizations.of(context);
-    var viewModel = Provider.of<LoginViewModel>(context);
+    var viewModel = Provider.of<LoginViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
@@ -117,7 +117,10 @@ class LoginPageContent extends StatelessWidget {
                     ),
                     LabelButton(
                       text: resource.passwordForgetLabelText,
-                      onTap: () => Routes.goToResetPasswordFromLogin(context),
+                      onTap: () {
+                        Routes.goToResetPasswordFromLogin(context);
+                        viewModel.resetAuthStatus();
+                      },
                     ),
                   ],
                 ),
@@ -129,19 +132,24 @@ class LoginPageContent extends StatelessWidget {
               child: SafeArea(
                 child: LabelButton(
                   text: resource.createAccountLabelText,
-                  onTap: () => Routes.goToRegisterFromLogin(context),
+                  onTap: () {
+                    Routes.goToRegisterFromLogin(context);
+                    viewModel.resetAuthStatus();
+                  },
                 ),
               ),
             ),
             Selector<LoginViewModel, AuthStatus>(
               selector: (context, viewModel) => viewModel.authStatus,
               builder: (context, authStatus, child) {
+                print('builder: ${authStatus}');
                 if (authStatus == AuthStatus.Success) {
                   // ビルド前にメソッドが呼ばれるとエラーになるので
                   // addPostFrameCallback で任意処理を実行
                   // https://www.didierboelens.com/2019/04/addpostframecallback/
                   WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      Routes.goToHome(context));
+                      Routes.goToHome(context)
+                  );
                 } else if (authStatus == AuthStatus.Authenticating) {
                   return Container(
                     decoration: BoxDecoration(
@@ -153,7 +161,7 @@ class LoginPageContent extends StatelessWidget {
                   );
                 } else if (authStatus != null) {
                   WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      _showLoginError(context, authStatus)
+                    _showLoginError(context, authStatus)
                   );
                 }
                 return Container();

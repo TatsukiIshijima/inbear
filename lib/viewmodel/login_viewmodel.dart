@@ -26,7 +26,6 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> signIn() async {
     authStatus = AuthStatus.Authenticating;
     notifyListeners();
-
     var result = await _userRepository.signIn(
         emailTextEditingController.text,
         passwordTextEditingController.text
@@ -57,5 +56,17 @@ class LoginViewModel extends ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  // workaround
+  // ログイン画面がルートのため、replace でルートが変わらない限り、
+  // Dispose されなく、画面遷移のたびに build がはしるため、
+  // 画面遷移メソッド（push）が呼ばれる箇所でステータスをリセットしておく。
+  // signInメソッドの最後に以下の処理があっても build 前に処理されてしまい、
+  // Authenticating → null になってしまう。
+  // リセットしないと以前のステータスが残ったままのため、
+  // 勝手にアラートが表示されたりなどが起こる
+  void resetAuthStatus() {
+    authStatus = null;
   }
 }
