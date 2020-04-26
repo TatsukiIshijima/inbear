@@ -6,7 +6,7 @@ import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 
 class Routes {
-  static const SplashPagePath = '/splash';
+  static const SplashPagePath = '/';
   static const LoginPagePath = '/login';
   static const ResetPasswordPagePath = '/reset_password';
   static const RegisterPagePath = '/register';
@@ -43,6 +43,16 @@ class Routes {
   }
 
   static void goToLogin(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginPage(),
+        fullscreenDialog: true
+      )
+    );
+  }
+
+  static void goToLoginWhenLogout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
