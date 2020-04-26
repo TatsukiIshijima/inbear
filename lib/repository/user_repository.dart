@@ -28,7 +28,7 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> signUp(String name, String email, String password) async {
+  Future<String> signUp(String name, String email, String password) async {
     try {
       var result = await _auth.signInWithEmailAndPassword(
           email: email,
@@ -41,8 +41,9 @@ class UserRepository implements UserRepositoryImpl {
       _db.collection(_userCollection)
         .document(result.user.uid)
         .setData(user.toMap());
+      return '';
     } catch (error) {
-      Future.error(error.code);
+      return error.code;
     }
   }
 
