@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
+import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 
@@ -32,16 +33,22 @@ class Routes {
   }
 
   static void goToHome(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (BuildContext context) => HomePage(),
-          fullscreenDialog: true
-        ),
-        (_) => false);
+            builder: (BuildContext context) => HomePage(),
+            fullscreenDialog: true
+        )
+    );
   }
 
   static void goToLogin(BuildContext context) {
-    Navigator.of(context).pushReplacementNamed(LoginPagePath);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => LoginPage(),
+            fullscreenDialog: true
+        ),
+            (_) => false);
   }
 }
