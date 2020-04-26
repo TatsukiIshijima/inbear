@@ -36,6 +36,7 @@ class AppLocalizations {
       // 設定画面
       'event_register_title': 'イベント登録',
       'logout_title': 'ログアウト',
+      'logout_message': 'ログアウトしますか？',
       // エラー
       'empty_error_message': '必須項目です。',
       'invalid_email_error_message': '無効なメールアドレスです。',
@@ -76,6 +77,7 @@ class AppLocalizations {
 
   String get eventRegisterTitle => _getText('event_register_title');
   String get logoutTitle => _getText('logout_title');
+  String get logtoutMessage => _getText('logout_message');
 
   String get emptyError => _getText('empty_error_message');
   String get invalidEmailError => _getText('invalid_email_error_message');
