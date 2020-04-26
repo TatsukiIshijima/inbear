@@ -35,7 +35,7 @@ class SettingPageContent extends StatelessWidget {
             negativeButtonTitle: resource.defaultNegativeButtonTitle,
             onPositiveButtonPressed: () async {
               await viewModel.signOut();
-              Routes.goToLogin(context);
+              Routes.goToLoginWhenLogout(context);
             },
           )
     );

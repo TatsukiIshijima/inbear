@@ -69,7 +69,7 @@ class InbearApp extends StatelessWidget {
         primaryColor: Colors.pink[200],
         accentColor: Colors.pinkAccent
       ),
-      initialRoute: Routes.LoginPagePath,
+      initialRoute: Routes.SplashPagePath,
     );
   }
 }
