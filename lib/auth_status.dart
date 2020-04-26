@@ -5,9 +5,12 @@ enum AuthStatus {
   Success,
   Authenticating,
   ErrorInvalidEmail,
+  ErrorEmailAlreadyUsed,
   ErrorWrongPassword,
+  ErrorWeakPassword,
   ErrorUserNotFound,
   ErrorUserDisabled,
+  ErrorInvalidCredential,
   ErrorTooManyRequests,
   ErrorUnDefined,
 }
@@ -22,12 +25,18 @@ extension AuthStatusExtension on AuthStatus {
         return '';
       case AuthStatus.ErrorInvalidEmail:
         return resource.invalidEmailError;
+      case AuthStatus.ErrorEmailAlreadyUsed:
+        return resource.alreadyUsedEmailError;
       case AuthStatus.ErrorWrongPassword:
         return resource.wrongPasswordError;
+      case AuthStatus.ErrorWeakPassword:
+        return resource.weakPasswordError;
       case AuthStatus.ErrorUserNotFound:
         return resource.userNotFoundError;
       case AuthStatus.ErrorUserDisabled:
         return resource.userDisabledError;
+      case AuthStatus.ErrorInvalidCredential:
+        return resource.invalidCredentialError;
       case AuthStatus.ErrorTooManyRequests:
         return resource.tooManyRequestsError;
       default:

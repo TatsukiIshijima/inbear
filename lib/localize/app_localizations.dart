@@ -23,6 +23,7 @@ class AppLocalizations {
       // 新規登録画面
       'register_button_title': '登録',
       'name_label_text': 'お名前',
+      'register_error_title': '登録エラー',
       // パスワードリセット画面
       'reset_password_title': 'パスワードリセット',
       'reset_password_button_title': '送信',
@@ -40,9 +41,12 @@ class AppLocalizations {
       // エラー
       'empty_error_message': '必須項目です。',
       'invalid_email_error_message': '無効なメールアドレスです。',
+      'email_already_used_message': '既に使用されているメールアドレスです。',
       'wrong_password_error_message': 'パスワードが間違っています。',
+      'weak_password_error_message': 'パスワードが安全ではありません。パスワードは6文字以上入力して下さい。',
       'user_not_found_error_message': 'アカウントが見つかりません。',
       'user_disabled_error_message': '無効なアカウントです',
+      'invalid_creadential_error_message': '無効な認証情報です。',
       'too_many_requests_error_message': 'アクセスが集中しています。\nしばらくしてからもう一度お試し下さい。',
       'general_error_message': 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
       
@@ -64,6 +68,7 @@ class AppLocalizations {
 
   String get registerButtonTitle => _getText('register_button_title');
   String get nameLabelText => _getText('name_label_text');
+  String get registerErrorTitle => _getText('register_error_title');
 
   String get resetPasswordTitle => _getText('reset_password_title');
   String get resetPasswordButtonTitle => _getText('reset_password_button_title');
@@ -81,9 +86,12 @@ class AppLocalizations {
 
   String get emptyError => _getText('empty_error_message');
   String get invalidEmailError => _getText('invalid_email_error_message');
+  String get alreadyUsedEmailError => _getText('email_already_used_message');
   String get wrongPasswordError => _getText('wrong_password_error_message');
+  String get weakPasswordError => _getText('weak_password_error_message');
   String get userNotFoundError => _getText('user_not_found_error_message');
   String get userDisabledError => _getText('user_disabled_error_message');
+  String get invalidCredentialError => _getText('invalid_creadential_error_message');
   String get tooManyRequestsError => _getText('too_many_requests_error_message');
   String get generalError => _getText('general_error_message');
 
