@@ -53,9 +53,9 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<String> isSignIn() async {
+  Future<bool> isSignIn() async {
     var currentUser = (await _auth.currentUser());
-    return currentUser != null ? currentUser.uid : '';
+    return currentUser != null;
   }
 
   @override
