@@ -87,13 +87,15 @@ class RegisterPage extends StatelessWidget {
                         minWidth: MediaQuery.of(context).size.width,
                         text: AppLocalizations.of(context).registerButtonTitle,
                         backgroundColor: Colors.pink[200],
-                        onPressed: () => {
+                        onPressed: () {
                           if (_formKey.currentState.validate())
                             {
                               // TODO:登録処理
-                              // 仮でホーム画面へ遷移
-                              // FIXME:ホームに遷移しても戻るボタンが表示されて戻れる
-                              Routes.goToHome(context)
+                              // 一旦popで新規画面をクローズしてから
+                              // ルートをホーム画面に設定して遷移させることで
+                              // ホーム遷移後にバックボタン押下でアプリ終了とさせる
+                              Navigator.pop(context);
+                              Routes.goToHome(context);
                             }
                         },
                       ),
