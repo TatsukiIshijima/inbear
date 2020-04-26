@@ -30,7 +30,7 @@ class UserRepository implements UserRepositoryImpl {
   @override
   Future<String> signUp(String name, String email, String password) async {
     try {
-      var result = await _auth.signInWithEmailAndPassword(
+      var result = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password
       );
