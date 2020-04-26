@@ -12,10 +12,12 @@ class SettingPage extends StatelessWidget {
           TitleAndIconListItem(
             title: AppLocalizations.of(context).eventRegisterTitle,
             iconData: Icons.today,
+            onTap: () {},
           ),
           TitleAndIconListItem(
             title: AppLocalizations.of(context).logoutTitle,
             iconData: Icons.exit_to_app,
+            onTap: () {},
           )
         ],
       ),

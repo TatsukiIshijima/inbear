@@ -5,12 +5,15 @@ class TitleAndIconListItem extends StatelessWidget {
 
   final String title;
   final IconData iconData;
+  final VoidCallback onTap;
 
   TitleAndIconListItem({
     @required
     this.title,
     @required
-    this.iconData
+    this.iconData,
+    @required
+    this.onTap,
   });
 
   @override
@@ -37,7 +40,7 @@ class TitleAndIconListItem extends StatelessWidget {
             ],
           ),
         ),
-        onTap: () {},
+        onTap: () => onTap(),
       ),
     );
   }
