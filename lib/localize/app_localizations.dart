@@ -38,6 +38,8 @@ class AppLocalizations {
       'event_register_title': 'イベント登録',
       'logout_title': 'ログアウト',
       'logout_message': 'ログアウトしますか？',
+      // スケジュール登録画面
+      'schedule_register_title': 'スケジュール登録',
       // エラー
       'empty_error_message': '必須項目です。',
       'invalid_email_error_message': '無効なメールアドレスです。',
@@ -79,10 +81,11 @@ class AppLocalizations {
   String get homeTitle => _getText('home_title');
   String get scheduleTitle => _getText('schedule_title');
   String get settingTitle => _getText('setting_title');
-
-  String get eventRegisterTitle => _getText('event_register_title');
+  
   String get logoutTitle => _getText('logout_title');
-  String get logtoutMessage => _getText('logout_message');
+  String get logoutMessage => _getText('logout_message');
+  
+  String get scheduleRegisterTitle => _getText('schedule_register_title');
 
   String get emptyError => _getText('empty_error_message');
   String get invalidEmailError => _getText('invalid_email_error_message');
