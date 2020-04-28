@@ -14,6 +14,9 @@ class ScheduleRegisterPage extends StatelessWidget {
             color: Colors.white
           ),
         ),
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
       ),
       body: Center(
         child: Text('スケジュール登録画面'),

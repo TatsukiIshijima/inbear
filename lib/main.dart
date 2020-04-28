@@ -68,8 +68,11 @@ class InbearApp extends StatelessWidget {
         Routes.ScheduleRegisterPagePath: (_) => ScheduleRegisterPage(),
       },
       theme: ThemeData(
-        primaryColor: Colors.pink[200],
-        accentColor: Colors.pinkAccent
+        primaryColor: Color(0xfff48fb1),
+        primaryColorLight: Color(0xffffc1e3),
+        primaryColorDark: Color(0xffbf5f82),
+        secondaryHeaderColor: Color(0xffbf5f82),
+        accentColor: Color(0xfff06292),
       ),
       initialRoute: Routes.SplashPagePath,
     );
