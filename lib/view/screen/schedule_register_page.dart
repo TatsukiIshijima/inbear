@@ -22,7 +22,9 @@ class ScheduleRegisterPage extends StatelessWidget {
           color: Colors.white
         ),
       ),
-      body:  ScheduleRegisterContent(),
+      body: SafeArea(
+        child: ScheduleRegisterContent(),
+      ),
     );
   }
 
@@ -42,88 +44,146 @@ class ScheduleRegisterContent extends StatelessWidget {
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              InputField(
-                labelText: '新郎お名前',
-                textInputType: TextInputType.text,
-                textEditingController: null,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: _groomNameFocus,
-                onFieldSubmitted: (text) {},
-              ),
-              InputField(
-                labelText: '新婦お名前',
-                textInputType: TextInputType.text,
-                textEditingController: null,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: _brideNameFocus,
-                onFieldSubmitted: (text) {},
-              ),
-              Text('日時'),
-              RaisedButton(
-                padding: EdgeInsets.all(20),
-                child: Text('${_formatter.format(now)} ~'),
-                color: Colors.grey[50],
-                shape: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                  borderSide: BorderSide(
-                    color: Colors.grey
-                  )
+          child: Container(
+            margin: EdgeInsets.only(top: 24, left: 24, right: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  resource.scheduleNameLabelText,
+                  style: TextStyle(
+                    fontSize: 20
+                  ),
                 ),
-                elevation: 0,
-                onPressed: () {
-                  DatePicker.showDateTimePicker(
-                    context,
-                    showTitleActions: true,
-                    onConfirm: (date) {
-                      // TODO:日付表示変更
-                    } ,
-                    currentTime: DateTime.now()
-                  );
-                },
-              ),
-              Text('場所'),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 8,
-                    child: InputField(
-                      labelText: '郵便番号',
-                      textInputType: TextInputType.number,
-                      textEditingController: null,
-                      validator: (text) => text.isEmpty ? '未入力です': null,
+                SizedBox(height: 12,),
+                InputField(
+                  labelText: resource.scheduleGroomNameLabelText,
+                  textInputType: TextInputType.text,
+                  textEditingController: null,
+                  validator: (text) => text.isEmpty ? resource.emptyError : null,
+                  focusNode: _groomNameFocus,
+                  onFieldSubmitted: (text) {},
+                ),
+                SizedBox(height: 24,),
+                InputField(
+                  labelText: resource.scheduleBrideNameLabelText,
+                  textInputType: TextInputType.text,
+                  textEditingController: null,
+                  validator: (text) => text.isEmpty ? resource.emptyError : null,
+                  focusNode: _brideNameFocus,
+                  onFieldSubmitted: (text) {},
+                ),
+                SizedBox(height: 24,),
+                Text(
+                  resource.scheduleDateLabelText,
+                    style: TextStyle(
+                        fontSize: 20
+                    )
+                ),
+                SizedBox(height: 12,),
+                RaisedButton(
+                  padding: EdgeInsets.all(20),
+                  child: Text(
+                    '${_formatter.format(now)} ~',
+                    style: TextStyle(
+                      fontSize: 18,
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: RaisedButton(
-                      child: Text('検索'),
-                      onPressed: () {},
-                    ),
+                  color: Colors.grey[50],
+                  shape: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      borderSide: BorderSide(
+                          color: Colors.grey
+                      )
+                  ),
+                  elevation: 0,
+                  onPressed: () {
+                    DatePicker.showDateTimePicker(
+                        context,
+                        showTitleActions: true,
+                        onConfirm: (date) {
+                          // TODO:日付表示変更
+                        } ,
+                        currentTime: DateTime.now()
+                    );
+                  },
+                ),
+                SizedBox(height: 24,),
+                Text(
+                  resource.schedulePlaceLabelText,
+                  style: TextStyle(
+                      fontSize: 20
                   )
-                ],
-              ),
-              InputField(
-                labelText: '住所',
-                textInputType: TextInputType.text,
-                textEditingController: null,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: null,
-                onFieldSubmitted: (text) {
-                  // TODO:GoogleMap表示？
-                },
-              ),
-              RoundButton(
-                text: resource.registerButtonTitle,
-                minWidth: MediaQuery.of(context).size.width,
-                backgroundColor: Colors.pink[200],
-                onPressed: () {
-                  // TODO:アラート表示のち登録処理
-                },
-              )
-            ],
+                ),
+                SizedBox(height: 12,),
+                Text(resource.schedulePostalCodeSearchDescription),
+                SizedBox(height: 12,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 8,
+                      child: InputField(
+                        labelText: resource.schedulePostalCodeLabelText,
+                        textInputType: TextInputType.number,
+                        textEditingController: null,
+                        validator: (text) => text.isEmpty ? resource.warningEmptyMessage : null,
+                      ),
+                    ),
+                    SizedBox(width: 1,),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        height: 60,
+                        child: FlatButton(
+                          shape: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(
+                                  color: Colors.grey
+                              )
+                          ),
+                          color: Colors.grey[400],
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 24,),
+                InputField(
+                  labelText: resource.scheduleAddressLabelText,
+                  textInputType: TextInputType.text,
+                  textEditingController: null,
+                  validator: (text) => text.isEmpty ? resource.emptyError : null,
+                  focusNode: null,
+                  onFieldSubmitted: (text) {
+                    // TODO:GoogleMap表示？
+                  },
+                ),
+                SizedBox(height: 24,),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width * ( 3 / 4),
+                  color: Colors.blue[100],
+                  child: Center(
+                    child: Text('GoogleMap表示'),
+                  ),
+                ),
+                SizedBox(height: 24,),
+                RoundButton(
+                  text: resource.registerButtonTitle,
+                  minWidth: MediaQuery.of(context).size.width,
+                  backgroundColor: Colors.pink[200],
+                  onPressed: () {
+                    // TODO:アラート表示のち登録処理
+                  },
+                )
+              ],
+            ),
           ),
       ),
     );
