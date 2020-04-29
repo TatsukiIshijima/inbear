@@ -38,6 +38,19 @@ class AppLocalizations {
       'event_register_title': 'イベント登録',
       'logout_title': 'ログアウト',
       'logout_message': 'ログアウトしますか？',
+      // スケジュール登録画面
+      'schedule_register_title': 'スケジュール登録',
+      'schedule_name_label_text': 'お名前',
+      'schedule_groom_name_label_text':'新郎お名前',
+      'schedule_bride_name_label_text':'新婦お名前',
+      'schedule_date_label_text': '日時',
+      'schedule_place_label_text': '場所',
+      'schedule_postal_code_search_description': '郵便番号検索することで市町村までが住所に自動入力されます。',
+      'schedule_postal_code_label_text': '郵便番号（ハイフンなし）',
+      'schedule_address_label_text': '住所',
+
+      // 警告
+      'wraning_empty_message': '未入力です。',
       // エラー
       'empty_error_message': '必須項目です。',
       'invalid_email_error_message': '無効なメールアドレスです。',
@@ -79,10 +92,21 @@ class AppLocalizations {
   String get homeTitle => _getText('home_title');
   String get scheduleTitle => _getText('schedule_title');
   String get settingTitle => _getText('setting_title');
-
-  String get eventRegisterTitle => _getText('event_register_title');
+  
   String get logoutTitle => _getText('logout_title');
-  String get logtoutMessage => _getText('logout_message');
+  String get logoutMessage => _getText('logout_message');
+  
+  String get scheduleRegisterTitle => _getText('schedule_register_title');
+  String get scheduleNameLabelText => _getText('schedule_name_label_text');
+  String get scheduleGroomNameLabelText => _getText('schedule_groom_name_label_text');
+  String get scheduleBrideNameLabelText => _getText('schedule_bride_name_label_text');
+  String get scheduleDateLabelText => _getText('schedule_date_label_text');
+  String get schedulePlaceLabelText => _getText('schedule_place_label_text');
+  String get schedulePostalCodeSearchDescription => _getText('schedule_postal_code_search_description');
+  String get schedulePostalCodeLabelText => _getText('schedule_postal_code_label_text');
+  String get scheduleAddressLabelText => _getText('schedule_address_label_text');
+
+  String get warningEmptyMessage => _getText('wraning_empty_message');
 
   String get emptyError => _getText('empty_error_message');
   String get invalidEmailError => _getText('invalid_email_error_message');

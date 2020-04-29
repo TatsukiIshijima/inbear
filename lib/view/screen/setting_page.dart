@@ -30,7 +30,7 @@ class SettingPageContent extends StatelessWidget {
         builder: (context) =>
           ClosedQuestionDialog(
             title: resource.logoutTitle,
-            message: resource.logtoutMessage,
+            message: resource.logoutMessage,
             positiveButtonTitle: resource.defaultPositiveButtonTitle,
             negativeButtonTitle: resource.defaultNegativeButtonTitle,
             onPositiveButtonPressed: () async {
@@ -48,9 +48,9 @@ class SettingPageContent extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TitleAndIconListItem(
-            title: AppLocalizations.of(context).eventRegisterTitle,
+            title: AppLocalizations.of(context).scheduleRegisterTitle,
             iconData: Icons.today,
-            onTap: () {},
+            onTap: () => Routes.goToScheduleRegister(context),
           ),
           TitleAndIconListItem(
             title: AppLocalizations.of(context).logoutTitle,

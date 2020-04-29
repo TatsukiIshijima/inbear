@@ -12,6 +12,7 @@ import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
+import 'package:inbear_app/view/screen/schedule_register_page.dart';
 import 'package:inbear_app/view/screen/splash_page.dart';
 import 'package:provider/provider.dart';
 
@@ -64,10 +65,14 @@ class InbearApp extends StatelessWidget {
         Routes.ResetPasswordPagePath: (_) => ResetPasswordPage(),
         Routes.RegisterPagePath: (_) => RegisterPage(),
         Routes.HomePagePath: (_) => HomePage(),
+        Routes.ScheduleRegisterPagePath: (_) => ScheduleRegisterPage(),
       },
       theme: ThemeData(
-        primaryColor: Colors.pink[200],
-        accentColor: Colors.pinkAccent
+        primaryColor: Color(0xfff48fb1),
+        primaryColorLight: Color(0xffffc1e3),
+        primaryColorDark: Color(0xffbf5f82),
+        secondaryHeaderColor: Color(0xffbf5f82),
+        accentColor: Color(0xfff06292),
       ),
       initialRoute: Routes.SplashPagePath,
     );
