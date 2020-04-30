@@ -15,6 +15,8 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   final TextEditingController postalCodeTextEditingController = TextEditingController();
   final TextEditingController addressTextEditingController = TextEditingController();
 
+  bool isPostalCodeFormat = false;
+
   @override
   void dispose() {
     postalCodeTextEditingController.dispose();
@@ -24,9 +26,19 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
 
   Future<void> fetchAddress() async {
     var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
+    if (result == null) {
+      return;
+    }
     var address = '${result.prefecture}${result.city}${result.street}';
     addressTextEditingController.text = address;
     notifyListeners();
+  }
+
+  void setPostalCodeInputEvent() {
+    postalCodeTextEditingController.addListener(() {
+      isPostalCodeFormat = validatePostalCode();
+      notifyListeners();
+    });
   }
 
   bool validatePostalCode() {

@@ -50,8 +50,9 @@ class ScheduleRegisterContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var viewModel = Provider.of<ScheduleRegisterViewModel>(context, listen: false);
-    var now = DateTime.now();
     var resource = AppLocalizations.of(context);
+    viewModel.setPostalCodeInputEvent();
+    var now = DateTime.now();
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
@@ -146,23 +147,25 @@ class ScheduleRegisterContent extends StatelessWidget {
                       flex: 2,
                       child: Container(
                         height: 60,
-                        child: FlatButton(
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              borderSide: BorderSide(
-                                  color: Colors.grey
-                              )
-                          ),
-                          color: Colors.grey[400],
-                          child: Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          onPressed: () async {
-                            if (viewModel.validatePostalCode()) {
-                              await viewModel.fetchAddress();
-                            }
-                          },
+                        child: Selector<ScheduleRegisterViewModel, bool>(
+                          selector: (context, viewModel) => viewModel.isPostalCodeFormat,
+                          builder: (context, isPostalCodeFormat, child) =>
+                              FlatButton(
+                                shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey)
+                                ),
+                                color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey[400],
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () async {
+                                  if (viewModel.validatePostalCode()) {
+                                    await viewModel.fetchAddress();
+                                  }
+                                },
+                              ),
                         ),
                       ),
                     )
