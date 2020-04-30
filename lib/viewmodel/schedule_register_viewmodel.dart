@@ -34,6 +34,6 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     if (postalCode.isEmpty) {
       return false;
     }
-    return RegExp(r'/^\d{3}[-]\d{4}$|^\d{3}[-]\d{2}$|^\d{3}$|^\d{5}$|^\d{7}$/').hasMatch(postalCode);
+    return RegExp(r'^[0-9]{7}$').hasMatch(postalCode);
   }
 }

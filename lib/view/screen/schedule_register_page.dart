@@ -159,7 +159,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                             color: Colors.white,
                           ),
                           onPressed: () async {
+                            if (viewModel.validatePostalCode()) {
                               await viewModel.fetchAddress();
+                            }
                           },
                         ),
                       ),
