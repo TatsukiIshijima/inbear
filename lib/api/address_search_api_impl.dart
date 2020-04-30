@@ -1,5 +1,5 @@
 
 
 class AddressSearchApiImpl {
-  Future<String> fetchAddress(int zipCode) {}
+  Future<String> fetchAddress(String zipCode) {}
 }

@@ -12,7 +12,7 @@ class AddressRepository implements AddressRepositoryImpl {
   AddressRepository(this._addressSearchApiImpl);
 
   @override
-  Future<Address> fetchAddress(int zipCode) async {
+  Future<Address> fetchAddress(String zipCode) async {
     try {
       var response = await _addressSearchApiImpl.fetchAddress(zipCode);
       var spot = Spot.fromJson(json.decode(response));
