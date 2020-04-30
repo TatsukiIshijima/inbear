@@ -2,28 +2,38 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/repository/address_repository.dart';
+import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
+import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ScheduleRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
     var resource = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(resource.scheduleRegisterTitle,
-          style: TextStyle(
-            color: Colors.white
+    return ChangeNotifierProvider(
+      create: (context) => ScheduleRegisterViewModel(
+        Provider.of<UserRepository>(context, listen: false),
+        Provider.of<AddressRepository>(context, listen: false)
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(resource.scheduleRegisterTitle,
+            style: TextStyle(
+                color: Colors.white
+            ),
+          ),
+          iconTheme: IconThemeData(
+              color: Colors.white
           ),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white
+        body: SafeArea(
+          child: ScheduleRegisterContent(),
         ),
-      ),
-      body: SafeArea(
-        child: ScheduleRegisterContent(),
       ),
     );
   }
@@ -39,8 +49,10 @@ class ScheduleRegisterContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
+    var viewModel = Provider.of<ScheduleRegisterViewModel>(context, listen: false);
     var resource = AppLocalizations.of(context);
+    viewModel.setPostalCodeInputEvent();
+    var now = DateTime.now();
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
@@ -126,8 +138,8 @@ class ScheduleRegisterContent extends StatelessWidget {
                       child: InputField(
                         labelText: resource.schedulePostalCodeLabelText,
                         textInputType: TextInputType.number,
-                        textEditingController: null,
-                        validator: (text) => text.isEmpty ? resource.warningEmptyMessage : null,
+                        textEditingController: viewModel.postalCodeTextEditingController,
+                        validator: (text) => null,
                       ),
                     ),
                     SizedBox(width: 1,),
@@ -135,34 +147,43 @@ class ScheduleRegisterContent extends StatelessWidget {
                       flex: 2,
                       child: Container(
                         height: 60,
-                        child: FlatButton(
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                              borderSide: BorderSide(
-                                  color: Colors.grey
-                              )
-                          ),
-                          color: Colors.grey[400],
-                          child: Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {},
+                        child: Selector<ScheduleRegisterViewModel, bool>(
+                          selector: (context, viewModel) => viewModel.isPostalCodeFormat,
+                          builder: (context, isPostalCodeFormat, child) =>
+                              FlatButton(
+                                shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                    borderSide: BorderSide(color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey)
+                                ),
+                                color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey[400],
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () async {
+                                  if (viewModel.validatePostalCode()) {
+                                    await viewModel.fetchAddress();
+                                  }
+                                },
+                              ),
                         ),
                       ),
                     )
                   ],
                 ),
                 SizedBox(height: 24,),
-                InputField(
-                  labelText: resource.scheduleAddressLabelText,
-                  textInputType: TextInputType.text,
-                  textEditingController: null,
-                  validator: (text) => text.isEmpty ? resource.emptyError : null,
-                  focusNode: null,
-                  onFieldSubmitted: (text) {
-                    // TODO:GoogleMap表示？
-                  },
+                Selector<ScheduleRegisterViewModel, TextEditingController>(
+                  selector: (context, viewModel) => viewModel.addressTextEditingController,
+                  builder: (context, textEditingController, child) => InputField(
+                    labelText: resource.scheduleAddressLabelText,
+                    textInputType: TextInputType.text,
+                    textEditingController: textEditingController,
+                    validator: (text) => text.isEmpty ? resource.emptyError : null,
+                    focusNode: null,
+                    onFieldSubmitted: (text) {
+                      // TODO:GoogleMap表示？
+                    },
+                  ),
                 ),
                 SizedBox(height: 24,),
                 Container(

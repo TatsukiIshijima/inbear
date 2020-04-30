@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:inbear_app/api/address_search_api.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/localize/fallback_cupertino_localizations_delegate.dart';
+import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
@@ -26,6 +28,7 @@ void main() {
 
   final _firebaseAuth = FirebaseAuth.instance;
   final _firestore = Firestore.instance;
+  final _addressSearchApi = AddressSearchApi();
 
   runApp(
     // アプリ全体で必要なものをProvider.createで生成,
@@ -38,6 +41,11 @@ void main() {
               _firestore
           ),
         ),
+        Provider(
+          create: (context) => AddressRepository(
+            _addressSearchApi
+          ),
+        )
       ],
       child: InbearApp(),
     )
