@@ -1,0 +1,4 @@
+FLUTTER_FLAVOR=Production
+PRODUCT_BUNDLE_IDENTIFIER=com.inbear.inbear-app
+DISPLAY_NAME=inbear
+FLUTTER_TARGET=lib/main.dart
