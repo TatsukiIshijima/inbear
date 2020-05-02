@@ -33,3 +33,6 @@ Runner/GeneratedPluginRegistrant.*
 
 # Firebase GoogleService-Info.plist
 /Runner/Firebase/*
+
+# API Keys
+/Runner/ApiKeys.swift

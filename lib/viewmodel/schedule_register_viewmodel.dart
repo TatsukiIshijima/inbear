@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
@@ -14,6 +17,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
 
   final TextEditingController postalCodeTextEditingController = TextEditingController();
   final TextEditingController addressTextEditingController = TextEditingController();
+  final Completer<GoogleMapController> _googleMapController = Completer();
 
   bool isPostalCodeFormat = false;
 
@@ -47,5 +51,24 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       return false;
     }
     return RegExp(r'^[0-9]{7}$').hasMatch(postalCode);
+  }
+
+  void mapCreated(GoogleMapController mapController) {
+    _googleMapController.complete(mapController);
+  }
+
+  Future<void> convertPostalCodeToLocation() async {
+    if (addressTextEditingController.text.isEmpty) {
+      return;
+    }
+    var location = await _addressRepositoryImpl
+        .convertToLocation(addressTextEditingController.text);
+    if (location != null && _googleMapController != null) {
+      //print('lat: ${location.latitude}, lng: ${location.longitude}');
+      _googleMapController.future.then((map) {
+        var latLng = LatLng(location.latitude, location.longitude);
+        map.animateCamera(CameraUpdate.newLatLng(latLng));
+      });
+    }
   }
 }

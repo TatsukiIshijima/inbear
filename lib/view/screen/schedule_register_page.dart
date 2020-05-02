@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
@@ -45,6 +46,8 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _groomNameFocus = FocusNode();
   final _brideNameFocus = FocusNode();
+  final _postalCodeFocus = FocusNode();
+  final _addressFocus = FocusNode();
   final _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   @override
@@ -74,7 +77,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                   textEditingController: null,
                   validator: (text) => text.isEmpty ? resource.emptyError : null,
                   focusNode: _groomNameFocus,
-                  onFieldSubmitted: (text) {},
+                  onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
                 ),
                 SizedBox(height: 24,),
                 InputField(
@@ -115,6 +118,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         showTitleActions: true,
                         onConfirm: (date) {
                           // TODO:日付表示変更
+                          _postalCodeFocus.requestFocus();
                         } ,
                         currentTime: DateTime.now()
                     );
@@ -140,6 +144,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         textInputType: TextInputType.number,
                         textEditingController: viewModel.postalCodeTextEditingController,
                         validator: (text) => null,
+                        focusNode: _postalCodeFocus,
                       ),
                     ),
                     SizedBox(width: 1,),
@@ -163,6 +168,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                                 onPressed: () async {
                                   if (viewModel.validatePostalCode()) {
                                     await viewModel.fetchAddress();
+                                    _addressFocus.requestFocus();
                                   }
                                 },
                               ),
@@ -179,19 +185,22 @@ class ScheduleRegisterContent extends StatelessWidget {
                     textInputType: TextInputType.text,
                     textEditingController: textEditingController,
                     validator: (text) => text.isEmpty ? resource.emptyError : null,
-                    focusNode: null,
-                    onFieldSubmitted: (text) {
-                      // TODO:GoogleMap表示？
-                    },
+                    focusNode: _addressFocus,
+                    onFieldSubmitted: (text) async => await viewModel.convertPostalCodeToLocation(),
                   ),
                 ),
                 SizedBox(height: 24,),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.width * ( 3 / 4),
-                  color: Colors.blue[100],
-                  child: Center(
-                    child: Text('GoogleMap表示'),
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(0, 0),
+                      zoom: 17.0
+                    ),
+                    mapType: MapType.normal,
+                    myLocationButtonEnabled: false,
+                    onMapCreated: (mapController) => viewModel.mapCreated(mapController),
                   ),
                 ),
                 SizedBox(height: 24,),
