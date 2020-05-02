@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
@@ -182,6 +183,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                     focusNode: null,
                     onFieldSubmitted: (text) {
                       // TODO:GoogleMap表示？
+
                     },
                   ),
                 ),
@@ -190,8 +192,13 @@ class ScheduleRegisterContent extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.width * ( 3 / 4),
                   color: Colors.blue[100],
-                  child: Center(
-                    child: Text('GoogleMap表示'),
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(35.6580339, 139.7016358),
+                      zoom: 17.0,
+                    ),
+                    myLocationButtonEnabled: false,
+                    onMapCreated: (controller) => viewModel.mapCreated(controller),
                   ),
                 ),
                 SizedBox(height: 24,),
