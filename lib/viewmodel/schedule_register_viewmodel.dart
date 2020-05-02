@@ -63,8 +63,12 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     }
     var location = await _addressRepositoryImpl
         .convertToLocation(addressTextEditingController.text);
-    if (location != null) {
-      print('lat: ${location.latitude}, lng: ${location.longitude}');
+    if (location != null && _googleMapController != null) {
+      //print('lat: ${location.latitude}, lng: ${location.longitude}');
+      _googleMapController.future.then((map) {
+        var latLng = LatLng(location.latitude, location.longitude);
+        map.animateCamera(CameraUpdate.newLatLng(latLng));
+      });
     }
   }
 }

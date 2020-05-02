@@ -193,14 +193,14 @@ class ScheduleRegisterContent extends StatelessWidget {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.width * ( 3 / 4),
-                  color: Colors.blue[100],
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(35.6580339, 139.7016358),
-                      zoom: 17.0,
+                      target: LatLng(0, 0),
+                      zoom: 17.0
                     ),
+                    mapType: MapType.normal,
                     myLocationButtonEnabled: false,
-                    onMapCreated: (controller) => viewModel.mapCreated(controller),
+                    onMapCreated: (mapController) => viewModel.mapCreated(mapController),
                   ),
                 ),
                 SizedBox(height: 24,),
