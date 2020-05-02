@@ -46,6 +46,8 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _groomNameFocus = FocusNode();
   final _brideNameFocus = FocusNode();
+  final _postalCodeFocus = FocusNode();
+  final _addressFocus = FocusNode();
   final _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   @override
@@ -75,7 +77,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                   textEditingController: null,
                   validator: (text) => text.isEmpty ? resource.emptyError : null,
                   focusNode: _groomNameFocus,
-                  onFieldSubmitted: (text) {},
+                  onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
                 ),
                 SizedBox(height: 24,),
                 InputField(
@@ -116,6 +118,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         showTitleActions: true,
                         onConfirm: (date) {
                           // TODO:日付表示変更
+                          _postalCodeFocus.requestFocus();
                         } ,
                         currentTime: DateTime.now()
                     );
@@ -141,6 +144,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         textInputType: TextInputType.number,
                         textEditingController: viewModel.postalCodeTextEditingController,
                         validator: (text) => null,
+                        focusNode: _postalCodeFocus,
                       ),
                     ),
                     SizedBox(width: 1,),
@@ -164,6 +168,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                                 onPressed: () async {
                                   if (viewModel.validatePostalCode()) {
                                     await viewModel.fetchAddress();
+                                    _addressFocus.requestFocus();
                                   }
                                 },
                               ),
@@ -180,11 +185,8 @@ class ScheduleRegisterContent extends StatelessWidget {
                     textInputType: TextInputType.text,
                     textEditingController: textEditingController,
                     validator: (text) => text.isEmpty ? resource.emptyError : null,
-                    focusNode: null,
-                    onFieldSubmitted: (text) {
-                      // TODO:GoogleMap表示？
-
-                    },
+                    focusNode: _addressFocus,
+                    onFieldSubmitted: (text) async => await viewModel.convertPostalCodeToLocation(),
                   ),
                 ),
                 SizedBox(height: 24,),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:inbear_app/api/address_search_api.dart';
+import 'package:inbear_app/api/geocode_api.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/localize/fallback_cupertino_localizations_delegate.dart';
@@ -29,6 +30,8 @@ void main() {
   final _firebaseAuth = FirebaseAuth.instance;
   final _firestore = Firestore.instance;
   final _addressSearchApi = AddressSearchApi();
+  // TODO:APIKeyの切り替え
+  final _geoCodeApi = GeoCodeApi('');
 
   runApp(
     // アプリ全体で必要なものをProvider.createで生成,
@@ -43,7 +46,8 @@ void main() {
         ),
         Provider(
           create: (context) => AddressRepository(
-            _addressSearchApi
+            _addressSearchApi,
+            _geoCodeApi
           ),
         )
       ],

@@ -56,4 +56,15 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   void mapCreated(GoogleMapController mapController) {
     _googleMapController.complete(mapController);
   }
+
+  Future<void> convertPostalCodeToLocation() async {
+    if (addressTextEditingController.text.isEmpty) {
+      return;
+    }
+    var location = await _addressRepositoryImpl
+        .convertToLocation(addressTextEditingController.text);
+    if (location != null) {
+      print('lat: ${location.latitude}, lng: ${location.longitude}');
+    }
+  }
 }
