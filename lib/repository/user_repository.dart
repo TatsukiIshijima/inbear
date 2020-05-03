@@ -35,8 +35,10 @@ class UserRepository implements UserRepositoryImpl {
           password: password
       );
       var user = User(
-        uid: result.user.uid,
-        name: name
+        result.user.uid,
+        name,
+        email,
+        DateTime.now()
       );
       _db.collection(_userCollection)
         .document(result.user.uid)
