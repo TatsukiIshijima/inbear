@@ -38,6 +38,7 @@ class UserRepository implements UserRepositoryImpl {
         result.user.uid,
         name,
         email,
+        '',
         DateTime.now()
       );
       await _db.collection(_userCollection)
@@ -113,6 +114,25 @@ class UserRepository implements UserRepositoryImpl {
       return '';
     } catch (exception) {
       print('Add schedule error : $exception');
+      return exception;
+    }
+  }
+
+  @override
+  Future<String> selectSchedule(String scheduleId) async {
+    try {
+      var uid = await getUid();
+      if (uid.isEmpty) {
+        return 'User not login';
+      }
+      await _db.collection(_userCollection)
+          .document(uid)
+          .setData({
+            'select_schedule_id': scheduleId
+          }, merge: true);
+      return '';
+    } catch (exception) {
+      print('Failed select schedule : $exception');
       return exception;
     }
   }

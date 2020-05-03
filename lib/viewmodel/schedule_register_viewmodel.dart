@@ -122,8 +122,12 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     if (scheduleId.isEmpty) {
       return;
     }
-    var result = await _userRepositoryImpl.addScheduleReference(scheduleId);
-    if (result.isNotEmpty) {
+    var addScheduleResult = await _userRepositoryImpl.addScheduleReference(scheduleId);
+    if (addScheduleResult.isNotEmpty) {
+      return;
+    }
+    var joinScheduleResult = await _userRepositoryImpl.selectSchedule(scheduleId);
+    if (joinScheduleResult.isNotEmpty) {
       return;
     }
   }

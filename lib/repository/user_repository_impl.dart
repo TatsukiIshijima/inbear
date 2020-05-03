@@ -9,4 +9,5 @@ class UserRepositoryImpl {
   Future<String> getUid() {}
   Future<User> fetchUser() {}
   Future<String> addScheduleReference(String scheduleId) {}
+  Future<String> selectSchedule(String scheduleId) {}
 }

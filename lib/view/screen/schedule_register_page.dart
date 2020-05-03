@@ -221,7 +221,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                   height: MediaQuery.of(context).size.width * ( 3 / 4),
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: LatLng(0, 0),
+                      target: LatLng(35.681236, 139.767125),
                       zoom: 17.0
                     ),
                     mapType: MapType.normal,
