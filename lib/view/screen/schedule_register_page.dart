@@ -4,6 +4,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
+import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
@@ -18,6 +19,7 @@ class ScheduleRegisterPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => ScheduleRegisterViewModel(
         Provider.of<UserRepository>(context, listen: false),
+        Provider.of<ScheduleRepository>(context, listen: false),
         Provider.of<AddressRepository>(context, listen: false)
       ),
       child: Scaffold(
@@ -72,7 +74,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                 InputField(
                   labelText: resource.scheduleGroomNameLabelText,
                   textInputType: TextInputType.text,
-                  textEditingController: null,
+                  textEditingController: viewModel.groomTextEditingController,
                   validator: (text) => text.isEmpty ? resource.emptyError : null,
                   focusNode: _groomNameFocus,
                   onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
@@ -81,7 +83,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                 InputField(
                   labelText: resource.scheduleBrideNameLabelText,
                   textInputType: TextInputType.text,
-                  textEditingController: null,
+                  textEditingController: viewModel.brideTextEditingController,
                   validator: (text) => text.isEmpty ? resource.emptyError : null,
                   focusNode: _brideNameFocus,
                   onFieldSubmitted: (text) {},

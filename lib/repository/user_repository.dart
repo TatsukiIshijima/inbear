@@ -40,7 +40,7 @@ class UserRepository implements UserRepositoryImpl {
         email,
         DateTime.now()
       );
-      _db.collection(_userCollection)
+      await _db.collection(_userCollection)
         .document(result.user.uid)
         .setData(user.toMap());
       return '';
@@ -67,6 +67,53 @@ class UserRepository implements UserRepositoryImpl {
       return '';
     } catch (error) {
       return error.code;
+    }
+  }
+
+  @override
+  Future<String> getUid() async {
+    var user = await _auth.currentUser();
+    return user != null ? user.uid : '';
+  }
+
+  @override
+  Future<User> fetchUser() async {
+    try {
+      var uid = await getUid();
+      if (uid.isEmpty) {
+        return null;
+      }
+      var userData = await _db.collection(_userCollection)
+          .document(uid)
+          .get();
+      return User.fromMap(userData.data);
+    } catch (exception) {
+      print('Fetch user error : $exception');
+      return null;
+    }
+  }
+
+  @override
+  Future<String> addScheduleReference(String scheduleId) async {
+    try {
+      var uid = await getUid();
+      if (uid.isEmpty) {
+        return 'User not login.';
+      }
+      const String _scheduleCollection = 'schedule';
+      var scheduleReference = _db.collection(_scheduleCollection)
+          .document(scheduleId);
+      await _db.collection(_userCollection)
+          .document(uid)
+          .collection(_scheduleCollection)
+          .document(scheduleId)
+          .setData({
+            'ref': scheduleReference
+          });
+      return '';
+    } catch (exception) {
+      print('Add schedule error : $exception');
+      return exception;
     }
   }
 }
