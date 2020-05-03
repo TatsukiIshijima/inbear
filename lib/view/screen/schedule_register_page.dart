@@ -6,6 +6,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/widget/closed_question_dialog.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
@@ -49,6 +50,24 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _brideNameFocus = FocusNode();
   final _postalCodeFocus = FocusNode();
   final _addressFocus = FocusNode();
+
+  void _showConfirmDialog(BuildContext context, ScheduleRegisterViewModel viewModel) {
+    var resource = AppLocalizations.of(context);
+    showDialog(
+        context: context,
+        builder: (context) =>
+            ClosedQuestionDialog(
+              title: resource.scheduleRegisterTitle,
+              message: resource.scheduleRegisterConfirmMessage,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              negativeButtonTitle: resource.defaultNegativeButtonTitle,
+              onPositiveButtonPressed: () async {
+                await viewModel.registerSchedule();
+                Navigator.pop(context);
+              },
+            )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +234,10 @@ class ScheduleRegisterContent extends StatelessWidget {
                   text: resource.registerButtonTitle,
                   minWidth: MediaQuery.of(context).size.width,
                   backgroundColor: Colors.pink[200],
-                  onPressed: () {
-                    // TODO:アラート表示のち登録処理
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      _showConfirmDialog(context, viewModel);
+                    }
                   },
                 )
               ],

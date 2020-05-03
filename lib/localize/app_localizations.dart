@@ -49,6 +49,7 @@ class AppLocalizations {
       'schedule_postal_code_search_description': '郵便番号検索することで市町村までが住所に自動入力されます。',
       'schedule_postal_code_label_text': '郵便番号（ハイフンなし）',
       'schedule_address_label_text': '住所',
+      'schedule_register_confirm_message': 'スケジュールを登録します。よろしいですか？',
 
       // 警告
       'wraning_empty_message': '未入力です。',
@@ -107,6 +108,7 @@ class AppLocalizations {
   String get schedulePostalCodeSearchDescription => _getText('schedule_postal_code_search_description');
   String get schedulePostalCodeLabelText => _getText('schedule_postal_code_label_text');
   String get scheduleAddressLabelText => _getText('schedule_address_label_text');
+  String get scheduleRegisterConfirmMessage => _getText('schedule_register_confirm_message');
 
   String get warningEmptyMessage => _getText('wraning_empty_message');
 
