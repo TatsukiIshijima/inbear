@@ -8,7 +8,6 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleRegisterPage extends StatelessWidget {
@@ -48,7 +47,6 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _brideNameFocus = FocusNode();
   final _postalCodeFocus = FocusNode();
   final _addressFocus = FocusNode();
-  final _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class ScheduleRegisterContent extends StatelessWidget {
       child: Form(
           key: _formKey,
           child: Container(
-            margin: EdgeInsets.only(top: 24, left: 24, right: 24),
+            margin: EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -98,11 +96,17 @@ class ScheduleRegisterContent extends StatelessWidget {
                 SizedBox(height: 12,),
                 RaisedButton(
                   padding: EdgeInsets.all(20),
-                  child: Text(
-                    '${_formatter.format(now)} ~',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
+                  child: Selector<ScheduleRegisterViewModel, DateTime>(
+                    selector: (context, viewModel) => viewModel.scheduledDateTime,
+                    builder: (context, dateTime, child) =>
+                      Text(
+                        dateTime == null ?
+                          resource.scheduleDateSelectDescription :
+                          viewModel.dateToString(dateTime),
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
                   ),
                   color: Colors.grey[50],
                   shape: OutlineInputBorder(
@@ -117,9 +121,10 @@ class ScheduleRegisterContent extends StatelessWidget {
                         context,
                         showTitleActions: true,
                         onConfirm: (date) {
-                          // TODO:日付表示変更
+                          viewModel.updateDate(date);
                           _postalCodeFocus.requestFocus();
                         } ,
+                        locale: LocaleType.jp,
                         currentTime: DateTime.now()
                     );
                   },

@@ -44,6 +44,7 @@ class AppLocalizations {
       'schedule_groom_name_label_text':'新郎お名前',
       'schedule_bride_name_label_text':'新婦お名前',
       'schedule_date_label_text': '日時',
+      'schedule_date_select_description': '日時を選択してください',
       'schedule_place_label_text': '場所',
       'schedule_postal_code_search_description': '郵便番号検索することで市町村までが住所に自動入力されます。',
       'schedule_postal_code_label_text': '郵便番号（ハイフンなし）',
@@ -101,6 +102,7 @@ class AppLocalizations {
   String get scheduleGroomNameLabelText => _getText('schedule_groom_name_label_text');
   String get scheduleBrideNameLabelText => _getText('schedule_bride_name_label_text');
   String get scheduleDateLabelText => _getText('schedule_date_label_text');
+  String get scheduleDateSelectDescription => _getText('schedule_date_select_description');
   String get schedulePlaceLabelText => _getText('schedule_place_label_text');
   String get schedulePostalCodeSearchDescription => _getText('schedule_postal_code_search_description');
   String get schedulePostalCodeLabelText => _getText('schedule_postal_code_label_text');

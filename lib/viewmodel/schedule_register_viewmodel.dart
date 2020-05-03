@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleRegisterViewModel extends ChangeNotifier {
 
@@ -17,8 +18,10 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
 
   final TextEditingController postalCodeTextEditingController = TextEditingController();
   final TextEditingController addressTextEditingController = TextEditingController();
+  final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
   final Completer<GoogleMapController> _googleMapController = Completer();
 
+  DateTime scheduledDateTime;
   bool isPostalCodeFormat = false;
 
   @override
@@ -26,6 +29,15 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     postalCodeTextEditingController.dispose();
     addressTextEditingController.dispose();
     super.dispose();
+  }
+
+  void updateDate(DateTime dateTime) {
+    scheduledDateTime = dateTime;
+    notifyListeners();
+  }
+
+  String dateToString(DateTime dateTime) {
+    return '${_formatter.format(dateTime)} ~';
   }
 
   Future<void> fetchAddress() async {
