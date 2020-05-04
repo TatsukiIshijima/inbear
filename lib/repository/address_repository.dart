@@ -22,7 +22,7 @@ class AddressRepository implements AddressRepositoryImpl {
   Future<Address> fetchAddress(String zipCode) async {
     var response = await _addressSearchApiImpl.fetchAddress(zipCode);
     var spot = Spot.fromJson(json.decode(response));
-    return spot.addresses.first;
+    return spot.addresses.length == 0 ? null : spot.addresses.first;
   }
 
   @override
