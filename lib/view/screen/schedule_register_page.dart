@@ -6,9 +6,11 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/view/widget/closed_question_dialog.dart';
+import 'package:inbear_app/schedule_register_status.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
+import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
+import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -51,21 +53,21 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _postalCodeFocus = FocusNode();
   final _addressFocus = FocusNode();
 
-  void _showConfirmDialog(BuildContext context, ScheduleRegisterViewModel viewModel) {
-    var resource = AppLocalizations.of(context);
+  void _showErrorDialog(
+      BuildContext context,
+      AppLocalizations resource,
+      ScheduleRegisterStatus status) {
+    var titleAndMessage = ScheduleRegisterStatusExtension
+        .toTitleAndMessage(resource, status);
     showDialog(
-        context: context,
-        builder: (context) =>
-            ClosedQuestionDialog(
-              title: resource.scheduleRegisterTitle,
-              message: resource.scheduleRegisterConfirmMessage,
-              positiveButtonTitle: resource.defaultPositiveButtonTitle,
-              negativeButtonTitle: resource.defaultNegativeButtonTitle,
-              onPositiveButtonPressed: () async {
-                await viewModel.registerSchedule();
-                Navigator.pop(context);
-              },
-            )
+      context: context,
+      builder: (context) =>
+        SingleButtonDialog(
+          title: titleAndMessage['title'],
+          message: titleAndMessage['message'],
+          positiveButtonTitle: resource.defaultPositiveButtonTitle,
+          onPressed: () => Navigator.pop(context),
+        )
     );
   }
 
@@ -74,176 +76,203 @@ class ScheduleRegisterContent extends StatelessWidget {
     var viewModel = Provider.of<ScheduleRegisterViewModel>(context, listen: false);
     var resource = AppLocalizations.of(context);
     viewModel.setPostalCodeInputEvent();
-    var now = DateTime.now();
-    return SingleChildScrollView(
-      child: Form(
-          key: _formKey,
-          child: Container(
-            margin: EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  resource.scheduleNameLabelText,
-                  style: TextStyle(
-                    fontSize: 20
-                  ),
-                ),
-                SizedBox(height: 12,),
-                InputField(
-                  labelText: resource.scheduleGroomNameLabelText,
-                  textInputType: TextInputType.text,
-                  textEditingController: viewModel.groomTextEditingController,
-                  validator: (text) => text.isEmpty ? resource.emptyError : null,
-                  focusNode: _groomNameFocus,
-                  onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
-                ),
-                SizedBox(height: 24,),
-                InputField(
-                  labelText: resource.scheduleBrideNameLabelText,
-                  textInputType: TextInputType.text,
-                  textEditingController: viewModel.brideTextEditingController,
-                  validator: (text) => text.isEmpty ? resource.emptyError : null,
-                  focusNode: _brideNameFocus,
-                  onFieldSubmitted: (text) {},
-                ),
-                SizedBox(height: 24,),
-                Text(
-                  resource.scheduleDateLabelText,
+    return Stack(
+      children: <Widget>[
+        SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Container(
+              margin: EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    resource.scheduleNameLabelText,
                     style: TextStyle(
                         fontSize: 20
-                    )
-                ),
-                SizedBox(height: 12,),
-                RaisedButton(
-                  padding: EdgeInsets.all(20),
-                  child: Selector<ScheduleRegisterViewModel, DateTime>(
-                    selector: (context, viewModel) => viewModel.scheduledDateTime,
-                    builder: (context, dateTime, child) =>
-                      Text(
-                        dateTime == null ?
-                          resource.scheduleDateSelectDescription :
-                          viewModel.dateToString(dateTime),
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
+                    ),
                   ),
-                  color: Colors.grey[50],
-                  shape: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      borderSide: BorderSide(
-                          color: Colors.grey
+                  SizedBox(height: 12,),
+                  InputField(
+                    labelText: resource.scheduleGroomNameLabelText,
+                    textInputType: TextInputType.text,
+                    textEditingController: viewModel.groomTextEditingController,
+                    validator: (text) => text.isEmpty ? resource.emptyError : null,
+                    focusNode: _groomNameFocus,
+                    onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
+                  ),
+                  SizedBox(height: 24,),
+                  InputField(
+                    labelText: resource.scheduleBrideNameLabelText,
+                    textInputType: TextInputType.text,
+                    textEditingController: viewModel.brideTextEditingController,
+                    validator: (text) => text.isEmpty ? resource.emptyError : null,
+                    focusNode: _brideNameFocus,
+                    onFieldSubmitted: (text) {},
+                  ),
+                  SizedBox(height: 24,),
+                  Text(
+                      resource.scheduleDateLabelText,
+                      style: TextStyle(
+                          fontSize: 20
                       )
                   ),
-                  elevation: 0,
-                  onPressed: () {
-                    DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        onConfirm: (date) {
-                          viewModel.updateDate(date);
-                          _postalCodeFocus.requestFocus();
-                        } ,
-                        locale: LocaleType.jp,
-                        currentTime: DateTime.now()
-                    );
-                  },
-                ),
-                SizedBox(height: 24,),
-                Text(
-                  resource.schedulePlaceLabelText,
-                  style: TextStyle(
-                      fontSize: 20
-                  )
-                ),
-                SizedBox(height: 12,),
-                Text(resource.schedulePostalCodeSearchDescription),
-                SizedBox(height: 12,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 8,
-                      child: InputField(
-                        labelText: resource.schedulePostalCodeLabelText,
-                        textInputType: TextInputType.number,
-                        textEditingController: viewModel.postalCodeTextEditingController,
-                        validator: (text) => null,
-                        focusNode: _postalCodeFocus,
-                      ),
+                  SizedBox(height: 12,),
+                  RaisedButton(
+                    padding: EdgeInsets.all(20),
+                    child: Selector<ScheduleRegisterViewModel, DateTime>(
+                      selector: (context, viewModel) => viewModel.scheduledDateTime,
+                      builder: (context, dateTime, child) =>
+                          Text(
+                            dateTime == null ?
+                            resource.scheduleDateSelectDescription :
+                            viewModel.dateToString(dateTime),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
                     ),
-                    SizedBox(width: 1,),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        height: 60,
-                        child: Selector<ScheduleRegisterViewModel, bool>(
-                          selector: (context, viewModel) => viewModel.isPostalCodeFormat,
-                          builder: (context, isPostalCodeFormat, child) =>
-                              FlatButton(
-                                shape: OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                    borderSide: BorderSide(color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey)
-                                ),
-                                color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey[400],
-                                child: Icon(
-                                  Icons.search,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () async {
-                                  if (viewModel.validatePostalCode()) {
-                                    await viewModel.fetchAddress();
-                                    _addressFocus.requestFocus();
-                                  }
-                                },
-                              ),
+                    color: Colors.grey[50],
+                    shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        borderSide: BorderSide(
+                            color: Colors.grey
+                        )
+                    ),
+                    elevation: 0,
+                    onPressed: () {
+                      DatePicker.showDateTimePicker(
+                          context,
+                          showTitleActions: true,
+                          onConfirm: (date) {
+                            viewModel.updateDate(date);
+                            _postalCodeFocus.requestFocus();
+                          } ,
+                          locale: LocaleType.jp,
+                          currentTime: DateTime.now()
+                      );
+                    },
+                  ),
+                  SizedBox(height: 24,),
+                  Text(
+                      resource.schedulePlaceLabelText,
+                      style: TextStyle(
+                          fontSize: 20
+                      )
+                  ),
+                  SizedBox(height: 12,),
+                  Text(resource.schedulePostalCodeSearchDescription),
+                  SizedBox(height: 12,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 8,
+                        child: InputField(
+                          labelText: resource.schedulePostalCodeLabelText,
+                          textInputType: TextInputType.number,
+                          textEditingController: viewModel.postalCodeTextEditingController,
+                          validator: (text) => null,
+                          focusNode: _postalCodeFocus,
                         ),
                       ),
-                    )
-                  ],
-                ),
-                SizedBox(height: 24,),
-                Selector<ScheduleRegisterViewModel, TextEditingController>(
-                  selector: (context, viewModel) => viewModel.addressTextEditingController,
-                  builder: (context, textEditingController, child) => InputField(
-                    labelText: resource.scheduleAddressLabelText,
-                    textInputType: TextInputType.text,
-                    textEditingController: textEditingController,
-                    validator: (text) => text.isEmpty ? resource.emptyError : null,
-                    focusNode: _addressFocus,
-                    onFieldSubmitted: (text) async => await viewModel.convertPostalCodeToLocation(),
+                      SizedBox(width: 1,),
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          height: 60,
+                          child: Selector<ScheduleRegisterViewModel, bool>(
+                            selector: (context, viewModel) => viewModel.isPostalCodeFormat,
+                            builder: (context, isPostalCodeFormat, child) =>
+                                FlatButton(
+                                  shape: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                                      borderSide: BorderSide(color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey)
+                                  ),
+                                  color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey[400],
+                                  child: Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () async {
+                                    if (viewModel.validatePostalCode()) {
+                                      await viewModel.fetchAddress();
+                                      _addressFocus.requestFocus();
+                                    }
+                                  },
+                                ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ),
-                SizedBox(height: 24,),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width * ( 3 / 4),
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(35.681236, 139.767125),
-                      zoom: 17.0
+                  SizedBox(height: 24,),
+                  Selector<ScheduleRegisterViewModel, TextEditingController>(
+                    selector: (context, viewModel) => viewModel.addressTextEditingController,
+                    builder: (context, textEditingController, child) => InputField(
+                      labelText: resource.scheduleAddressLabelText,
+                      textInputType: TextInputType.text,
+                      textEditingController: textEditingController,
+                      validator: (text) => text.isEmpty ? resource.emptyError : null,
+                      focusNode: _addressFocus,
+                      onFieldSubmitted: (text) async => await viewModel.convertPostalCodeToLocation(),
                     ),
-                    mapType: MapType.normal,
-                    myLocationButtonEnabled: false,
-                    onMapCreated: (mapController) => viewModel.mapCreated(mapController),
                   ),
-                ),
-                SizedBox(height: 24,),
-                RoundButton(
-                  text: resource.registerButtonTitle,
-                  minWidth: MediaQuery.of(context).size.width,
-                  backgroundColor: Colors.pink[200],
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      _showConfirmDialog(context, viewModel);
-                    }
-                  },
-                )
-              ],
+                  SizedBox(height: 24,),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width * ( 3 / 4),
+                    child: GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(35.681236, 139.767125),
+                          zoom: 17.0
+                      ),
+                      mapType: MapType.normal,
+                      myLocationButtonEnabled: false,
+                      onMapCreated: (mapController) => viewModel.mapCreated(mapController),
+                    ),
+                  ),
+                  SizedBox(height: 24,),
+                  RoundButton(
+                    text: resource.registerButtonTitle,
+                    minWidth: MediaQuery.of(context).size.width,
+                    backgroundColor: Colors.pink[200],
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        await viewModel.registerSchedule();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-      ),
+        ),
+
+        // Loading or Alert
+        Selector<ScheduleRegisterViewModel, ScheduleRegisterStatus>(
+          selector: (context, viewModel) => viewModel.status,
+          builder: (context, status, child) {
+            if (status == ScheduleRegisterStatus.Loading) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(0, 0, 0, 0.3)
+                ),
+                child: Center(
+                  child: Loading(),
+                ),
+              );
+            } else if (status == ScheduleRegisterStatus.Success){
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                Navigator.pop(context));
+            } else if (status != ScheduleRegisterStatus.None) {
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                _showErrorDialog(context, resource, status));
+            }
+            return Container();
+          },
+        )
+      ],
     );
   }
 

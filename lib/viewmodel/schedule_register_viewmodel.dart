@@ -65,7 +65,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       }
       var address = '${result.prefecture}${result.city}${result.street}';
       addressTextEditingController.text = address;
-      status = ScheduleRegisterStatus.Success;
+      status = ScheduleRegisterStatus.None;
       notifyListeners();
     } on TimeoutException {
       status = ScheduleRegisterStatus.Timeout;
@@ -113,7 +113,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
           var latLng = LatLng(location.latitude, location.longitude);
           _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
           map.animateCamera(CameraUpdate.newLatLng(latLng));
-          status = ScheduleRegisterStatus.Success;
+          status = ScheduleRegisterStatus.None;
           notifyListeners();
         });
       } else {
