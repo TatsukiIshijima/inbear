@@ -11,6 +11,8 @@ import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:intl/intl.dart';
 
+import '../schedule_register_status.dart';
+
 class ScheduleRegisterViewModel extends ChangeNotifier {
 
   final UserRepositoryImpl _userRepositoryImpl;
@@ -33,6 +35,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   GeoPoint _addressGeoPoint;
   DateTime scheduledDateTime;
   bool isPostalCodeFormat = false;
+  ScheduleRegisterStatus status = ScheduleRegisterStatus.None;
 
   @override
   void dispose() {
@@ -52,14 +55,24 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
 
   Future<void> fetchAddress() async {
     try {
+      status = ScheduleRegisterStatus.Loading;
+      notifyListeners();
       var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
+      if (result == null) {
+        status = ScheduleRegisterStatus.InvalidPostalCodeError;
+        notifyListeners();
+        return;
+      }
       var address = '${result.prefecture}${result.city}${result.street}';
       addressTextEditingController.text = address;
+      status = ScheduleRegisterStatus.Success;
       notifyListeners();
     } on TimeoutException {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.Timeout;
+      notifyListeners();
     } on HttpException {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.HttpError;
+      notifyListeners();
     }
   }
 
@@ -87,6 +100,8 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       if (addressTextEditingController.text.isEmpty) {
         return;
       }
+      status = ScheduleRegisterStatus.Loading;
+      notifyListeners();
       var location = await _addressRepositoryImpl
           .convertToLocation(addressTextEditingController.text);
       if (location != null && _googleMapController != null) {
@@ -95,23 +110,34 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
           var latLng = LatLng(location.latitude, location.longitude);
           _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
           map.animateCamera(CameraUpdate.newLatLng(latLng));
+          status = ScheduleRegisterStatus.Success;
+          notifyListeners();
         });
+      } else {
+        status = ScheduleRegisterStatus.UnableSearchAddressError;
+        notifyListeners();
       }
     } on TimeoutException {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.Timeout;
+      notifyListeners();
     } on HttpException {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.HttpError;
+      notifyListeners();
     }
   }
   
   Future<void> registerSchedule() async {
     try {
+      status = ScheduleRegisterStatus.Loading;
+      notifyListeners();
       if (scheduledDateTime == null) {
-        print('日付が選択されていません。');
+        status = ScheduleRegisterStatus.UnSelectDateError;
+        notifyListeners();
         return;
       }
       if (_addressGeoPoint == null) {
-        print('住所が地図上で検索できない地点です。');
+        status = ScheduleRegisterStatus.UnableSearchAddressError;
+        notifyListeners();
         return;
       }
       var uid = await _userRepositoryImpl.getUid();
@@ -132,10 +158,14 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       );
       await _userRepositoryImpl.addScheduleReference(scheduleId);
       await _userRepositoryImpl.selectSchedule(scheduleId);
+      status = ScheduleRegisterStatus.Success;
+      notifyListeners();
     } on UnLoginException {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.UnLoginError;
+      notifyListeners();
     } catch (exception) {
-      // TODO:notifyListenersでエラーメッセージを伝える
+      status = ScheduleRegisterStatus.GeneralError;
+      notifyListeners();
     }
   }
 }
