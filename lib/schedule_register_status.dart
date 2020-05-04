@@ -7,6 +7,7 @@ enum ScheduleRegisterStatus {
   UnableSearchAddressError,
   Timeout,
   HttpError,
+  SocketError,
   UnLoginError,
   GeneralError,
 }

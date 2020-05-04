@@ -73,6 +73,9 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     } on HttpException {
       status = ScheduleRegisterStatus.HttpError;
       notifyListeners();
+    } on SocketException {
+      status = ScheduleRegisterStatus.SocketError;
+      notifyListeners();
     }
   }
 
@@ -122,6 +125,9 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       notifyListeners();
     } on HttpException {
       status = ScheduleRegisterStatus.HttpError;
+      notifyListeners();
+    } on SocketException {
+      status = ScheduleRegisterStatus.SocketError;
       notifyListeners();
     }
   }
