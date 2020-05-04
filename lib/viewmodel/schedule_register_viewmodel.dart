@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
@@ -49,13 +51,16 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchAddress() async {
-    var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
-    if (result == null) {
-      return;
+    try {
+      var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
+      var address = '${result.prefecture}${result.city}${result.street}';
+      addressTextEditingController.text = address;
+      notifyListeners();
+    } on TimeoutException {
+      // TODO:notifyListenersでエラーメッセージを伝える
+    } on HttpException {
+      // TODO:notifyListenersでエラーメッセージを伝える
     }
-    var address = '${result.prefecture}${result.city}${result.street}';
-    addressTextEditingController.text = address;
-    notifyListeners();
   }
 
   void setPostalCodeInputEvent() {
@@ -78,57 +83,59 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   }
 
   Future<void> convertPostalCodeToLocation() async {
-    if (addressTextEditingController.text.isEmpty) {
-      return;
-    }
-    var location = await _addressRepositoryImpl
-        .convertToLocation(addressTextEditingController.text);
-    if (location != null && _googleMapController != null) {
-      //print('lat: ${location.latitude}, lng: ${location.longitude}');
-      _googleMapController.future.then((map) {
-        var latLng = LatLng(location.latitude, location.longitude);
-        _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
-        map.animateCamera(CameraUpdate.newLatLng(latLng));
-      });
+    try {
+      if (addressTextEditingController.text.isEmpty) {
+        return;
+      }
+      var location = await _addressRepositoryImpl
+          .convertToLocation(addressTextEditingController.text);
+      if (location != null && _googleMapController != null) {
+        //print('lat: ${location.latitude}, lng: ${location.longitude}');
+        _googleMapController.future.then((map) {
+          var latLng = LatLng(location.latitude, location.longitude);
+          _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
+          map.animateCamera(CameraUpdate.newLatLng(latLng));
+        });
+      }
+    } on TimeoutException {
+      // TODO:notifyListenersでエラーメッセージを伝える
+    } on HttpException {
+      // TODO:notifyListenersでエラーメッセージを伝える
     }
   }
   
   Future<void> registerSchedule() async {
-    if (scheduledDateTime == null) {
-      print('日付が選択されていません。');
-      return;
-    }
-    if (_addressGeoPoint == null) {
-      print('住所が地図上で検索できない地点です。');
-      return;
-    }
-    var uid = await _userRepositoryImpl.getUid();
-    if (uid.isEmpty) {
-      print('未ログイン状態です。');
-      return;
-    }
-    var scheduleId = await _scheduleRepositoryImpl.registerSchedule(
-      Schedule(
-        groomTextEditingController.text,
-        brideTextEditingController.text,
-        scheduledDateTime,
-        addressTextEditingController.text,
-        _addressGeoPoint,
-        uid,
-        DateTime.now(),
-        DateTime.now()
-      )
-    );
-    if (scheduleId.isEmpty) {
-      return;
-    }
-    var addScheduleResult = await _userRepositoryImpl.addScheduleReference(scheduleId);
-    if (addScheduleResult.isNotEmpty) {
-      return;
-    }
-    var joinScheduleResult = await _userRepositoryImpl.selectSchedule(scheduleId);
-    if (joinScheduleResult.isNotEmpty) {
-      return;
+    try {
+      if (scheduledDateTime == null) {
+        print('日付が選択されていません。');
+        return;
+      }
+      if (_addressGeoPoint == null) {
+        print('住所が地図上で検索できない地点です。');
+        return;
+      }
+      var uid = await _userRepositoryImpl.getUid();
+      if (uid.isEmpty) {
+        throw UnLoginException();
+      }
+      var scheduleId = await _scheduleRepositoryImpl.registerSchedule(
+          Schedule(
+              groomTextEditingController.text,
+              brideTextEditingController.text,
+              scheduledDateTime,
+              addressTextEditingController.text,
+              _addressGeoPoint,
+              uid,
+              DateTime.now(),
+              DateTime.now()
+          )
+      );
+      await _userRepositoryImpl.addScheduleReference(scheduleId);
+      await _userRepositoryImpl.selectSchedule(scheduleId);
+    } on UnLoginException {
+      // TODO:notifyListenersでエラーメッセージを伝える
+    } catch (exception) {
+      // TODO:notifyListenersでエラーメッセージを伝える
     }
   }
 }

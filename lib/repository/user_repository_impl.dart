@@ -8,6 +8,6 @@ class UserRepositoryImpl {
   Future<String> sendPasswordResetEmail(String email) {}
   Future<String> getUid() {}
   Future<User> fetchUser() {}
-  Future<String> addScheduleReference(String scheduleId) {}
-  Future<String> selectSchedule(String scheduleId) {}
+  Future<void> addScheduleReference(String scheduleId) {}
+  Future<void> selectSchedule(String scheduleId) {}
 }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/model/user.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
@@ -79,61 +80,43 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<User> fetchUser() async {
-    try {
-      var uid = await getUid();
-      if (uid.isEmpty) {
-        return null;
-      }
-      var userData = await _db.collection(_userCollection)
-          .document(uid)
-          .get();
-      return User.fromMap(userData.data);
-    } catch (exception) {
-      print('Fetch user error : $exception');
-      return null;
+    var uid = await getUid();
+    if (uid.isEmpty) {
+      throw UnLoginException();
     }
+    var userDocument = await _db.collection(_userCollection)
+        .document(uid)
+        .get();
+    if (!userDocument.exists) {
+      throw DocumentNotExistException();
+    }
+    return User.fromMap(userDocument.data);
   }
 
   @override
-  Future<String> addScheduleReference(String scheduleId) async {
-    try {
-      var uid = await getUid();
-      if (uid.isEmpty) {
-        return 'User not login.';
-      }
-      const String _scheduleCollection = 'schedule';
-      var scheduleReference = _db.collection(_scheduleCollection)
-          .document(scheduleId);
-      await _db.collection(_userCollection)
-          .document(uid)
-          .collection(_scheduleCollection)
-          .document(scheduleId)
-          .setData({
-            'ref': scheduleReference
-          });
-      return '';
-    } catch (exception) {
-      print('Add schedule error : $exception');
-      return exception;
+  Future<void> addScheduleReference(String scheduleId) async {
+    var uid = await getUid();
+    if (uid.isEmpty) {
+      throw UnLoginException();
     }
+    const String _scheduleCollection = 'schedule';
+    var scheduleReference = _db.collection(_scheduleCollection)
+        .document(scheduleId);
+    await _db.collection(_userCollection)
+        .document(uid)
+        .collection(_scheduleCollection)
+        .document(scheduleId)
+        .setData({'ref': scheduleReference});
   }
 
   @override
-  Future<String> selectSchedule(String scheduleId) async {
-    try {
-      var uid = await getUid();
-      if (uid.isEmpty) {
-        return 'User not login';
-      }
-      await _db.collection(_userCollection)
-          .document(uid)
-          .setData({
-            'select_schedule_id': scheduleId
-          }, merge: true);
-      return '';
-    } catch (exception) {
-      print('Failed select schedule : $exception');
-      return exception;
+  Future<void> selectSchedule(String scheduleId) async {
+    var uid = await getUid();
+    if (uid.isEmpty) {
+      throw UnLoginException();
     }
+    await _db.collection(_userCollection)
+        .document(uid)
+        .setData({'select_schedule_id': scheduleId}, merge: true);
   }
 }
