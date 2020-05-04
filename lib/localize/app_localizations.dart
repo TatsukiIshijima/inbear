@@ -49,10 +49,15 @@ class AppLocalizations {
       'schedule_postal_code_search_description': '郵便番号検索することで市町村までが住所に自動入力されます。',
       'schedule_postal_code_label_text': '郵便番号（ハイフンなし）',
       'schedule_address_label_text': '住所',
+      'schedule_register_confirm_message': 'スケジュールを登録します。よろしいですか？',
 
       // 警告
       'wraning_empty_message': '未入力です。',
       // エラー
+      'connection_error_title': '通信エラー',
+      'input_form_error_title': '入力エラー',
+      'general_error_title': 'エラー',
+
       'empty_error_message': '必須項目です。',
       'invalid_email_error_message': '無効なメールアドレスです。',
       'email_already_used_message': '既に使用されているメールアドレスです。',
@@ -62,6 +67,13 @@ class AppLocalizations {
       'user_disabled_error_message': '無効なアカウントです',
       'invalid_creadential_error_message': '無効な認証情報です。',
       'too_many_requests_error_message': 'アクセスが集中しています。\nしばらくしてからもう一度お試し下さい。',
+      'unselect_date_error_message': '日付が選択されていません。',
+      'invalid_postal_code_error_message': '無効な郵便番号です。',
+      'unable_search_address_error_message': '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
+      'timeout_error': 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
+      'http_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
+      'socket_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
+      'unlogin_error': '未ログイン状態です。再度ログインして下さい。',
       'general_error_message': 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
       
       'defalut_positive_button_title': 'OK',
@@ -107,8 +119,13 @@ class AppLocalizations {
   String get schedulePostalCodeSearchDescription => _getText('schedule_postal_code_search_description');
   String get schedulePostalCodeLabelText => _getText('schedule_postal_code_label_text');
   String get scheduleAddressLabelText => _getText('schedule_address_label_text');
+  String get scheduleRegisterConfirmMessage => _getText('schedule_register_confirm_message');
 
   String get warningEmptyMessage => _getText('wraning_empty_message');
+
+  String get connectionErrorTitle => _getText('connection_error_title');
+  String get inputFormErrorTitle => _getText('input_form_error_title');
+  String get generalErrorTitle => _getText('general_error_title');
 
   String get emptyError => _getText('empty_error_message');
   String get invalidEmailError => _getText('invalid_email_error_message');
@@ -119,6 +136,13 @@ class AppLocalizations {
   String get userDisabledError => _getText('user_disabled_error_message');
   String get invalidCredentialError => _getText('invalid_creadential_error_message');
   String get tooManyRequestsError => _getText('too_many_requests_error_message');
+  String get unselectDateError => _getText('unselect_date_error_message');
+  String get invalidPostalCodeError => _getText('invalid_postal_code_error_message');
+  String get unableSearchAddressError => _getText('unable_search_address_error_message');
+  String get timeoutError => _getText('timeout_error');
+  String get httpError => _getText('http_error');
+  String get socketError => _getText('socket_error');
+  String get unloginError => _getText('unlogin_error');
   String get generalError => _getText('general_error_message');
 
   String get defaultPositiveButtonTitle => _getText('defalut_positive_button_title');

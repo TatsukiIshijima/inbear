@@ -11,7 +11,9 @@ class Spot {
 
   factory Spot.fromJson(Map<String, dynamic> json) {
     var results = json['results'] as List;
-    List<Address> addressList = results.map((result) => Address.fromJson(result)).toList();
+    List<Address> addressList = results == null
+        ? List<Address>() :
+        results.map((result) => Address.fromJson(result)).toList();
     return Spot(addressList);
   }
 }

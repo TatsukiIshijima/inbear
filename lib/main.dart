@@ -9,6 +9,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/localize/fallback_cupertino_localizations_delegate.dart';
 import 'package:inbear_app/repository/address_repository.dart';
+import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
@@ -45,11 +46,17 @@ void main() {
           ),
         ),
         Provider(
+          create: (context) => ScheduleRepository(
+              _firebaseAuth,
+              _firestore
+          ),
+        ),
+        Provider(
           create: (context) => AddressRepository(
             _addressSearchApi,
             _geoCodeApi
           ),
-        )
+        ),
       ],
       child: InbearApp(),
     )

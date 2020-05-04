@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:inbear_app/api/address_search_api_impl.dart';
@@ -19,26 +20,16 @@ class AddressRepository implements AddressRepositoryImpl {
 
   @override
   Future<Address> fetchAddress(String zipCode) async {
-    try {
-      var response = await _addressSearchApiImpl.fetchAddress(zipCode);
-      var spot = Spot.fromJson(json.decode(response));
-      return spot.addresses.first;
-  } catch (exception) {
-      print(exception);
-      return null;
-    }
+    var response = await _addressSearchApiImpl.fetchAddress(zipCode);
+    var spot = Spot.fromJson(json.decode(response));
+    return spot.addresses.length == 0 ? null : spot.addresses.first;
   }
 
   @override
   Future<Location> convertToLocation(String address) async {
-    try {
-      var response = await _geocodeApiImpl.convertAddressToGeoCode(address);
-      var geoCode = GeoCode.fromJson(json.decode(response));
-      return geoCode.geometries.first.location;
-    } catch (exception) {
-      print(exception);
-      return null;
-    }
+    var response = await _geocodeApiImpl.convertAddressToGeoCode(address);
+    var geoCode = GeoCode.fromJson(json.decode(response));
+    return geoCode.geometries.first.location;
   }
 
 }
