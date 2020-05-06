@@ -4,6 +4,7 @@ import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/schedule_get_status.dart';
+import 'package:intl/intl.dart';
 
 class ScheduleViewModel extends ChangeNotifier {
 
@@ -14,6 +15,8 @@ class ScheduleViewModel extends ChangeNotifier {
     this._userRepositoryImpl,
     this._scheduleRepositoryImpl
   );
+
+  final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   ScheduleGetStatus status = ScheduleGetStatus.None;
   Schedule schedule;
@@ -36,5 +39,9 @@ class ScheduleViewModel extends ChangeNotifier {
       status = ScheduleGetStatus.GeneralError;
       notifyListeners();
     }
+  }
+
+  String dateToString(DateTime dateTime) {
+    return '${_formatter.format(dateTime)} ~';
   }
 }
