@@ -70,6 +70,7 @@ class AppLocalizations {
       'unselect_date_error_message': '日付が選択されていません。',
       'invalid_postal_code_error_message': '無効な郵便番号です。',
       'unable_search_address_error_message': '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
+      'not_exist_data_error_message': 'データが存在しません。',
       'timeout_error': 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       'http_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       'socket_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -139,6 +140,7 @@ class AppLocalizations {
   String get unselectDateError => _getText('unselect_date_error_message');
   String get invalidPostalCodeError => _getText('invalid_postal_code_error_message');
   String get unableSearchAddressError => _getText('unable_search_address_error_message');
+  String get notExistDataError => _getText('not_exist_data_error_message');
   String get timeoutError => _getText('timeout_error');
   String get httpError => _getText('http_error');
   String get socketError => _getText('socket_error');
