@@ -8,6 +8,7 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/schedule_register_status.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
+import 'package:inbear_app/view/widget/label.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
@@ -86,11 +87,9 @@ class ScheduleRegisterContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    resource.scheduleNameLabelText,
-                    style: TextStyle(
-                        fontSize: 20
-                    ),
+                  Label(
+                    text: resource.scheduleNameLabelText,
+                    iconData: Icons.account_circle,
                   ),
                   SizedBox(height: 12,),
                   InputField(
@@ -111,11 +110,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                     onFieldSubmitted: (text) {},
                   ),
                   SizedBox(height: 24,),
-                  Text(
-                      resource.scheduleDateLabelText,
-                      style: TextStyle(
-                          fontSize: 20
-                      )
+                  Label(
+                      text: resource.scheduleDateLabelText,
+                      iconData: Icons.calendar_today,
                   ),
                   SizedBox(height: 12,),
                   RaisedButton(
@@ -154,11 +151,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 24,),
-                  Text(
-                      resource.schedulePlaceLabelText,
-                      style: TextStyle(
-                          fontSize: 20
-                      )
+                  Label(
+                      text: resource.schedulePlaceLabelText,
+                      iconData: Icons.place,
                   ),
                   SizedBox(height: 12,),
                   Text(resource.schedulePostalCodeSearchDescription),

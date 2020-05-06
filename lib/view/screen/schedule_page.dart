@@ -51,7 +51,10 @@ class SchedulePageContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Label(text: resource.scheduleGroomText),
+                      Label(
+                        text: resource.scheduleGroomText,
+                        iconData: Icons.account_circle,
+                      ),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -61,7 +64,10 @@ class SchedulePageContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Label(text: resource.scheduleBrideText),
+                      Label(
+                        text: resource.scheduleBrideText,
+                        iconData: Icons.account_circle
+                      ),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -71,7 +77,10 @@ class SchedulePageContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Label(text: resource.scheduleDateLabelText),
+                      Label(
+                        text: resource.scheduleDateLabelText,
+                        iconData: Icons.calendar_today
+                      ),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -81,7 +90,10 @@ class SchedulePageContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Label(text :resource.schedulePlaceLabelText),
+                      Label(
+                        text :resource.schedulePlaceLabelText,
+                        iconData: Icons.place,
+                      ),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
