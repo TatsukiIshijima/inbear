@@ -34,6 +34,9 @@ class AppLocalizations {
       'home_title': 'ホーム',
       'schedule_title': 'スケジュール',
       'setting_title': '設定',
+      // スケジュール画面
+      'schedule_groom_text': '新郎',
+      'schedule_bride_text':'新婦',
       // 設定画面
       'event_register_title': 'イベント登録',
       'logout_title': 'ログアウト',
@@ -106,6 +109,9 @@ class AppLocalizations {
   String get homeTitle => _getText('home_title');
   String get scheduleTitle => _getText('schedule_title');
   String get settingTitle => _getText('setting_title');
+
+  String get scheduleGroomText => _getText('schedule_groom_text');
+  String get scheduleBrideText => _getText('schedule_bride_text');
   
   String get logoutTitle => _getText('logout_title');
   String get logoutMessage => _getText('logout_message');

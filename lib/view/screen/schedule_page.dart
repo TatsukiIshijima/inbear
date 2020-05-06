@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
@@ -50,7 +51,7 @@ class SchedulePageContent extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Label(text: '新郎'),
+                      Label(text: resource.scheduleGroomText),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -60,7 +61,7 @@ class SchedulePageContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Label(text: '新婦'),
+                      Label(text: resource.scheduleBrideText),
                       Container(
                         margin: EdgeInsets.symmetric(vertical: 12),
                         child: Text(
@@ -93,7 +94,26 @@ class SchedulePageContent extends StatelessWidget {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width * ( 3 / 4),
-                        color: Colors.blue[200],
+                        child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                                schedule.geoPoint.latitude,
+                                schedule.geoPoint.longitude
+                            ),
+                            zoom: 17.0,
+                          ),
+                          markers: {
+                            Marker(
+                              markerId: MarkerId('markerPoint'),
+                              position: LatLng(
+                                schedule.geoPoint.latitude,
+                                schedule.geoPoint.longitude
+                              )
+                            )
+                          },
+                          mapType: MapType.normal,
+                          myLocationButtonEnabled: false,
+                        ),
                       )
                     ],
                   ),

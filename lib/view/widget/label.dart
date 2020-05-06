@@ -20,7 +20,9 @@ class Label extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              fontSize: 20
+              color: Colors.black54,
+              fontSize: 22,
+              fontWeight: FontWeight.bold
             ),
           ),
           Divider(
