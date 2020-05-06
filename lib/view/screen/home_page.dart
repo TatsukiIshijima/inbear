@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/view/screen/schedule_page.dart';
 import 'package:inbear_app/view/screen/setting_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +15,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _tabs = <Widget> [
     Text('Index 0: Home'),
-    Text('Index 1: Schedule'),
+    SchedulePage(),
     SettingPage()
   ];
   final List<String> _titleList = <String> [

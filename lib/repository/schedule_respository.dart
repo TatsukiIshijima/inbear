@@ -32,4 +32,15 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     return document.documentID;
   }
 
+  @override
+  Future<Schedule> fetchSchedule(String selectScheduleId) async {
+    var scheduleDocument = await _db.collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .get();
+    if (!scheduleDocument.exists) {
+      throw DocumentNotExistException();
+    }
+    return (Schedule.fromMap(scheduleDocument.data));
+  }
+
 }
