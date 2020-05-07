@@ -4,6 +4,7 @@ import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
+import 'package:inbear_app/view/screen/schedule_change_page.dart';
 import 'package:inbear_app/view/screen/schedule_register_page.dart';
 
 class Routes {
@@ -69,6 +70,15 @@ class Routes {
       context,
       MaterialPageRoute(
         builder: (context) => ScheduleRegisterPage(),
+      )
+    );
+  }
+
+  static void goToScheduleChange(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ScheduleChangePage()
       )
     );
   }

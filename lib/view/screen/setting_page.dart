@@ -58,7 +58,7 @@ class SettingPageContent extends StatelessWidget {
           TitleAndIconListItem(
             title: resource.scheduleChangeTitle,
             iconData: Icons.compare_arrows,
-            onTap: () {},
+            onTap: () => Routes.goToScheduleChange(context),
           ),
           TitleAndIconListItem(
             title: resource.logoutTitle,
