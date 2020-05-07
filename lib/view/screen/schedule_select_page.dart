@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 
-class ScheduleChangePage extends StatelessWidget {
+class ScheduleSelectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +19,14 @@ class ScheduleChangePage extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: ScheduleChangeContent(),
+        child: ScheduleSelectContent(),
       ),
     );
   }
 
 }
 
-class ScheduleChangeContent extends StatelessWidget {
+class ScheduleSelectContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
