@@ -32,8 +32,8 @@ class SchedulePageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     var viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
     var resource = AppLocalizations.of(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        viewModel.fetchSelectSchedule());
+    WidgetsBinding.instance.addPostFrameCallback((_) async =>
+        await viewModel.fetchSelectSchedule());
     return Selector<ScheduleViewModel, ScheduleGetStatus>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
