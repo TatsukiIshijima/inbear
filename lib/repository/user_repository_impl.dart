@@ -1,3 +1,4 @@
+import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/model/user.dart';
 
 class UserRepositoryImpl {
@@ -10,4 +11,5 @@ class UserRepositoryImpl {
   Future<User> fetchUser() {}
   Future<void> addScheduleReference(String scheduleId) {}
   Future<void> selectSchedule(String scheduleId) {}
+  Future<List<Schedule>> fetchEntrySchedule() {}
 }

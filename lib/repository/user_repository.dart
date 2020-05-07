@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/model/user.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
@@ -9,6 +11,7 @@ class UserRepository implements UserRepositoryImpl {
   final FirebaseAuth _auth;
   final Firestore _db;
   final String _userCollection = 'user';
+  final String _scheduleSubCollection = 'schedule';
 
   UserRepository(
     this._auth,
@@ -99,12 +102,11 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    const String _scheduleCollection = 'schedule';
-    var scheduleReference = _db.collection(_scheduleCollection)
+    var scheduleReference = _db.collection(_scheduleSubCollection)
         .document(scheduleId);
     await _db.collection(_userCollection)
         .document(uid)
-        .collection(_scheduleCollection)
+        .collection(_scheduleSubCollection)
         .document(scheduleId)
         .setData({'ref': scheduleReference});
   }
@@ -118,5 +120,31 @@ class UserRepository implements UserRepositoryImpl {
     await _db.collection(_userCollection)
         .document(uid)
         .setData({'select_schedule_id': scheduleId}, merge: true);
+  }
+
+  @override
+  Future<List<Schedule>> fetchEntrySchedule() async {
+    var uid = await getUid();
+    if (uid.isEmpty) {
+      throw UnLoginException();
+    }
+    var schedules = List<Schedule>();
+    var documents = (await _db.collection(_userCollection)
+        .document(uid)
+        .collection(_scheduleSubCollection)
+        .getDocuments()).documents;
+    for (var doc in documents) {
+      // Reference型から直接データ参照できなかったため、
+      // 冗長にデータを引っ張ってくる
+      var docReference = doc.data['ref'];
+      if (docReference is DocumentReference) {
+        var scheduleDoc = await docReference.parent()
+            .document(docReference.documentID)
+            .get();
+        debugPrint('Schedule  :  ${scheduleDoc.data}');
+        schedules.add(Schedule.fromMap(scheduleDoc.data));
+      }
+    }
+    return schedules;
   }
 }
