@@ -56,6 +56,11 @@ class SettingPageContent extends StatelessWidget {
             onTap: () => Routes.goToScheduleRegister(context),
           ),
           TitleAndIconListItem(
+            title: resource.scheduleChangeTitle,
+            iconData: Icons.compare_arrows,
+            onTap: () {},
+          ),
+          TitleAndIconListItem(
             title: resource.logoutTitle,
             iconData: Icons.exit_to_app,
             onTap: () => _showLogoutDialog(context, resource, viewModel),

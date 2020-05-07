@@ -39,6 +39,7 @@ class AppLocalizations {
       'schedule_bride_text':'新婦',
       // 設定画面
       'event_register_title': 'イベント登録',
+      'schedule_change_title': 'スケジュール切り替え',
       'logout_title': 'ログアウト',
       'logout_message': 'ログアウトしますか？',
       // スケジュール登録画面
@@ -112,7 +113,9 @@ class AppLocalizations {
 
   String get scheduleGroomText => _getText('schedule_groom_text');
   String get scheduleBrideText => _getText('schedule_bride_text');
-  
+
+  String get scheduleChangeTitle => _getText('schedule_change_title');
+
   String get logoutTitle => _getText('logout_title');
   String get logoutMessage => _getText('logout_message');
   
