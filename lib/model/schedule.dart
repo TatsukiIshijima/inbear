@@ -39,7 +39,7 @@ class Schedule {
     var dateTime = _dateTime is Timestamp ? _dateTime.toDate() : null;
     var address = map['address'];
     var geoPoint = map['geo_point'];
-    var ownerUid = map['owener_uid'];
+    var ownerUid = map['owner_uid'];
     var _createdAt = map['created_at'];
     var createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
     var _updatedAt = map['updated_at'];
