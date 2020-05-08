@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/model/user.dart';
@@ -141,7 +140,6 @@ class UserRepository implements UserRepositoryImpl {
         var scheduleDoc = await docReference.parent()
             .document(docReference.documentID)
             .get();
-        debugPrint('Schedule  :  ${scheduleDoc.data}');
         schedules.add(Schedule.fromMap(scheduleDoc.data));
       }
     }
