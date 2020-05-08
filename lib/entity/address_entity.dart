@@ -17,12 +17,18 @@ class AddressEntity {
     this.street
   );
 
+  static const _zipCodeKey = 'zipcode';
+  static const _prefCodeKey = 'prefcode';
+  static const _address1Key = 'address1';
+  static const _address2key = 'address2';
+  static const _address3Key = 'address3';
+
   factory AddressEntity.fromJson(Map<String, dynamic> json) {
-    var zipCode = json['zipcode'];
-    var prefCode = json['prefcode'];
-    var prefecture = json['address1'];
-    var city = json['address2'];
-    var street = json['address3'];
+    var zipCode = json[_zipCodeKey];
+    var prefCode = json[_prefCodeKey];
+    var prefecture = json[_address1Key];
+    var city = json[_address2key];
+    var street = json[_address3Key];
     return AddressEntity(zipCode, prefCode, prefecture, city, street);
   }
 }

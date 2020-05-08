@@ -15,20 +15,26 @@ class UserEntity {
     this.createdAt
   );
 
+  static const _uidKey = 'uid';
+  static const _nameKey = 'name';
+  static const _emailKey = 'email';
+  static const _selectScheduleIdKey = 'select_schedule_id';
+  static const _createdAtKey = 'created_at';
+
   Map<String, dynamic> toMap() => {
-    'uid': uid,
-    'name': name,
-    'email': email,
-    'select_schedule_id': selectScheduleId,
-    'created_at': createdAt
+    _uidKey: uid,
+    _nameKey: name,
+    _emailKey: email,
+    _selectScheduleIdKey: selectScheduleId,
+    _createdAtKey: createdAt
   };
 
   factory UserEntity.fromMap(Map<String, dynamic> map) {
-    var uid = map['uid'];
-    var name = map['name'];
-    var email = map['email'];
-    var selectScheduleId = map['select_schedule_id'];
-    var _createdAt = map['created_at'];
+    var uid = map[_uidKey];
+    var name = map[_nameKey];
+    var email = map[_emailKey];
+    var selectScheduleId = map[_selectScheduleIdKey];
+    var _createdAt = map[_createdAtKey];
     var createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
     return UserEntity(uid, name, email, selectScheduleId, createdAt);
   }

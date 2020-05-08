@@ -9,8 +9,10 @@ class SpotEntity {
 
   SpotEntity(this.addresses);
 
+  static const _resultsKey = 'results';
+
   factory SpotEntity.fromJson(Map<String, dynamic> json) {
-    var results = json['results'] as List;
+    var results = json[_resultsKey] as List;
     List<AddressEntity> addressList = results == null
         ? List<AddressEntity>() :
         results.map((result) => AddressEntity.fromJson(result)).toList();
