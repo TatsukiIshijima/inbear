@@ -10,26 +10,54 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
+  static const _appTitleKey = 'app_title';
+
+  // ログイン画面
+  static const _loginButtonTitleKey = 'login_button_title';
+  static const _emailLabelTextKey = 'email_label_text';
+  static const _passwordLabelTextKey = 'password_label_text';
+  static const _createAccountLabelTextKey = 'create_account_label_text';
+  static const _passwordForgetLabelTextKey = 'password_forget_label_text';
+  static const _loginErrorTitleKey = 'login_error_title';
+
+  // 新規登録画面
+  static const _registerButtonTitleKey = 'register_button_title';
+  static const _nameLabelTextKey = 'name_label_text';
+  static const _registerErrorTitleKey = 'register_error_title';
+
+  // パスワードリセット画面
+  static const _resetPasswordTitleKey = 'reset_password_title';
+  static const _resetPasswordButtonTitleKey = 'reset_password_button_title';
+  static const _resetPasswordDescriptionKey = 'reset_password_description';
+  static const _resetPasswordErrorTitleKey = 'reset_password_error_title';
+  static const _resetPasswordSuccessMessageKey = 'reset_password_success_message';
+
+  // ホーム画面
+
   static Map<String, Map<String, String>> _localizedValues = {
     'ja': {
-      'app_title': 'inbear',
+      _appTitleKey: 'inbear',
+
       // ログイン画面
-      'login_button_title': 'ログイン',
-      'email_label_text': 'メールアドレス',
-      'password_label_text': 'パスワード',
-      'create_account_label_text': '新規登録はこちら',
-      'password_forget_label_text': 'パスワードをお忘れの場合はこちら',
-      'login_error_title': 'ログインエラー',
+      _loginButtonTitleKey: 'ログイン',
+      _emailLabelTextKey: 'メールアドレス',
+      _passwordLabelTextKey: 'パスワード',
+      _createAccountLabelTextKey: '新規登録はこちら',
+      _passwordForgetLabelTextKey: 'パスワードをお忘れの場合はこちら',
+      _loginErrorTitleKey: 'ログインエラー',
+
       // 新規登録画面
-      'register_button_title': '登録',
-      'name_label_text': 'お名前',
-      'register_error_title': '登録エラー',
+      _registerButtonTitleKey: '登録',
+      _nameLabelTextKey: 'お名前',
+      _registerErrorTitleKey: '登録エラー',
+
       // パスワードリセット画面
-      'reset_password_title': 'パスワードリセット',
-      'reset_password_button_title': '送信',
-      'reset_password_description': 'パスワードリセットメールを送信します。アカウントに登録済のメールアドレスを入力してください。',
-      'reset_password_error_title': '送信エラー',
-      'reset_password_success_message': 'パスワードリセットメールを送信しました。',
+      _resetPasswordTitleKey: 'パスワードリセット',
+      _resetPasswordButtonTitleKey: '送信',
+      _resetPasswordDescriptionKey: 'パスワードリセットメールを送信します。アカウントに登録済のメールアドレスを入力してください。',
+      _resetPasswordErrorTitleKey: '送信エラー',
+      _resetPasswordSuccessMessageKey: 'パスワードリセットメールを送信しました。',
+
       // ホーム画面
       'home_title': 'ホーム',
       'schedule_title': 'スケジュール',
@@ -88,24 +116,24 @@ class AppLocalizations {
 
   String _getText(String key) => _localizedValues[locale.languageCode][key];
 
-  String get title => _getText('app_title');
+  String get title => _getText(_appTitleKey);
 
-  String get loginButtonTitle => _getText('login_button_title');
-  String get emailLabelText => _getText('email_label_text');
-  String get passwordLabelText => _getText('password_label_text');
-  String get createAccountLabelText => _getText('create_account_label_text');
-  String get passwordForgetLabelText => _getText('password_forget_label_text');
-  String get loginErrorTitle => _getText('login_error_title');
+  String get loginButtonTitle => _getText(_loginButtonTitleKey);
+  String get emailLabelText => _getText(_emailLabelTextKey);
+  String get passwordLabelText => _getText(_passwordLabelTextKey);
+  String get createAccountLabelText => _getText(_createAccountLabelTextKey);
+  String get passwordForgetLabelText => _getText(_passwordForgetLabelTextKey);
+  String get loginErrorTitle => _getText(_loginErrorTitleKey);
 
-  String get registerButtonTitle => _getText('register_button_title');
-  String get nameLabelText => _getText('name_label_text');
-  String get registerErrorTitle => _getText('register_error_title');
+  String get registerButtonTitle => _getText(_registerButtonTitleKey);
+  String get nameLabelText => _getText(_nameLabelTextKey);
+  String get registerErrorTitle => _getText(_registerErrorTitleKey);
 
-  String get resetPasswordTitle => _getText('reset_password_title');
-  String get resetPasswordButtonTitle => _getText('reset_password_button_title');
-  String get resetPasswordDescription => _getText('reset_password_description');
-  String get resetPasswordErrorTitle => _getText('reset_password_error_title');
-  String get resetPasswordSuccessMessage => _getText('reset_password_success_message');
+  String get resetPasswordTitle => _getText(_resetPasswordTitleKey);
+  String get resetPasswordButtonTitle => _getText(_resetPasswordButtonTitleKey);
+  String get resetPasswordDescription => _getText(_resetPasswordDescriptionKey);
+  String get resetPasswordErrorTitle => _getText(_resetPasswordErrorTitleKey);
+  String get resetPasswordSuccessMessage => _getText(_resetPasswordSuccessMessageKey);
 
   String get homeTitle => _getText('home_title');
   String get scheduleTitle => _getText('schedule_title');
