@@ -33,6 +33,63 @@ class AppLocalizations {
   static const _resetPasswordSuccessMessageKey = 'reset_password_success_message';
 
   // ホーム画面
+  static const _homeTitleKey = 'home_title';
+  static const _scheduleTitleKey = 'schedule_title';
+  static const _settingTitleKey = 'setting_title';
+
+  // スケジュール確認画面
+  static const _scheduleGroomTextKey = 'schedule_groom_text';
+  static const _scheduleBrideTextKey = 'schedule_bride_text';
+
+  // スケジュール登録画面
+  static const _scheduleRegisterTitleKey = 'schedule_register_title';
+  static const _scheduleNameLabelTextKey = 'schedule_name_label_text';
+  static const _scheduleGroomNameLabelTextKey = 'schedule_groom_name_label_text';
+  static const _scheduleBrideNameLabelTextKey = 'schedule_bride_name_label_text';
+  static const _scheduleDateLabelTextKey = 'schedule_date_label_text';
+  static const _scheduleDateSelectDescriptionKey = 'schedule_date_select_description';
+  static const _schedulePlaceLabelTextKey = 'schedule_place_label_text';
+  static const _schedulePostalCodeSearchDescriptionKey = 'schedule_postal_code_search_description';
+  static const _schedulePostalCodeLabelTextKey = 'schedule_postal_code_label_text';
+  static const _scheduleAddressLabelTextKey = 'schedule_address_label_text';
+  static const _scheduleRegisterConfirmMessageKey = 'schedule_register_confirm_message';
+
+  // スケジュール切り替え画面
+  static const _scheduleSelectTitleKey = 'schedule_select_title';
+
+  // 設定画面
+  static const _logoutTitleKey = 'logout_title';
+  static const _logoutMessageKey = 'logout_message';
+
+  // 警告
+  static const _warningEmptyMessageKey = 'wraning_empty_message';
+
+  // エラー
+  static const _connectionErrorTitleKey = 'connection_error_title';
+  static const _inputFormErrorTitleKey = 'input_form_error_title';
+  static const _generalErrorTitleKey = 'general_error_title';
+
+  static const _emptyErrorMessageKey = 'empty_error_message';
+  static const _invalidEmailErrorMessageKey = 'invalid_email_error_message';
+  static const _emailAlreadyUsedErrorMessageKey = 'email_already_used_message';
+  static const _wrongPasswordErrorMessageKey = 'wrong_password_error_message';
+  static const _weakPasswordErrorMessageKey = 'weak_password_error_message';
+  static const _userNotFoundErrorMessageKey = 'user_not_found_error_message';
+  static const _userDisabledErrorMessageKey = 'user_disabled_error_message';
+  static const _invalidCredentialErrorMessageKey = 'invalid_creadential_error_message';
+  static const _tooManyRequestsErrorMessageKey = 'too_many_requests_error_message';
+  static const _unSelectDateErrorMessageKey = 'unselect_date_error_message';
+  static const _invalidPostalCodeErrorMessageKey = 'invalid_postal_code_error_message';
+  static const _unableSearchAddressErrorMessageKey = 'unable_search_address_error_message';
+  static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
+  static const _timeoutErrorMessageKey = 'timeout_error';
+  static const _httpErrorMessageKey = 'http_error';
+  static const _socketErrorMessageKey = 'socket_error';
+  static const _unLoginErrorMessageKey = 'unlogin_error';
+  static const _generalErrorMessageKey = 'general_error_message';
+
+  static const _defaultPositiveButtonTitleKey = 'defalut_positive_button_title';
+  static const _defaultNegativeButtonTitleKey = 'defalut_negative_button_title';
 
   static Map<String, Map<String, String>> _localizedValues = {
     'ja': {
@@ -59,58 +116,62 @@ class AppLocalizations {
       _resetPasswordSuccessMessageKey: 'パスワードリセットメールを送信しました。',
 
       // ホーム画面
-      'home_title': 'ホーム',
-      'schedule_title': 'スケジュール',
-      'setting_title': '設定',
-      // スケジュール画面
-      'schedule_groom_text': '新郎',
-      'schedule_bride_text':'新婦',
-      // 設定画面
-      'event_register_title': 'イベント登録',
-      'schedule_change_title': 'スケジュール切り替え',
-      'logout_title': 'ログアウト',
-      'logout_message': 'ログアウトしますか？',
+      _homeTitleKey: 'ホーム',
+      _scheduleTitleKey: 'スケジュール',
+      _settingTitleKey: '設定',
+
+      // スケジュール確認画面
+      _scheduleGroomTextKey: '新郎',
+      _scheduleBrideTextKey:'新婦',
+
       // スケジュール登録画面
-      'schedule_register_title': 'スケジュール登録',
-      'schedule_name_label_text': 'お名前',
-      'schedule_groom_name_label_text':'新郎お名前',
-      'schedule_bride_name_label_text':'新婦お名前',
-      'schedule_date_label_text': '日時',
-      'schedule_date_select_description': '日時を選択してください',
-      'schedule_place_label_text': '場所',
-      'schedule_postal_code_search_description': '郵便番号検索することで市町村までが住所に自動入力されます。',
-      'schedule_postal_code_label_text': '郵便番号（ハイフンなし）',
-      'schedule_address_label_text': '住所',
-      'schedule_register_confirm_message': 'スケジュールを登録します。よろしいですか？',
+      _scheduleRegisterTitleKey: 'スケジュール登録',
+      _scheduleNameLabelTextKey: 'お名前',
+      _scheduleGroomNameLabelTextKey:'新郎お名前',
+      _scheduleBrideNameLabelTextKey:'新婦お名前',
+      _scheduleDateLabelTextKey: '日時',
+      _scheduleDateSelectDescriptionKey: '日時を選択してください',
+      _schedulePlaceLabelTextKey: '場所',
+      _schedulePostalCodeSearchDescriptionKey: '郵便番号検索することで市町村までが住所に自動入力されます。',
+      _schedulePostalCodeLabelTextKey: '郵便番号（ハイフンなし）',
+      _scheduleAddressLabelTextKey: '住所',
+      _scheduleRegisterConfirmMessageKey: 'スケジュールを登録します。よろしいですか？',
+
+      // スケジュール切り替え画面
+      _scheduleSelectTitleKey: 'スケジュール切り替え',
+
+      // 設定画面
+      _logoutTitleKey: 'ログアウト',
+      _logoutMessageKey: 'ログアウトしますか？',
 
       // 警告
-      'wraning_empty_message': '未入力です。',
+      _warningEmptyMessageKey: '未入力です。',
       // エラー
-      'connection_error_title': '通信エラー',
-      'input_form_error_title': '入力エラー',
-      'general_error_title': 'エラー',
+      _connectionErrorTitleKey: '通信エラー',
+      _inputFormErrorTitleKey: '入力エラー',
+      _generalErrorTitleKey: 'エラー',
 
-      'empty_error_message': '必須項目です。',
-      'invalid_email_error_message': '無効なメールアドレスです。',
-      'email_already_used_message': '既に使用されているメールアドレスです。',
-      'wrong_password_error_message': 'パスワードが間違っています。',
-      'weak_password_error_message': 'パスワードが安全ではありません。パスワードは6文字以上入力して下さい。',
-      'user_not_found_error_message': 'アカウントが見つかりません。',
-      'user_disabled_error_message': '無効なアカウントです',
-      'invalid_creadential_error_message': '無効な認証情報です。',
-      'too_many_requests_error_message': 'アクセスが集中しています。\nしばらくしてからもう一度お試し下さい。',
-      'unselect_date_error_message': '日付が選択されていません。',
-      'invalid_postal_code_error_message': '無効な郵便番号です。',
-      'unable_search_address_error_message': '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
-      'not_exist_data_error_message': 'データが存在しません。',
-      'timeout_error': 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
-      'http_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
-      'socket_error': '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
-      'unlogin_error': '未ログイン状態です。再度ログインして下さい。',
-      'general_error_message': 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
-      
-      'defalut_positive_button_title': 'OK',
-      'defalut_negative_button_title': 'キャンセル'
+      _emptyErrorMessageKey: '必須項目です。',
+      _invalidEmailErrorMessageKey: '無効なメールアドレスです。',
+      _emailAlreadyUsedErrorMessageKey: '既に使用されているメールアドレスです。',
+      _wrongPasswordErrorMessageKey: 'パスワードが間違っています。',
+      _weakPasswordErrorMessageKey: 'パスワードが安全ではありません。パスワードは6文字以上入力して下さい。',
+      _userNotFoundErrorMessageKey: 'アカウントが見つかりません。',
+      _userDisabledErrorMessageKey: '無効なアカウントです',
+      _invalidCredentialErrorMessageKey: '無効な認証情報です。',
+      _tooManyRequestsErrorMessageKey: 'アクセスが集中しています。\nしばらくしてからもう一度お試し下さい。',
+      _unSelectDateErrorMessageKey: '日付が選択されていません。',
+      _invalidPostalCodeErrorMessageKey: '無効な郵便番号です。',
+      _unableSearchAddressErrorMessageKey: '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
+      _notExistDataErrorMessageKey: 'データが存在しません。',
+      _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
+      _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
+      _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
+      _unLoginErrorMessageKey: '未ログイン状態です。再度ログインして下さい。',
+      _generalErrorMessageKey: 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
+
+      _defaultPositiveButtonTitleKey: 'OK',
+      _defaultNegativeButtonTitleKey: 'キャンセル'
     },
   };
 
@@ -135,55 +196,55 @@ class AppLocalizations {
   String get resetPasswordErrorTitle => _getText(_resetPasswordErrorTitleKey);
   String get resetPasswordSuccessMessage => _getText(_resetPasswordSuccessMessageKey);
 
-  String get homeTitle => _getText('home_title');
-  String get scheduleTitle => _getText('schedule_title');
-  String get settingTitle => _getText('setting_title');
+  String get homeTitle => _getText(_homeTitleKey);
+  String get scheduleTitle => _getText(_scheduleTitleKey);
+  String get settingTitle => _getText(_settingTitleKey);
 
-  String get scheduleGroomText => _getText('schedule_groom_text');
-  String get scheduleBrideText => _getText('schedule_bride_text');
-
-  String get scheduleChangeTitle => _getText('schedule_change_title');
-
-  String get logoutTitle => _getText('logout_title');
-  String get logoutMessage => _getText('logout_message');
+  String get scheduleGroomText => _getText(_scheduleGroomTextKey);
+  String get scheduleBrideText => _getText(_scheduleBrideTextKey);
   
-  String get scheduleRegisterTitle => _getText('schedule_register_title');
-  String get scheduleNameLabelText => _getText('schedule_name_label_text');
-  String get scheduleGroomNameLabelText => _getText('schedule_groom_name_label_text');
-  String get scheduleBrideNameLabelText => _getText('schedule_bride_name_label_text');
-  String get scheduleDateLabelText => _getText('schedule_date_label_text');
-  String get scheduleDateSelectDescription => _getText('schedule_date_select_description');
-  String get schedulePlaceLabelText => _getText('schedule_place_label_text');
-  String get schedulePostalCodeSearchDescription => _getText('schedule_postal_code_search_description');
-  String get schedulePostalCodeLabelText => _getText('schedule_postal_code_label_text');
-  String get scheduleAddressLabelText => _getText('schedule_address_label_text');
-  String get scheduleRegisterConfirmMessage => _getText('schedule_register_confirm_message');
+  String get scheduleRegisterTitle => _getText(_scheduleRegisterTitleKey);
+  String get scheduleNameLabelText => _getText(_scheduleNameLabelTextKey);
+  String get scheduleGroomNameLabelText => _getText(_scheduleGroomNameLabelTextKey);
+  String get scheduleBrideNameLabelText => _getText(_scheduleBrideNameLabelTextKey);
+  String get scheduleDateLabelText => _getText(_scheduleDateLabelTextKey);
+  String get scheduleDateSelectDescription => _getText(_scheduleDateSelectDescriptionKey);
+  String get schedulePlaceLabelText => _getText(_schedulePlaceLabelTextKey);
+  String get schedulePostalCodeSearchDescription => _getText(_schedulePostalCodeSearchDescriptionKey);
+  String get schedulePostalCodeLabelText => _getText(_schedulePostalCodeLabelTextKey);
+  String get scheduleAddressLabelText => _getText(_scheduleAddressLabelTextKey);
+  String get scheduleRegisterConfirmMessage => _getText(_scheduleRegisterConfirmMessageKey);
 
-  String get warningEmptyMessage => _getText('wraning_empty_message');
+  String get scheduleChangeTitle => _getText(_scheduleSelectTitleKey);
 
-  String get connectionErrorTitle => _getText('connection_error_title');
-  String get inputFormErrorTitle => _getText('input_form_error_title');
-  String get generalErrorTitle => _getText('general_error_title');
+  String get logoutTitle => _getText(_logoutTitleKey);
+  String get logoutMessage => _getText(_logoutMessageKey);
 
-  String get emptyError => _getText('empty_error_message');
-  String get invalidEmailError => _getText('invalid_email_error_message');
-  String get alreadyUsedEmailError => _getText('email_already_used_message');
-  String get wrongPasswordError => _getText('wrong_password_error_message');
-  String get weakPasswordError => _getText('weak_password_error_message');
-  String get userNotFoundError => _getText('user_not_found_error_message');
-  String get userDisabledError => _getText('user_disabled_error_message');
-  String get invalidCredentialError => _getText('invalid_creadential_error_message');
-  String get tooManyRequestsError => _getText('too_many_requests_error_message');
-  String get unselectDateError => _getText('unselect_date_error_message');
-  String get invalidPostalCodeError => _getText('invalid_postal_code_error_message');
-  String get unableSearchAddressError => _getText('unable_search_address_error_message');
-  String get notExistDataError => _getText('not_exist_data_error_message');
-  String get timeoutError => _getText('timeout_error');
-  String get httpError => _getText('http_error');
-  String get socketError => _getText('socket_error');
-  String get unloginError => _getText('unlogin_error');
-  String get generalError => _getText('general_error_message');
+  String get warningEmptyMessage => _getText(_warningEmptyMessageKey);
 
-  String get defaultPositiveButtonTitle => _getText('defalut_positive_button_title');
-  String get defaultNegativeButtonTitle => _getText('defalut_negative_button_title');
+  String get connectionErrorTitle => _getText(_connectionErrorTitleKey);
+  String get inputFormErrorTitle => _getText(_inputFormErrorTitleKey);
+  String get generalErrorTitle => _getText(_generalErrorTitleKey);
+
+  String get emptyError => _getText(_emptyErrorMessageKey);
+  String get invalidEmailError => _getText(_invalidEmailErrorMessageKey);
+  String get alreadyUsedEmailError => _getText(_emailAlreadyUsedErrorMessageKey);
+  String get wrongPasswordError => _getText(_wrongPasswordErrorMessageKey);
+  String get weakPasswordError => _getText(_weakPasswordErrorMessageKey);
+  String get userNotFoundError => _getText(_userNotFoundErrorMessageKey);
+  String get userDisabledError => _getText(_userDisabledErrorMessageKey);
+  String get invalidCredentialError => _getText(_invalidCredentialErrorMessageKey);
+  String get tooManyRequestsError => _getText(_tooManyRequestsErrorMessageKey);
+  String get unselectDateError => _getText(_unSelectDateErrorMessageKey);
+  String get invalidPostalCodeError => _getText(_invalidPostalCodeErrorMessageKey);
+  String get unableSearchAddressError => _getText(_unableSearchAddressErrorMessageKey);
+  String get notExistDataError => _getText(_notExistDataErrorMessageKey);
+  String get timeoutError => _getText(_timeoutErrorMessageKey);
+  String get httpError => _getText(_httpErrorMessageKey);
+  String get socketError => _getText(_socketErrorMessageKey);
+  String get unloginError => _getText(_unLoginErrorMessageKey);
+  String get generalError => _getText(_generalErrorMessageKey);
+
+  String get defaultPositiveButtonTitle => _getText(_defaultPositiveButtonTitleKey);
+  String get defaultNegativeButtonTitle => _getText(_defaultNegativeButtonTitleKey);
 }
