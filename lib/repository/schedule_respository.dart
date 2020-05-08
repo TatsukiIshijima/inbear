@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/schedule.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
 class ScheduleRepository implements ScheduleRepositoryImpl {
@@ -14,7 +14,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   ScheduleRepository(this._auth, this._db);
 
   @override
-  Future<String> registerSchedule(Schedule schedule) async {
+  Future<String> registerSchedule(ScheduleEntity schedule) async {
     var user = await _auth.currentUser();
     if (user == null) {
       throw UnLoginException();
@@ -33,14 +33,14 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   }
 
   @override
-  Future<Schedule> fetchSchedule(String selectScheduleId) async {
+  Future<ScheduleEntity> fetchSchedule(String selectScheduleId) async {
     var scheduleDocument = await _db.collection(_scheduleCollection)
         .document(selectScheduleId)
         .get();
     if (!scheduleDocument.exists) {
       throw DocumentNotExistException();
     }
-    return (Schedule.fromMap(scheduleDocument.data));
+    return (ScheduleEntity.fromMap(scheduleDocument.data));
   }
 
 }

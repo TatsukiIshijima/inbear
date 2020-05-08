@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/schedule.dart';
-import 'package:inbear_app/model/user.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 class UserRepository implements UserRepositoryImpl {
@@ -37,7 +37,7 @@ class UserRepository implements UserRepositoryImpl {
           email: email,
           password: password
       );
-      var user = User(
+      var user = UserEntity(
         result.user.uid,
         name,
         email,
@@ -81,7 +81,7 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<User> fetchUser() async {
+  Future<UserEntity> fetchUser() async {
     var uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
@@ -92,7 +92,7 @@ class UserRepository implements UserRepositoryImpl {
     if (!userDocument.exists) {
       throw DocumentNotExistException();
     }
-    return User.fromMap(userDocument.data);
+    return UserEntity.fromMap(userDocument.data);
   }
 
   @override
@@ -122,12 +122,12 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<List<Schedule>> fetchEntrySchedule() async {
+  Future<List<ScheduleEntity>> fetchEntrySchedule() async {
     var uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    var schedules = List<Schedule>();
+    var schedules = List<ScheduleEntity>();
     var documents = (await _db.collection(_userCollection)
         .document(uid)
         .collection(_scheduleSubCollection)
@@ -140,7 +140,7 @@ class UserRepository implements UserRepositoryImpl {
         var scheduleDoc = await docReference.parent()
             .document(docReference.documentID)
             .get();
-        schedules.add(Schedule.fromMap(scheduleDoc.data));
+        schedules.add(ScheduleEntity.fromMap(scheduleDoc.data));
       }
     }
     return schedules;

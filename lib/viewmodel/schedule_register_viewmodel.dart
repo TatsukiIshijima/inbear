@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/schedule.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -151,7 +151,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
         throw UnLoginException();
       }
       var scheduleId = await _scheduleRepositoryImpl.registerSchedule(
-          Schedule(
+          ScheduleEntity(
               groomTextEditingController.text,
               brideTextEditingController.text,
               scheduledDateTime,

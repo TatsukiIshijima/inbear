@@ -1,6 +1,6 @@
-import 'package:inbear_app/model/schedule.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 
 class ScheduleRepositoryImpl {
-  Future<String> registerSchedule(Schedule schedule) {}
-  Future<Schedule> fetchSchedule(String selectScheduleId) {}
+  Future<String> registerSchedule(ScheduleEntity schedule) {}
+  Future<ScheduleEntity> fetchSchedule(String selectScheduleId) {}
 }

@@ -1,7 +1,7 @@
 // 郵便番号検索API ZipCloud
 // http://zipcloud.ibsnet.co.jp/doc/api
 
-class Address {
+class AddressEntity {
 
   final String zipCode;
   final String prefCode;
@@ -9,7 +9,7 @@ class Address {
   final String city;
   final String street;
 
-  Address(
+  AddressEntity(
     this.zipCode,
     this.prefCode,
     this.prefecture,
@@ -17,12 +17,12 @@ class Address {
     this.street
   );
 
-  factory Address.fromJson(Map<String, dynamic> json) {
+  factory AddressEntity.fromJson(Map<String, dynamic> json) {
     var zipCode = json['zipcode'];
     var prefCode = json['prefcode'];
     var prefecture = json['address1'];
     var city = json['address2'];
     var street = json['address3'];
-    return Address(zipCode, prefCode, prefecture, city, street);
+    return AddressEntity(zipCode, prefCode, prefecture, city, street);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Schedule {
+class ScheduleEntity {
   final String groom;
   final String bride;
   final DateTime dateTime;
@@ -10,7 +10,7 @@ class Schedule {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Schedule(
+  ScheduleEntity(
     this.groom,
     this.bride,
     this.dateTime,
@@ -32,7 +32,7 @@ class Schedule {
     'updated_at': updatedAt
   };
 
-  factory Schedule.fromMap(Map<String, dynamic> map) {
+  factory ScheduleEntity.fromMap(Map<String, dynamic> map) {
     var groom = map['groom'];
     var bride = map['bride'];
     var _dateTime = map['date_time'];
@@ -44,7 +44,7 @@ class Schedule {
     var createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
     var _updatedAt = map['updated_at'];
     var updatedAt = _updatedAt is Timestamp ? _updatedAt.toDate() : null;
-    return Schedule(
+    return ScheduleEntity(
       groom,
       bride,
       dateTime,
