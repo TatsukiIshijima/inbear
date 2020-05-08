@@ -30,7 +30,7 @@ class ScheduleViewModel extends ChangeNotifier {
       status = ScheduleGetStatus.Success;
       notifyListeners();
     } on UnLoginException {
-      status = ScheduleGetStatus.Success;
+      status = ScheduleGetStatus.UnLoginError;
       notifyListeners();
     } on DocumentNotExistException {
       status = ScheduleGetStatus.NotExistDocumentError;
