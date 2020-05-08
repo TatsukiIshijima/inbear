@@ -21,8 +21,7 @@ class TitleAndIconListItem extends StatelessWidget {
     return InkWell(
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 75,
-        alignment: Alignment.center,
+        padding: EdgeInsets.all(12.0),
         child: ListTile(
           leading: Icon(iconData),
           title: Text(title),
