@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 class UserRepository implements UserRepositoryImpl {
@@ -122,14 +123,14 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<List<ScheduleEntity>> fetchEntrySchedule() async {
-    var uid = await getUid();
-    if (uid.isEmpty) {
+  Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() async {
+    var user = await fetchUser();
+    if (user.uid.isEmpty) {
       throw UnLoginException();
     }
-    var schedules = List<ScheduleEntity>();
+    var scheduleItems = List<ScheduleSelectItemModel>();
     var documents = (await _db.collection(_userCollection)
-        .document(uid)
+        .document(user.uid)
         .collection(_scheduleSubCollection)
         .getDocuments()).documents;
     for (var doc in documents) {
@@ -140,9 +141,11 @@ class UserRepository implements UserRepositoryImpl {
         var scheduleDoc = await docReference.parent()
             .document(docReference.documentID)
             .get();
-        schedules.add(ScheduleEntity.fromMap(scheduleDoc.data));
+        var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
+        var item = ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
+        scheduleItems.add(item);
       }
     }
-    return schedules;
+    return scheduleItems;
   }
 }
