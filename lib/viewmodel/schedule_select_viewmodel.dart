@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/schedule.dart';
+import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
@@ -17,20 +17,18 @@ class ScheduleSelectViewModel extends ChangeNotifier {
   );
 
   String status = Status.none;
-  List<Schedule> schedules = List<Schedule>();
+  List<ScheduleSelectItemModel> scheduleItems = List<ScheduleSelectItemModel>();
 
   Future<void> fetchEntrySchedule() async {
     try {
       status = Status.loading;
       notifyListeners();
-      schedules.clear();
+      scheduleItems.clear();
       var entrySchedules = await _userRepositoryImpl.fetchEntrySchedule();
-      schedules.addAll(entrySchedules);
+      scheduleItems.addAll(entrySchedules);
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;
-    } catch (exception) {
-      status = Status.generalError;
     }
     notifyListeners();
   }
@@ -40,11 +38,12 @@ class ScheduleSelectViewModel extends ChangeNotifier {
       status = Status.loading;
       notifyListeners();
       await _userRepositoryImpl.selectSchedule(scheduleId);
+      scheduleItems.clear();
+      var entrySchedules = await _userRepositoryImpl.fetchEntrySchedule();
+      scheduleItems.addAll(entrySchedules);
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;
-    } catch (exception) {
-      status = Status.generalError;
     }
     notifyListeners();
   }
