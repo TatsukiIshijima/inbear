@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
@@ -10,18 +11,17 @@ import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/rest_password_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../auth_status.dart';
-
 class ResetPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => ResetPasswordViewModel(
         Provider.of<UserRepository>(context, listen: false)
       ),
       child: Scaffold(
-        body: ResetPasswordContent()
+        body: ResetPasswordContent(resource)
       ),
     );
   }
@@ -29,19 +29,18 @@ class ResetPasswordPage extends StatelessWidget {
 }
 
 class ResetPasswordContent extends StatelessWidget {
+  
+  final AppLocalizations resource;
+  
+  ResetPasswordContent(this.resource);
 
-  void _showAlertDialog(BuildContext context, AuthStatus authStatus) {
-    var resource = AppLocalizations.of(context);
+  void _showResetPasswordDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
       builder: (context) =>
         SingleButtonDialog(
-          title: authStatus != AuthStatus.Success ?
-            resource.resetPasswordErrorTitle :
-            '',
-          message: authStatus != AuthStatus.Success ?
-            AuthStatusExtension.toMessage(context, authStatus) :
-            resource.resetPasswordSuccessMessage,
+          title: title,
+          message: message,
           positiveButtonTitle: resource.defaultPositiveButtonTitle,
           onPressed: () => Navigator.pop(context),
         )
@@ -55,8 +54,7 @@ class ResetPasswordContent extends StatelessWidget {
   Widget build(BuildContext context) {
     // ルートページでなければ、pushの時点で build が呼ばれ、
     // pop の時点で viewModel の dispose が呼ばれている
-    var resource = AppLocalizations.of(context);
-    var viewModel = Provider.of<ResetPasswordViewModel>(context, listen: false);
+    final viewModel = Provider.of<ResetPasswordViewModel>(context, listen: false);
     return Stack(
         children: <Widget>[
           Container(
@@ -112,22 +110,47 @@ class ResetPasswordContent extends StatelessWidget {
               ),
             ),
           ),
-          Selector<ResetPasswordViewModel, AuthStatus>(
+          Selector<ResetPasswordViewModel, String>(
             selector: (context, viewModel) => viewModel.authStatus,
             builder: (context, authStatus, child) {
-              if (authStatus == AuthStatus.Authenticating) {
-                return Container(
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(0, 0, 0, 0.3)
-                  ),
-                  child: Center(
-                    child: Loading(),
-                  ),
-                );
-              } else if (authStatus != null) {
-                WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showAlertDialog(context, authStatus)
-                );
+              switch (authStatus) {
+                case Status.loading:
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(0, 0, 0, 0.3)
+                    ),
+                    child: Center(
+                      child: Loading(),
+                    ),
+                  );
+                case Status.success:
+                  WidgetsBinding.instance.addPostFrameCallback((_) =>
+                      _showResetPasswordDialog(
+                        context,
+                        resource.resetPasswordTitle,
+                        resource.resetPasswordSuccessMessage));
+                  break;
+                case AuthStatus.invalidEmailError:
+                  WidgetsBinding.instance.addPostFrameCallback((_) =>
+                      _showResetPasswordDialog(
+                        context,
+                        resource.resetPasswordErrorTitle,
+                        resource.invalidEmailError));
+                  break;
+                case AuthStatus.userNotFoundError:
+                  WidgetsBinding.instance.addPostFrameCallback((_) =>
+                      _showResetPasswordDialog(
+                        context,
+                        resource.resetPasswordTitle,
+                        resource.userNotFoundError));
+                  break;
+                case AuthStatus.unDefinedError:
+                  WidgetsBinding.instance.addPostFrameCallback((_) =>
+                      _showResetPasswordDialog(
+                          context,
+                          resource.resetPasswordTitle,
+                          resource.generalError));
+                  break;
               }
               return Container();
             },

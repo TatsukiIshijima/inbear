@@ -1,50 +1,50 @@
 import 'package:flutter/widgets.dart';
-import 'package:inbear_app/auth_status.dart';
-import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/status.dart';
 
 class RegisterViewModel extends ChangeNotifier {
 
-  final UserRepository _userRepository;
+  final UserRepositoryImpl _userRepository;
   final TextEditingController nameTextEditingController = TextEditingController();
   final TextEditingController emailTextEditingController = TextEditingController();
   final TextEditingController passwordTextEditingController = TextEditingController();
 
-  AuthStatus authStatus;
+  String authStatus = Status.none;
 
   RegisterViewModel(
     this._userRepository
   );
 
   Future<void> signUp() async {
-    authStatus = AuthStatus.Authenticating;
-    notifyListeners();
-    var result = await _userRepository.signUp(
-        nameTextEditingController.text,
-        emailTextEditingController.text,
-        passwordTextEditingController.text
-    );
-    if (result.isEmpty) {
-      authStatus = AuthStatus.Success;
-    } else {
-      switch (result) {
+    try {
+      authStatus = Status.loading;
+      notifyListeners();
+       await _userRepository.signUp(
+          nameTextEditingController.text,
+          emailTextEditingController.text,
+          passwordTextEditingController.text
+      );
+       authStatus = Status.success;
+    } catch (error) {
+      switch (error.code) {
       // ここのエラーは変わる可能性があるので、直接記述
         case "ERROR_WEAK_PASSWORD":
-          authStatus = AuthStatus.ErrorWeakPassword;
+          authStatus = AuthStatus.weakPasswordError;
           break;
         case "ERROR_INVALID_EMAIL":
-          authStatus = AuthStatus.ErrorInvalidEmail;
+          authStatus = AuthStatus.invalidEmailError;
           break;
         case "ERROR_EMAIL_ALREADY_IN_USE":
-          authStatus = AuthStatus.ErrorEmailAlreadyUsed;
+          authStatus = AuthStatus.emailAlreadyUsedError;
           break;
         case "ERROR_INVALID_CREDENTIAL":
-          authStatus = AuthStatus.ErrorInvalidCredential;
+          authStatus = AuthStatus.invalidCredentialError;
           break;
         case 'ERROR_TOO_MANY_REQUESTS':
-          authStatus = AuthStatus.ErrorTooManyRequests;
+          authStatus = AuthStatus.tooManyRequestsError;
           break;
         default:
-          authStatus = AuthStatus.ErrorUnDefined;
+          authStatus = AuthStatus.unDefinedError;
       }
     }
     notifyListeners();

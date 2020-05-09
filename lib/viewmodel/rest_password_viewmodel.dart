@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:inbear_app/repository/user_repository.dart';
-
-import '../auth_status.dart';
+import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/status.dart';
 
 class ResetPasswordViewModel extends ChangeNotifier {
 
-  final UserRepository _userRepository;
+  final UserRepositoryImpl _userRepository;
 
   ResetPasswordViewModel(
     this._userRepository
   );
 
-  TextEditingController emailTextEditingController = TextEditingController();
-  AuthStatus authStatus;
+  final TextEditingController emailTextEditingController = TextEditingController();
+
+  String authStatus;
 
   Future<void> sendPasswordResetEmail() async {
-    authStatus = AuthStatus.Authenticating;
-    notifyListeners();
-    var result = await _userRepository.sendPasswordResetEmail(emailTextEditingController.text);
-    if (result.isEmpty) {
-      authStatus = AuthStatus.Success;
-    } else {
-      // パスワードリセットメール送信エラーは Auth のエラーと同一のため AuthStatus を使用
-      switch (result) {
+    try {
+      authStatus = Status.loading;
+      notifyListeners();
+      await _userRepository.sendPasswordResetEmail(emailTextEditingController.text);
+      authStatus = Status.success;
+    } catch (error) {
+      switch (error.code) {
         case 'ERROR_INVALID_EMAIL':
-          authStatus = AuthStatus.ErrorInvalidEmail;
+          authStatus = AuthStatus.invalidEmailError;
           break;
         case 'ERROR_USER_NOT_FOUND':
-          authStatus = AuthStatus.ErrorUserNotFound;
+          authStatus = AuthStatus.userNotFoundError;
           break;
         default:
-          authStatus = AuthStatus.ErrorUnDefined;
+          authStatus = AuthStatus.unDefinedError;
       }
     }
     notifyListeners();

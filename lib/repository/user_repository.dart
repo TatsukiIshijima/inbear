@@ -19,39 +19,29 @@ class UserRepository implements UserRepositoryImpl {
   );
 
   @override
-  Future<String> signIn(String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-      return '';
-    } catch (error) {
-      return error.code;
-    }
+  Future<void> signIn(String email, String password) async {
+    await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password
+    );
   }
 
   @override
-  Future<String> signUp(String name, String email, String password) async {
-    try {
-      var result = await _auth.createUserWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-      var user = UserEntity(
-        result.user.uid,
-        name,
-        email,
-        '',
-        DateTime.now()
-      );
-      await _db.collection(_userCollection)
-        .document(result.user.uid)
-        .setData(user.toMap());
-      return '';
-    } catch (error) {
-      return error.code;
-    }
+  Future<void> signUp(String name, String email, String password) async {
+    var result = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password
+    );
+    var user = UserEntity(
+      result.user.uid,
+      name,
+      email,
+      '',
+      DateTime.now()
+    );
+    await _db.collection(_userCollection)
+      .document(result.user.uid)
+      .setData(user.toMap());
   }
 
   @override
@@ -66,13 +56,8 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<String> sendPasswordResetEmail(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return '';
-    } catch (error) {
-      return error.code;
-    }
+  Future<void> sendPasswordResetEmail(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
   }
 
   @override
