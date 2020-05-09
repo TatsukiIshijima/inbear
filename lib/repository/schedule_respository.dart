@@ -34,6 +34,9 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
 
   @override
   Future<ScheduleEntity> fetchSchedule(String selectScheduleId) async {
+    if (selectScheduleId.isEmpty) {
+      throw NoSelectScheduleException();
+    }
     var scheduleDocument = await _db.collection(_scheduleCollection)
         .document(selectScheduleId)
         .get();
