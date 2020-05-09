@@ -24,7 +24,11 @@ class TitleAndIconListItem extends StatelessWidget {
         padding: EdgeInsets.all(12.0),
         child: ListTile(
           leading: Icon(iconData),
-          title: Text(title),
+          title: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis
+          ),
         ),
       ),
       onTap: () => onTap(),
