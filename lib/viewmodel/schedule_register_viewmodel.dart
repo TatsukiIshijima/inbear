@@ -9,9 +9,16 @@ import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/status.dart';
 import 'package:intl/intl.dart';
 
-import '../schedule_register_status.dart';
+class ScheduleRegisterStatus extends Status {
+  static const fetchAddressSuccess = 'FETCH_ADDRESS_SUCCESS';
+  static const convertLocationSuccess = 'CONVERT_LOCATION_SUCCESS';
+  static const unSelectDateError = 'UN_SELECT_DATE_ERROR';
+  static const invalidPostalCodeError = 'INVALID_POSTAL_CODE_ERROR';
+  static const unableSearchAddressError = 'UNABLE_SEARCH_ADDRESS_ERROR';
+}
 
 class ScheduleRegisterViewModel extends ChangeNotifier {
 
@@ -35,7 +42,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
   GeoPoint _addressGeoPoint;
   DateTime scheduledDateTime;
   bool isPostalCodeFormat = false;
-  ScheduleRegisterStatus status = ScheduleRegisterStatus.None;
+  String status = Status.none;
 
   @override
   void dispose() {
@@ -55,28 +62,25 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
 
   Future<void> fetchAddress() async {
     try {
-      status = ScheduleRegisterStatus.Loading;
+      status = Status.loading;
       notifyListeners();
       var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
       if (result == null) {
-        status = ScheduleRegisterStatus.InvalidPostalCodeError;
+        status = ScheduleRegisterStatus.invalidPostalCodeError;
         notifyListeners();
         return;
       }
       var address = '${result.prefecture}${result.city}${result.street}';
       addressTextEditingController.text = address;
-      status = ScheduleRegisterStatus.None;
-      notifyListeners();
+      status = ScheduleRegisterStatus.fetchAddressSuccess;
     } on TimeoutException {
-      status = ScheduleRegisterStatus.Timeout;
-      notifyListeners();
+      status = Status.timeoutError;
     } on HttpException {
-      status = ScheduleRegisterStatus.HttpError;
-      notifyListeners();
+      status = Status.httpError;
     } on SocketException {
-      status = ScheduleRegisterStatus.SocketError;
-      notifyListeners();
+      status = Status.socketError;
     }
+    notifyListeners();
   }
 
   void setPostalCodeInputEvent() {
@@ -103,46 +107,42 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       if (addressTextEditingController.text.isEmpty) {
         return;
       }
-      status = ScheduleRegisterStatus.Loading;
+      status = Status.loading;
       notifyListeners();
       var location = await _addressRepositoryImpl
           .convertToLocation(addressTextEditingController.text);
       if (location != null && _googleMapController != null) {
-        //print('lat: ${location.latitude}, lng: ${location.longitude}');
-        _googleMapController.future.then((map) {
+          debugPrint('lat: ${location.latitude}, lng: ${location.longitude}');
+          _googleMapController.future.then((map) {
           var latLng = LatLng(location.latitude, location.longitude);
           _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
           map.animateCamera(CameraUpdate.newLatLng(latLng));
-          status = ScheduleRegisterStatus.None;
-          notifyListeners();
+          status = ScheduleRegisterStatus.convertLocationSuccess;
         });
       } else {
-        status = ScheduleRegisterStatus.UnableSearchAddressError;
-        notifyListeners();
+        status = ScheduleRegisterStatus.unableSearchAddressError;
       }
     } on TimeoutException {
-      status = ScheduleRegisterStatus.Timeout;
-      notifyListeners();
+      status = Status.timeoutError;
     } on HttpException {
-      status = ScheduleRegisterStatus.HttpError;
-      notifyListeners();
+      status = Status.httpError;
     } on SocketException {
-      status = ScheduleRegisterStatus.SocketError;
-      notifyListeners();
+      status = Status.socketError;
     }
+    notifyListeners();
   }
   
   Future<void> registerSchedule() async {
     try {
-      status = ScheduleRegisterStatus.Loading;
+      status = Status.loading;
       notifyListeners();
       if (scheduledDateTime == null) {
-        status = ScheduleRegisterStatus.UnSelectDateError;
+        status = ScheduleRegisterStatus.unSelectDateError;
         notifyListeners();
         return;
       }
       if (_addressGeoPoint == null) {
-        status = ScheduleRegisterStatus.UnableSearchAddressError;
+        status = ScheduleRegisterStatus.unableSearchAddressError;
         notifyListeners();
         return;
       }
@@ -164,14 +164,10 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       );
       await _userRepositoryImpl.addScheduleReference(scheduleId);
       await _userRepositoryImpl.selectSchedule(scheduleId);
-      status = ScheduleRegisterStatus.Success;
-      notifyListeners();
+      status = Status.success;
     } on UnLoginException {
-      status = ScheduleRegisterStatus.UnLoginError;
-      notifyListeners();
-    } catch (exception) {
-      status = ScheduleRegisterStatus.GeneralError;
-      notifyListeners();
+      status = Status.unLoginError;
     }
+    notifyListeners();
   }
 }
