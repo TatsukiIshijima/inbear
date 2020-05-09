@@ -30,6 +30,8 @@ class Label extends StatelessWidget {
               SizedBox(width: 8,),
               Text(
                 text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 22,
