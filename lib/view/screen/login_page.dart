@@ -55,7 +55,6 @@ class LoginPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Container(
