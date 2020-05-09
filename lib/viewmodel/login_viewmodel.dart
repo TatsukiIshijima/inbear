@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:inbear_app/repository/user_repository.dart';
-
-import '../auth_status.dart';
+import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/status.dart';
 
 class LoginViewModel extends ChangeNotifier {
 
-  final UserRepository _userRepository;
+  final UserRepositoryImpl _userRepository;
   final TextEditingController emailTextEditingController = TextEditingController();
   final TextEditingController passwordTextEditingController = TextEditingController();
 
-  AuthStatus authStatus;
+  String authStatus = Status.none;
 
   LoginViewModel(
     this._userRepository,
@@ -24,34 +23,33 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<void> signIn() async {
-    authStatus = AuthStatus.Authenticating;
-    notifyListeners();
-    var result = await _userRepository.signIn(
-        emailTextEditingController.text,
-        passwordTextEditingController.text
-    );
-    if (result.isEmpty) {
-      authStatus = AuthStatus.Success;
-    } else {
-      switch (result) {
-      // ここのエラーは変わる可能性があるので、直接記述
+    try {
+      authStatus = Status.loading;
+      notifyListeners();
+      await _userRepository.signIn(
+          emailTextEditingController.text,
+          passwordTextEditingController.text
+      );
+      authStatus = Status.success;
+    } catch (error) {
+      switch (error.code) {
         case 'ERROR_INVALID_EMAIL':
-          authStatus = AuthStatus.ErrorInvalidEmail;
+          authStatus = AuthStatus.invalidEmailError;
           break;
         case 'ERROR_WRONG_PASSWORD':
-          authStatus = AuthStatus.ErrorWrongPassword;
+          authStatus = AuthStatus.wrongPasswordError;
           break;
         case 'ERROR_USER_NOT_FOUND':
-          authStatus = AuthStatus.ErrorUserNotFound;
+          authStatus = AuthStatus.userNotFoundError;
           break;
         case 'ERROR_USER_DISABLED':
-          authStatus = AuthStatus.ErrorUserDisabled;
+          authStatus = AuthStatus.userDisabledError;
           break;
         case 'ERROR_TOO_MANY_REQUESTS':
-          authStatus = AuthStatus.ErrorTooManyRequests;
+          authStatus = AuthStatus.tooManyRequestsError;
           break;
         default:
-          authStatus = AuthStatus.ErrorUnDefined;
+          authStatus = AuthStatus.unDefinedError;
           break;
       }
     }
@@ -67,6 +65,6 @@ class LoginViewModel extends ChangeNotifier {
   // リセットしないと以前のステータスが残ったままのため、
   // 勝手にアラートが表示されたりなどが起こる
   void resetAuthStatus() {
-    authStatus = null;
+    authStatus = Status.none;
   }
 }
