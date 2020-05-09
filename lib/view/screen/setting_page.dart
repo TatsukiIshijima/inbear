@@ -23,8 +23,10 @@ class SettingPage extends StatelessWidget {
 
 class SettingPageContent extends StatelessWidget {
 
-  void _showLogoutDialog(BuildContext context, SettingViewModel viewModel) {
-    var resource = AppLocalizations.of(context);
+  void _showLogoutDialog(
+      BuildContext context,
+      AppLocalizations resource,
+      SettingViewModel viewModel) {
     showDialog(
         context: context,
         builder: (context) =>
@@ -43,19 +45,25 @@ class SettingPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var viewModel = Provider.of<SettingViewModel>(context, listen: false);
+    final resource = AppLocalizations.of(context);
+    final viewModel = Provider.of<SettingViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           TitleAndIconListItem(
-            title: AppLocalizations.of(context).scheduleRegisterTitle,
+            title: resource.scheduleRegisterTitle,
             iconData: Icons.today,
             onTap: () => Routes.goToScheduleRegister(context),
           ),
           TitleAndIconListItem(
-            title: AppLocalizations.of(context).logoutTitle,
+            title: resource.scheduleSelectTitle,
+            iconData: Icons.compare_arrows,
+            onTap: () => Routes.goToScheduleSelect(context),
+          ),
+          TitleAndIconListItem(
+            title: resource.logoutTitle,
             iconData: Icons.exit_to_app,
-            onTap: () => _showLogoutDialog(context, viewModel),
+            onTap: () => _showLogoutDialog(context, resource, viewModel),
           )
         ],
       ),

@@ -1,4 +1,5 @@
-import 'package:inbear_app/model/user.dart';
+import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/model/schedule_select_item_model.dart';
 
 class UserRepositoryImpl {
   Future<String> signIn(String email, String password) {}
@@ -7,7 +8,8 @@ class UserRepositoryImpl {
   Future<bool> isSignIn() {}
   Future<String> sendPasswordResetEmail(String email) {}
   Future<String> getUid() {}
-  Future<User> fetchUser() {}
+  Future<UserEntity> fetchUser() {}
   Future<void> addScheduleReference(String scheduleId) {}
   Future<void> selectSchedule(String scheduleId) {}
+  Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() {}
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/schedule.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/schedule_get_status.dart';
@@ -19,7 +19,7 @@ class ScheduleViewModel extends ChangeNotifier {
   final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   ScheduleGetStatus status = ScheduleGetStatus.None;
-  Schedule schedule;
+  ScheduleEntity schedule;
 
   Future<void> fetchSelectSchedule() async {
     try {
@@ -30,7 +30,7 @@ class ScheduleViewModel extends ChangeNotifier {
       status = ScheduleGetStatus.Success;
       notifyListeners();
     } on UnLoginException {
-      status = ScheduleGetStatus.Success;
+      status = ScheduleGetStatus.UnLoginError;
       notifyListeners();
     } on DocumentNotExistException {
       status = ScheduleGetStatus.NotExistDocumentError;

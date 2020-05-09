@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
-import 'package:inbear_app/model/schedule.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/schedule_get_status.dart';
@@ -32,8 +32,8 @@ class SchedulePageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     var viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
     var resource = AppLocalizations.of(context);
-    WidgetsBinding.instance.addPostFrameCallback((_) =>
-        viewModel.fetchSelectSchedule());
+    WidgetsBinding.instance.addPostFrameCallback((_) async =>
+        await viewModel.fetchSelectSchedule());
     return Selector<ScheduleViewModel, ScheduleGetStatus>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
@@ -42,7 +42,7 @@ class SchedulePageContent extends StatelessWidget {
         } else if (status == ScheduleGetStatus.Loading) {
           return Center(child: Loading());
         } else if (status == ScheduleGetStatus.Success) {
-          return Selector<ScheduleViewModel, Schedule>(
+          return Selector<ScheduleViewModel, ScheduleEntity>(
             selector: (context, viewModel) => viewModel.schedule,
             builder: (context, schedule, child) =>
               SingleChildScrollView(

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/model/user.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 class UserRepository implements UserRepositoryImpl {
@@ -9,6 +11,7 @@ class UserRepository implements UserRepositoryImpl {
   final FirebaseAuth _auth;
   final Firestore _db;
   final String _userCollection = 'user';
+  final String _scheduleSubCollection = 'schedule';
 
   UserRepository(
     this._auth,
@@ -35,7 +38,7 @@ class UserRepository implements UserRepositoryImpl {
           email: email,
           password: password
       );
-      var user = User(
+      var user = UserEntity(
         result.user.uid,
         name,
         email,
@@ -79,7 +82,7 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<User> fetchUser() async {
+  Future<UserEntity> fetchUser() async {
     var uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
@@ -90,7 +93,7 @@ class UserRepository implements UserRepositoryImpl {
     if (!userDocument.exists) {
       throw DocumentNotExistException();
     }
-    return User.fromMap(userDocument.data);
+    return UserEntity.fromMap(userDocument.data);
   }
 
   @override
@@ -99,12 +102,11 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    const String _scheduleCollection = 'schedule';
-    var scheduleReference = _db.collection(_scheduleCollection)
+    var scheduleReference = _db.collection(_scheduleSubCollection)
         .document(scheduleId);
     await _db.collection(_userCollection)
         .document(uid)
-        .collection(_scheduleCollection)
+        .collection(_scheduleSubCollection)
         .document(scheduleId)
         .setData({'ref': scheduleReference});
   }
@@ -118,5 +120,32 @@ class UserRepository implements UserRepositoryImpl {
     await _db.collection(_userCollection)
         .document(uid)
         .setData({'select_schedule_id': scheduleId}, merge: true);
+  }
+
+  @override
+  Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() async {
+    var user = await fetchUser();
+    if (user.uid.isEmpty) {
+      throw UnLoginException();
+    }
+    var scheduleItems = List<ScheduleSelectItemModel>();
+    var documents = (await _db.collection(_userCollection)
+        .document(user.uid)
+        .collection(_scheduleSubCollection)
+        .getDocuments()).documents;
+    for (var doc in documents) {
+      // Reference型から直接データ参照できなかったため、
+      // 冗長にデータを引っ張ってくる
+      var docReference = doc.data['ref'];
+      if (docReference is DocumentReference) {
+        var scheduleDoc = await docReference.parent()
+            .document(docReference.documentID)
+            .get();
+        var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
+        var item = ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
+        scheduleItems.add(item);
+      }
+    }
+    return scheduleItems;
   }
 }

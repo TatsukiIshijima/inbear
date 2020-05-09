@@ -18,30 +18,16 @@ class TitleAndIconListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: InkWell(
-        child: Container(
-          padding: EdgeInsets.all(24.0),
-          child: Row(
-            children: <Widget>[
-              Icon(
-                iconData,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18
-                ),
-              )
-            ],
-          ),
+    return InkWell(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(12.0),
+        child: ListTile(
+          leading: Icon(iconData),
+          title: Text(title),
         ),
-        onTap: () => onTap(),
       ),
+      onTap: () => onTap(),
     );
   }
 
