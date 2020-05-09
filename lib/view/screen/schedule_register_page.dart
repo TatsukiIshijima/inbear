@@ -265,7 +265,7 @@ class ScheduleRegisterContent extends StatelessWidget {
               case Status.success:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     Navigator.pop(context));
-                return Container();
+                break;
               case ScheduleRegisterStatus.unSelectDateError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -273,7 +273,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.inputFormErrorTitle,
                         resource.unselectDateError
                     ));
-                return Container();
+                break;
               case ScheduleRegisterStatus.invalidPostalCodeError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -281,7 +281,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.inputFormErrorTitle,
                         resource.invalidPostalCodeError
                     ));
-                return Container();
+                break;
               case ScheduleRegisterStatus.unableSearchAddressError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -289,7 +289,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.generalErrorTitle,
                         resource.unableSearchAddressError
                     ));
-                return Container();
+                break;
               case Status.unLoginError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -297,7 +297,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.generalErrorTitle,
                         resource.unloginError
                     ));
-                return Container();
+                break;
               case Status.timeoutError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -305,7 +305,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.connectionErrorTitle,
                         resource.timeoutError
                     ));
-                return Container();
+                break;
               case Status.httpError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -313,7 +313,7 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.connectionErrorTitle,
                         resource.httpError
                     ));
-                return Container();
+                break;
               case Status.socketError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
                     _showErrorDialog(
@@ -321,10 +321,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                         resource.connectionErrorTitle,
                         resource.socketError
                     ));
-                return Container();
-              default:
-                return Container();
+                break;
             }
+            return Container();
           },
         )
       ],
