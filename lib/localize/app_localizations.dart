@@ -85,6 +85,7 @@ class AppLocalizations {
   static const _unableSearchAddressErrorMessageKey = 'unable_search_address_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
   static const _notExistEntryScheduleErrorMessageKey = 'not_exist_entry_schedule_error_message';
+  static const _noSelectScheduleErrorMessageKey = 'no_select_schedule_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
@@ -170,6 +171,7 @@ class AppLocalizations {
       _unableSearchAddressErrorMessageKey: '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
       _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
+      _noSelectScheduleErrorMessageKey: '表示するスケジュールが選択されていません。\n「設定」からスケジュールを登録するか、\n「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
       _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -248,6 +250,7 @@ class AppLocalizations {
   String get unableSearchAddressError => _getText(_unableSearchAddressErrorMessageKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
   String get notExistEntryScheduleError => _getText(_notExistEntryScheduleErrorMessageKey);
+  String get noSelectScheduleError => _getText(_noSelectScheduleErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
