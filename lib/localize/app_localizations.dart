@@ -56,6 +56,8 @@ class AppLocalizations {
 
   // スケジュール切り替え画面
   static const _scheduleSelectTitleKey = 'schedule_select_title';
+  static const _scheduleSelectConfirmTitleKey = 'schedule_select_confirm_title';
+  static const _scheduleSelectConfirmMessageKey = 'schedule_select_confirm_message';
 
   // 設定画面
   static const _logoutTitleKey = 'logout_title';
@@ -82,6 +84,7 @@ class AppLocalizations {
   static const _invalidPostalCodeErrorMessageKey = 'invalid_postal_code_error_message';
   static const _unableSearchAddressErrorMessageKey = 'unable_search_address_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
+  static const _notExistEntryScheduleErrorMessageKey = 'not_exist_entry_schedule_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
@@ -138,7 +141,9 @@ class AppLocalizations {
       _scheduleRegisterConfirmMessageKey: 'スケジュールを登録します。よろしいですか？',
 
       // スケジュール切り替え画面
-      _scheduleSelectTitleKey: 'スケジュール切り替え',
+      _scheduleSelectTitleKey: '表示スケジュール切り替え',
+      _scheduleSelectConfirmTitleKey: '確認',
+      _scheduleSelectConfirmMessageKey: '選択したスケジュールを表示するよう切り替えます。\nよろしいですか？',
 
       // 設定画面
       _logoutTitleKey: 'ログアウト',
@@ -164,6 +169,7 @@ class AppLocalizations {
       _invalidPostalCodeErrorMessageKey: '無効な郵便番号です。',
       _unableSearchAddressErrorMessageKey: '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
+      _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
       _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -215,7 +221,9 @@ class AppLocalizations {
   String get scheduleAddressLabelText => _getText(_scheduleAddressLabelTextKey);
   String get scheduleRegisterConfirmMessage => _getText(_scheduleRegisterConfirmMessageKey);
 
-  String get scheduleChangeTitle => _getText(_scheduleSelectTitleKey);
+  String get scheduleSelectTitle => _getText(_scheduleSelectTitleKey);
+  String get scheduleSelectConfirmTitle => _getText(_scheduleSelectConfirmTitleKey);
+  String get scheduleSelectConfirmMessage => _getText(_scheduleSelectConfirmMessageKey);
 
   String get logoutTitle => _getText(_logoutTitleKey);
   String get logoutMessage => _getText(_logoutMessageKey);
@@ -239,6 +247,7 @@ class AppLocalizations {
   String get invalidPostalCodeError => _getText(_invalidPostalCodeErrorMessageKey);
   String get unableSearchAddressError => _getText(_unableSearchAddressErrorMessageKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
+  String get notExistEntryScheduleError => _getText(_notExistEntryScheduleErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
