@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/view/screen/album_page.dart';
 import 'package:inbear_app/view/screen/schedule_page.dart';
 import 'package:inbear_app/view/screen/setting_page.dart';
 
@@ -14,12 +15,12 @@ class _HomePageState extends State<HomePage> {
   int _selectIndex = 0;
 
   final List<Widget> _tabs = <Widget> [
-    Text('Index 0: Home'),
+    AlbumPage(),
     SchedulePage(),
     SettingPage()
   ];
   final List<String> _titleList = <String> [
-    'ホーム',
+    'アルバム',
     'スケジュール',
     '設定'
   ];
@@ -44,8 +45,8 @@ class _HomePageState extends State<HomePage> {
           currentIndex: _selectIndex,
           items: const <BottomNavigationBarItem> [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('ホーム')
+              icon: Icon(Icons.collections),
+              title: Text('アルバム')
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.schedule),
