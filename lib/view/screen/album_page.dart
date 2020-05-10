@@ -29,8 +29,8 @@ class AlbumPageContent extends StatelessWidget {
     return Scaffold(
       body: Center(child: Text('アルバム'),),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          viewModel.uploadImage();
+        onPressed: () async {
+          await viewModel.loadImages();
         },
         child: Icon(Icons.add),
       ),
