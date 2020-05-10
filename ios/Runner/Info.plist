@@ -47,5 +47,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>アップロードする写真を選択するためにこのアプリは写真にアクセスする必要がります。</string>
 </dict>
 </plist>
