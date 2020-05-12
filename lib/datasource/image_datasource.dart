@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/datasource/image_datasource_impl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ImageDataSource implements ImageDataSourceImpl {
 
@@ -21,8 +22,9 @@ class ImageDataSource implements ImageDataSourceImpl {
     final ByteData byteData = await asset.getByteData(quality: 50);
     // TODO:ここでサムネイルを作成してアップするか検討
     // https://sh1d0w.github.io/multi_image_picker/#/imagedata
+    final Uuid uuid = Uuid();
     List<int> imageData = byteData.buffer.asUint8List();
-    final StorageReference storageReference = _storage.ref().child('hoge.jpg');
+    final StorageReference storageReference = _storage.ref().child('${uuid.v4()}.jpg');
     final StorageUploadTask storageUploadTask =
       storageReference.putData(
         imageData,
