@@ -2,16 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
+import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AlbumViewModel extends ChangeNotifier {
 
   final UserRepositoryImpl _userRepositoryImpl;
+  final ScheduleRepositoryImpl _scheduleRepositoryImpl;
   final ImageRepositoryImpl _imageRepositoryImpl;
 
   AlbumViewModel(
     this._userRepositoryImpl,
+    this._scheduleRepositoryImpl,
     this._imageRepositoryImpl
   );
 

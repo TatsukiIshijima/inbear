@@ -64,7 +64,6 @@ void main() {
         ),
         Provider(
           create: (context) => ImageRepository(
-            _firestore,
             _imageDataSource
           ),
         )
