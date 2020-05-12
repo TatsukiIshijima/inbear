@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -18,17 +19,12 @@ class AlbumViewModel extends ChangeNotifier {
     this._imageRepositoryImpl
   );
 
-  Future<bool> _isSelectedSchedule() async {
-    final user = await _userRepositoryImpl.fetchUser();
-    return user.selectScheduleId.isNotEmpty;
-  }
+  static const _imageUrlKey = 'image_url';
+  static const _thumbnailUrlKey = 'thumbnail_url';
 
   Future<void> uploadSelectImages() async {
     try {
-      if(!await _isSelectedSchedule()) {
-        debugPrint('スケジュールが選択されていません。');
-        return;
-      }
+      final user = await _userRepositoryImpl.fetchUser();
       var pickUpImages = await MultiImagePicker.pickImages(
         maxImages: 5,
         enableCamera: false,
@@ -42,11 +38,22 @@ class AlbumViewModel extends ChangeNotifier {
       if (pickUpImages.length == 0) {
         return;
       }
-      List<String> urls = List<String>();
-      for (final images in pickUpImages) {
-        final uploadUrl = await _imageRepositoryImpl.uploadImage(images);
-        urls.add(uploadUrl);
+      List<ImageEntity> imageEntities = List<ImageEntity>();
+      for (final image in pickUpImages) {
+        final uploadUrls = await _imageRepositoryImpl.uploadImage(image);
+        final ImageEntity imageEntity = ImageEntity(
+          uploadUrls[_imageUrlKey],
+          uploadUrls[_thumbnailUrlKey],
+          user.uid,
+          DateTime.now()
+        );
+        imageEntities.add(imageEntity);
       }
+      await _scheduleRepositoryImpl.postImages(user.selectScheduleId, imageEntities);
+    } on UnLoginException {
+      debugPrint('ログインしていない');
+    } on DocumentNotExistException {
+      debugPrint('ユーザードキュメントが存在しない');
     } on NoImagesSelectedException {
       debugPrint('画像の選択のキャンセル');
     } on PermissionDeniedException {

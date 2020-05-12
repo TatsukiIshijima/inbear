@@ -11,6 +11,13 @@ class ImageDataSource implements ImageDataSourceImpl {
 
   ImageDataSource(this._storage);
 
+  static const _originalImageQuality = 50;
+  static const _thumbnailImageQuality = 30;
+  static const _thumbnailImageRate = 0.2;
+
+  static const _imageUrlKey = 'image_url';
+  static const _thumbnailUrlKey = 'thumbnail_url';
+
   @override
   Future<void> downloadImage() {
     // TODO: implement downloadImage
@@ -18,23 +25,29 @@ class ImageDataSource implements ImageDataSourceImpl {
   }
 
   @override
-  Future<String> uploadImage(Asset asset) async {
-    final ByteData byteData = await asset.getByteData(quality: 50);
-    // TODO:ここでサムネイルを作成してアップするか検討
-    // https://sh1d0w.github.io/multi_image_picker/#/imagedata
+  Future<Map<String, String>> uploadImage(Asset asset) async {
+    final ByteData byteData = await asset.getByteData(quality: _originalImageQuality);
+    final ByteData thumbnailByteData = await asset.getThumbByteData(
+        (asset.originalWidth * _thumbnailImageRate).round(),
+        (asset.originalHeight * _thumbnailImageRate).round(),
+        quality: _thumbnailImageQuality);
     final Uuid uuid = Uuid();
     List<int> imageData = byteData.buffer.asUint8List();
-    final StorageReference storageReference = _storage.ref().child('${uuid.v4()}.jpg');
-    final StorageUploadTask storageUploadTask =
-      storageReference.putData(
-        imageData,
-        StorageMetadata(
-          contentType: 'image/jpeg'
-        )
-    );
-    final StorageTaskSnapshot storageTaskSnapshot = await storageUploadTask.onComplete;
-    if ( storageTaskSnapshot.error == null) {
-      return await storageTaskSnapshot.ref.getDownloadURL();
+    List<int> thumbnailData = thumbnailByteData.buffer.asUint8List();
+    final StorageReference imageReference = _storage.ref().child('${uuid.v4()}.jpg');
+    final StorageReference thumbnailReference = _storage.ref().child('${uuid.v4()}-thumb.jpg');
+    final StorageMetadata metadata = StorageMetadata(contentType: 'image/jpeg');
+    final StorageUploadTask imageUploadTask = imageReference.putData(imageData, metadata);
+    final StorageUploadTask thumbnailUploadTask = thumbnailReference.putData(thumbnailData, metadata);
+    final StorageTaskSnapshot imageUploadTaskSnapshot = await imageUploadTask.onComplete;
+    final StorageTaskSnapshot thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
+    if ( imageUploadTaskSnapshot.error == null && thumbnailUploadTaskSnapshot.error == null) {
+      final String imageUrl = await imageUploadTaskSnapshot.ref.getDownloadURL();
+      final String thumbnailUrl = await thumbnailUploadTaskSnapshot.ref.getDownloadURL();
+      return {
+        _imageUrlKey: imageUrl,
+        _thumbnailUrlKey: thumbnailUrl
+      };
     } else {
       throw UploadImageException();
     }
