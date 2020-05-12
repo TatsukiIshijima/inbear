@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
@@ -10,6 +11,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   final Firestore _db;
   final String _scheduleCollection = 'schedule';
   final String _participantSubCollection = 'participant';
+  final String _imageSubCollection = 'image';
 
   ScheduleRepository(this._auth, this._db);
 
@@ -19,6 +21,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     if (user == null) {
       throw UnLoginException();
     }
+    // FIXME:batchで書き直せるかも
     var document = await _db.collection(_scheduleCollection)
         .add(schedule.toMap());
     const String _userCollection = 'user';
@@ -44,6 +47,19 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
       throw DocumentNotExistException();
     }
     return (ScheduleEntity.fromMap(scheduleDocument.data));
+  }
+
+  @override
+  Future<void> postImages(String selectScheduleId, List<ImageEntity> images) async {
+    final WriteBatch batch = _db.batch();
+    final imageReference = _db.collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_imageSubCollection)
+        .document();
+    for (var image in images) {
+      batch.setData(imageReference, image.toMap());
+    }
+    await batch.commit();
   }
 
 }
