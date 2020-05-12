@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/ImageRepository.dart';
+import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +13,7 @@ class AlbumPage extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => AlbumViewModel(
+        Provider.of<UserRepository>(context, listen: false),
         Provider.of<ImageRepository>(context, listen: false),
       ),
       child: AlbumPageContent(resource),

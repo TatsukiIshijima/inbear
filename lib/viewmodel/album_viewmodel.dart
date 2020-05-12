@@ -2,16 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
+import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AlbumViewModel extends ChangeNotifier {
 
+  final UserRepositoryImpl _userRepositoryImpl;
   final ImageRepositoryImpl _imageRepositoryImpl;
 
-  AlbumViewModel(this._imageRepositoryImpl);
+  AlbumViewModel(
+    this._userRepositoryImpl,
+    this._imageRepositoryImpl
+  );
+
+  Future<bool> _isSelectedSchedule() async {
+    final user = await _userRepositoryImpl.fetchUser();
+    return user.selectScheduleId.isNotEmpty;
+  }
 
   Future<void> uploadSelectImages() async {
     try {
+      if(!await _isSelectedSchedule()) {
+        debugPrint('スケジュールが選択されていません。');
+        return;
+      }
       var pickUpImages = await MultiImagePicker.pickImages(
         maxImages: 5,
         enableCamera: false,
