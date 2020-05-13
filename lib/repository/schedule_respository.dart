@@ -62,4 +62,24 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     await batch.commit();
   }
 
+  @override
+  Future<List<DocumentSnapshot>> fetchImagesAtStart(String selectScheduleId) async {
+    return (await _db.collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_imageSubCollection)
+        .limit(20)
+        .getDocuments()).documents;
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> fetchImagesNext(
+      String selectScheduleId,
+      DocumentSnapshot startSnapshot) async {
+    return (await _db.collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_imageSubCollection)
+        .limit(20)
+        .getDocuments()).documents;
+  }
+
 }
