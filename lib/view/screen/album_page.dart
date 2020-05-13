@@ -31,20 +31,27 @@ class AlbumPageContent extends StatelessWidget {
 
   AlbumPageContent(this.resource);
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+       GlobalKey<RefreshIndicatorState>();
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     return Scaffold(
-      body: GridView.builder(
-          padding: const EdgeInsets.all(4),
-          itemCount: 10,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
-          ),
-          itemBuilder: (context, index) =>
-              PhotoItem('https://placehold.jp/150x150.png')
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: () async { debugPrint('リフレッシュ'); },
+        child: GridView.builder(
+            padding: const EdgeInsets.all(4),
+            itemCount: 10,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+            ),
+            itemBuilder: (context, index) =>
+                PhotoItem('https://placehold.jp/150x150.png')
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
