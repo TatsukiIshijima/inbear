@@ -27,6 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO ： User の select_schedule_id の変更を
+    // TODO : Firestore で通知を受け取ったら、tabを更新？(setState)
     return SafeArea(
       top: false,
       bottom: false,
