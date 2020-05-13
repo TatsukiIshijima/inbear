@@ -4,6 +4,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/ImageRepository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/widget/photo_item.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,17 @@ class AlbumPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     return Scaffold(
-      body: Center(child: Text('アルバム'),),
+      body: GridView.builder(
+          padding: const EdgeInsets.all(4),
+          itemCount: 10,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+          ),
+          itemBuilder: (context, index) =>
+              PhotoItem('https://placehold.jp/150x150.png')
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await viewModel.uploadSelectImages();
