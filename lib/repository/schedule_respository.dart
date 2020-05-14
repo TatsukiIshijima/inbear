@@ -52,11 +52,11 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   @override
   Future<void> postImages(String selectScheduleId, List<ImageEntity> images) async {
     final WriteBatch batch = _db.batch();
-    final imageReference = _db.collection(_scheduleCollection)
-        .document(selectScheduleId)
-        .collection(_imageSubCollection)
-        .document();
     for (var image in images) {
+      final imageReference = _db.collection(_scheduleCollection)
+          .document(selectScheduleId)
+          .collection(_imageSubCollection)
+          .document();
       batch.setData(imageReference, image.toMap());
     }
     await batch.commit();

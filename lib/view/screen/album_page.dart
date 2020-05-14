@@ -66,8 +66,6 @@ class AlbumPageContent extends StatelessWidget {
                   crossAxisSpacing: 4,
                 ),
                 itemBuilder: (context, index) {
-                  // ダミーURL 'https://placehold.jp/150x150.png'
-                  debugPrint('${snapshot.data[index].thumbnailUrl}');
                   return PhotoItem(snapshot.data[index].thumbnailUrl);
                 }
             );
