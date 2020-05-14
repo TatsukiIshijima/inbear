@@ -79,6 +79,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .document(selectScheduleId)
         .collection(_imageSubCollection)
         .limit(20)
+        .orderBy('created_at', descending: true)
         .getDocuments()).documents;
   }
 

@@ -65,6 +65,7 @@ class AlbumViewModel extends ChangeNotifier {
         imageEntities.add(imageEntity);
       }
       await _scheduleRepositoryImpl.postImages(user.selectScheduleId, imageEntities);
+      await fetchImageAtStart();
     } on UnLoginException {
       debugPrint('ログインしていない');
     } on DocumentNotExistException {

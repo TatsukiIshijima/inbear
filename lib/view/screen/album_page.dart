@@ -44,7 +44,7 @@ class AlbumPageContent extends StatelessWidget {
     return Scaffold(
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
-        onRefresh: () async { debugPrint('リフレッシュ'); },
+        onRefresh: () async => await viewModel.fetchImageAtStart(),
         child: StreamBuilder(
           stream: viewModel.imagesStream,
           builder: (BuildContext context, AsyncSnapshot<List<ImageEntity>> snapshot) {
