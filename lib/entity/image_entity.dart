@@ -30,7 +30,7 @@ class ImageEntity {
     final thumbnailUrl = map[_thumbnailUrlKey];
     final posterUid = map[_posterUidKey];
     final _createdAt = map[_createdAtKey];
-    final createdAt = _createdAt is Timestamp ?? _createdAt.toDate();
+    final createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
     return ImageEntity(originalUrl, thumbnailUrl, posterUid, createdAt);
   }
 }

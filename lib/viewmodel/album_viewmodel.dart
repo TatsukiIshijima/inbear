@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
@@ -21,6 +23,19 @@ class AlbumViewModel extends ChangeNotifier {
 
   static const _imageUrlKey = 'image_url';
   static const _thumbnailUrlKey = 'thumbnail_url';
+
+  final _imagesStreamController = StreamController<List<ImageEntity>>();
+
+  Stream<List<ImageEntity>> get imagesStream => _imagesStreamController.stream;
+  StreamSink<List<ImageEntity>> get imagesSink => _imagesStreamController.sink;
+
+  List<ImageEntity> _images = List<ImageEntity>();
+
+  @override
+  void dispose() {
+    _imagesStreamController.close();
+    super.dispose();
+  }
 
   Future<void> uploadSelectImages() async {
     try {
@@ -53,7 +68,7 @@ class AlbumViewModel extends ChangeNotifier {
     } on UnLoginException {
       debugPrint('ログインしていない');
     } on DocumentNotExistException {
-      debugPrint('ユーザードキュメントが存在しない');
+      debugPrint('スケジュールが選択されていない');
     } on NoImagesSelectedException {
       debugPrint('画像の選択のキャンセル');
     } on PermissionDeniedException {
@@ -62,6 +77,22 @@ class AlbumViewModel extends ChangeNotifier {
       debugPrint('写真へのアクセルを完全に拒否');
     } on UploadImageException {
       debugPrint('アップロード失敗');
+    }
+  }
+
+  Future<void> fetchImageAtStart() async {
+    try {
+      _images.clear();
+      imagesSink.add(_images);
+      final selectScheduleId = (await _userRepositoryImpl.fetchUser()).selectScheduleId;
+      final imageDocuments = await _scheduleRepositoryImpl.fetchImagesAtStart(selectScheduleId);
+      final imageEntities = imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
+      _images.addAll(imageEntities);
+      imagesSink.add(_images);
+    } on UnLoginException {
+      imagesSink.addError('ログインしていない');
+    } on DocumentNotExistException {
+      imagesSink.addError('スケジュールが選択されていない');
     }
   }
 }
