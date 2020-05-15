@@ -99,6 +99,9 @@ class UserRepository implements UserRepositoryImpl {
         .collection(_userCollection)
         .document(uid)
         .setData({'select_schedule_id': scheduleId}, merge: true);
+    // キャッシュの User が残ったままだと schedule を切り替えた時に
+    // 前の scheduleId を参照してしまうので、キャッシュをクリアする
+    _userCache.clear();
   }
 
   @override
