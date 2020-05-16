@@ -79,6 +79,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
             .collection(_scheduleCollection)
             .document(selectScheduleId)
             .collection(_imageSubCollection)
+            .orderBy('created_at', descending: true)
             .limit(20)
             .getDocuments())
         .documents;
@@ -91,8 +92,9 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
             .collection(_scheduleCollection)
             .document(selectScheduleId)
             .collection(_imageSubCollection)
-            .limit(20)
             .orderBy('created_at', descending: true)
+            .limit(20)
+            .startAfterDocument(startSnapshot)
             .getDocuments())
         .documents;
   }
