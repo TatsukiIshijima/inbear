@@ -64,13 +64,13 @@ class AlbumViewModel extends ChangeNotifier {
             actionBarTitleColor: '#ffffff',
             actionBarTitle: '写真',
           ));
-      if (pickUpImages.length == 0) {
+      if (pickUpImages.isEmpty) {
         return;
       }
-      List<ImageEntity> imageEntities = List<ImageEntity>();
+      final imageEntities = <ImageEntity>[];
       for (final image in pickUpImages) {
         final uploadUrls = await _imageRepositoryImpl.uploadImage(image);
-        final ImageEntity imageEntity = ImageEntity(uploadUrls[_imageUrlKey],
+        final imageEntity = ImageEntity(uploadUrls[_imageUrlKey],
             uploadUrls[_thumbnailUrlKey], user.uid, DateTime.now());
         imageEntities.add(imageEntity);
       }

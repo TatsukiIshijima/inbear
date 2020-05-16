@@ -42,7 +42,7 @@ class ScheduleSelectContent extends StatelessWidget {
 
   void _showConfirmDialog(BuildContext context, AppLocalizations resource,
       ScheduleSelectViewModel viewModel, String selectScheduleId) {
-    showDialog(
+    showDialog<ClosedQuestionDialog>(
         context: context,
         builder: (context) => ClosedQuestionDialog(
             title: resource.scheduleSelectConfirmTitle,

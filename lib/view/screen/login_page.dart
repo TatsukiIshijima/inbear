@@ -38,7 +38,7 @@ class LoginPageContent extends StatelessWidget {
   final _passwordFocus = FocusNode();
 
   void _showLoginError(BuildContext context, String message) {
-    showDialog(
+    showDialog<SingleButtonDialog>(
         context: context,
         builder: (context) => SingleButtonDialog(
               title: resource.loginErrorTitle,

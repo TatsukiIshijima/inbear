@@ -36,7 +36,7 @@ class RegisterPageContent extends StatelessWidget {
 
   void _showRegisterError(BuildContext context, String message) {
     var resource = AppLocalizations.of(context);
-    showDialog(
+    showDialog<SingleButtonDialog>(
         context: context,
         builder: (context) => SingleButtonDialog(
               title: resource.registerErrorTitle,

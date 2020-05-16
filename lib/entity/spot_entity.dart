@@ -11,10 +11,13 @@ class SpotEntity {
   static const _resultsKey = 'results';
 
   factory SpotEntity.fromJson(Map<String, dynamic> json) {
-    var results = json[_resultsKey] as List;
-    List<AddressEntity> addressList = results == null
-        ? List<AddressEntity>()
-        : results.map((result) => AddressEntity.fromJson(result)).toList();
+    final results = json[_resultsKey] as List<Object>;
+    final addressList = results == null
+        ? <AddressEntity>[]
+        : results
+            .map<AddressEntity>((result) =>
+                AddressEntity.fromJson(result as Map<String, dynamic>))
+            .toList();
     return SpotEntity(addressList);
   }
 }

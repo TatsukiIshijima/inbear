@@ -8,9 +8,11 @@ class GeoCodeEntity {
   static const _resultsKey = 'results';
 
   factory GeoCodeEntity.fromJson(Map<String, dynamic> json) {
-    var results = json[_resultsKey] as List;
-    List<GeometryEntity> geometryList =
-        results.map((result) => GeometryEntity.fromJson(result)).toList();
+    final results = json[_resultsKey] as List<Object>;
+    final geometryList = results
+        .map(
+            (result) => GeometryEntity.fromJson(result as Map<String, dynamic>))
+        .toList();
     return GeoCodeEntity(geometryList);
   }
 }
@@ -23,7 +25,7 @@ class GeometryEntity {
   static const _geometryKey = 'geometry';
 
   factory GeometryEntity.fromJson(Map<String, dynamic> json) {
-    var geometryJson = json[_geometryKey];
+    final geometryJson = json[_geometryKey] as Map<String, dynamic>;
     return GeometryEntity(LocationEntity.fromJson(geometryJson));
   }
 }
@@ -39,8 +41,8 @@ class LocationEntity {
   static const _longitudeKey = 'lng';
 
   factory LocationEntity.fromJson(Map<String, dynamic> json) {
-    var latitude = json[_locationKey][_latitudeKey];
-    var longitude = json[_locationKey][_longitudeKey];
+    final latitude = json[_locationKey][_latitudeKey] as double;
+    final longitude = json[_locationKey][_longitudeKey] as double;
     return LocationEntity(latitude, longitude);
   }
 }

@@ -8,56 +8,51 @@ import 'package:inbear_app/view/screen/schedule_register_page.dart';
 import 'package:inbear_app/view/screen/schedule_select_page.dart';
 
 class Routes {
-  static const SplashPagePath = '/';
-  static const LoginPagePath = '/login';
-  static const ResetPasswordPagePath = '/reset_password';
-  static const RegisterPagePath = '/register';
-  static const HomePagePath = '/home';
-  static const ScheduleRegisterPagePath = '/schedule_register';
+  static const splashPagePath = '/';
+  static const loginPagePath = '/login';
+  static const resetPasswordPagePath = '/reset_password';
+  static const registerPagePath = '/register';
+  static const homePagePath = '/home';
+  static const scheduleRegisterPagePath = '/schedule_register';
 
   static void goToRegisterFromLogin(BuildContext context) {
-    Navigator.push(
+    Navigator.push<MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => RegisterPage(),
-            fullscreenDialog: true));
+            builder: (context) => RegisterPage(), fullscreenDialog: true));
   }
 
   static void goToResetPasswordFromLogin(BuildContext context) {
-    Navigator.push(
+    Navigator.push<MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => ResetPasswordPage(),
-            fullscreenDialog: true));
+            builder: (context) => ResetPasswordPage(), fullscreenDialog: true));
   }
 
   static void goToHome(BuildContext context) {
-    Navigator.pushReplacement(
+    Navigator.pushReplacement<MaterialPageRoute, MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => HomePage(),
-            fullscreenDialog: true));
+            builder: (context) => HomePage(), fullscreenDialog: true));
   }
 
   static void goToLogin(BuildContext context) {
-    Navigator.pushReplacement(
+    Navigator.pushReplacement<MaterialPageRoute, MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => LoginPage(),
-            fullscreenDialog: true));
+            builder: (context) => LoginPage(), fullscreenDialog: true));
   }
 
   static void goToLoginWhenLogout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
+    Navigator.pushAndRemoveUntil<MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => LoginPage(),
-            fullscreenDialog: true),
+            builder: (context) => LoginPage(), fullscreenDialog: true),
         (_) => false);
   }
 
   static void goToScheduleRegister(BuildContext context) {
-    Navigator.push(
+    Navigator.push<MaterialPageRoute>(
         context,
         MaterialPageRoute(
           builder: (context) => ScheduleRegisterPage(),
@@ -65,7 +60,7 @@ class Routes {
   }
 
   static void goToScheduleSelect(BuildContext context) {
-    Navigator.push(
+    Navigator.push<MaterialPageRoute>(
         context, MaterialPageRoute(builder: (context) => ScheduleSelectPage()));
   }
 }

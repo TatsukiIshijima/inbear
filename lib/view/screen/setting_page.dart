@@ -23,7 +23,7 @@ class SettingPage extends StatelessWidget {
 class SettingPageContent extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, AppLocalizations resource,
       SettingViewModel viewModel) {
-    showDialog(
+    showDialog<ClosedQuestionDialog>(
         context: context,
         builder: (context) => ClosedQuestionDialog(
               title: resource.logoutTitle,

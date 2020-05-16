@@ -14,7 +14,7 @@ class ImageEntity {
   static const _posterUidKey = 'poster_uid';
   static const _createdAtKey = 'created_at';
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() => <String, dynamic>{
         _originalUrlKey: originalUrl,
         _thumbnailUrlKey: thumbnailUrl,
         _posterUidKey: posterUid,
@@ -22,11 +22,10 @@ class ImageEntity {
       };
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) {
-    final originalUrl = map[_originalUrlKey];
-    final thumbnailUrl = map[_thumbnailUrlKey];
-    final posterUid = map[_posterUidKey];
-    final _createdAt = map[_createdAtKey];
-    final createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
+    final originalUrl = map[_originalUrlKey] as String;
+    final thumbnailUrl = map[_thumbnailUrlKey] as String;
+    final posterUid = map[_posterUidKey] as String;
+    final createdAt = (map[_createdAtKey] as Timestamp)?.toDate();
     return ImageEntity(originalUrl, thumbnailUrl, posterUid, createdAt);
   }
 }

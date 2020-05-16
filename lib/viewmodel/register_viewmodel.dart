@@ -23,18 +23,19 @@ class RegisterViewModel extends ChangeNotifier {
           emailTextEditingController.text, passwordTextEditingController.text);
       authStatus = Status.success;
     } catch (error) {
-      switch (error.code) {
+      final errorCode = error.code.toString();
+      switch (errorCode) {
         // ここのエラーは変わる可能性があるので、直接記述
-        case "ERROR_WEAK_PASSWORD":
+        case 'ERROR_WEAK_PASSWORD':
           authStatus = AuthStatus.weakPasswordError;
           break;
-        case "ERROR_INVALID_EMAIL":
+        case 'ERROR_INVALID_EMAIL':
           authStatus = AuthStatus.invalidEmailError;
           break;
-        case "ERROR_EMAIL_ALREADY_IN_USE":
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
           authStatus = AuthStatus.emailAlreadyUsedError;
           break;
-        case "ERROR_INVALID_CREDENTIAL":
+        case 'ERROR_INVALID_CREDENTIAL':
           authStatus = AuthStatus.invalidCredentialError;
           break;
         case 'ERROR_TOO_MANY_REQUESTS':

@@ -22,17 +22,16 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     if (user == null) {
       throw UnLoginException();
     }
-    // FIXME:batchで書き直せるかも
     var document =
         await _db.collection(_scheduleCollection).add(schedule.toMap());
-    const String _userCollection = 'user';
+    const _userCollection = 'user';
     var userReference = _db.collection(_userCollection).document(user.uid);
     await _db
         .collection(_scheduleCollection)
         .document(document.documentID)
         .collection(_participantSubCollection)
         .document(user.uid)
-        .setData({'ref': userReference});
+        .setData(<String, DocumentReference>{'ref': userReference});
     return document.documentID;
   }
 
@@ -60,7 +59,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   @override
   Future<void> postImages(
       String selectScheduleId, List<ImageEntity> images) async {
-    final WriteBatch batch = _db.batch();
+    final batch = _db.batch();
     for (var image in images) {
       final imageReference = _db
           .collection(_scheduleCollection)

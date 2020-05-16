@@ -18,11 +18,11 @@ class AddressEntity {
   static const _address3Key = 'address3';
 
   factory AddressEntity.fromJson(Map<String, dynamic> json) {
-    var zipCode = json[_zipCodeKey];
-    var prefCode = json[_prefCodeKey];
-    var prefecture = json[_address1Key];
-    var city = json[_address2key];
-    var street = json[_address3Key];
+    final zipCode = json[_zipCodeKey] as String;
+    final prefCode = json[_prefCodeKey] as String;
+    final prefecture = json[_address1Key] as String;
+    final city = json[_address2key] as String;
+    final street = json[_address3Key] as String;
     return AddressEntity(zipCode, prefCode, prefecture, city, street);
   }
 }

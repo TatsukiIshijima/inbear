@@ -30,7 +30,7 @@ class ResetPasswordContent extends StatelessWidget {
 
   void _showResetPasswordDialog(
       BuildContext context, String title, String message) {
-    showDialog(
+    showDialog<SingleButtonDialog>(
         context: context,
         builder: (context) => SingleButtonDialog(
               title: title,
