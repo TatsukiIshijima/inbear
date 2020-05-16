@@ -24,12 +24,10 @@ import 'package:inbear_app/view/screen/splash_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setPreferredOrientations(
-    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
-  );
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   final _firebaseAuth = FirebaseAuth.instance;
   final _firestore = Firestore.instance;
@@ -40,45 +38,33 @@ void main() {
   final _imageDataSource = ImageDataSource(_firebaseStorage);
 
   runApp(
-    // アプリ全体で必要なものをProvider.createで生成,
-    // Provider.of　で使用したい時に呼び出す
-    MultiProvider(
-      providers: [
-        Provider(
-          create: (context) => UserRepository(
-              _firebaseAuth,
-              _firestore
-          ),
-        ),
-        Provider(
-          create: (context) => ScheduleRepository(
-              _firebaseAuth,
-              _firestore
-          ),
-        ),
-        Provider(
-          create: (context) => AddressRepository(
-            _addressSearchApi,
-            _geoCodeApi
-          ),
-        ),
-        Provider(
-          create: (context) => ImageRepository(
-            _imageDataSource
-          ),
-        )
-      ],
-      child: InbearApp(),
-    )
-  );
+      // アプリ全体で必要なものをProvider.createで生成,
+      // Provider.of　で使用したい時に呼び出す
+      MultiProvider(
+    providers: [
+      Provider(
+        create: (context) => UserRepository(_firebaseAuth, _firestore),
+      ),
+      Provider(
+        create: (context) => ScheduleRepository(_firebaseAuth, _firestore),
+      ),
+      Provider(
+        create: (context) => AddressRepository(_addressSearchApi, _geoCodeApi),
+      ),
+      Provider(
+        create: (context) => ImageRepository(_imageDataSource),
+      )
+    ],
+    child: InbearApp(),
+  ));
 }
 
 class InbearApp extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateTitle: (BuildContext context) => AppLocalizations.of(context).title,
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context).title,
       localizationsDelegates: [
         const AppLocalizationsDelegate(),
         const FallbackCupertinoLocationsDelegate(),
@@ -88,7 +74,7 @@ class InbearApp extends StatelessWidget {
       supportedLocales: [
         const Locale('ja'),
       ],
-      routes: <String, WidgetBuilder> {
+      routes: <String, WidgetBuilder>{
         Routes.SplashPagePath: (_) => SplashPage(),
         Routes.LoginPagePath: (_) => LoginPage(),
         Routes.ResetPasswordPagePath: (_) => ResetPasswordPage(),

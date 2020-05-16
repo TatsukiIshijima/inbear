@@ -7,11 +7,7 @@ class ImageEntity {
   final DateTime createdAt;
 
   ImageEntity(
-    this.originalUrl,
-    this.thumbnailUrl,
-    this.posterUid,
-    this.createdAt
-  );
+      this.originalUrl, this.thumbnailUrl, this.posterUid, this.createdAt);
 
   static const _originalUrlKey = 'original_url';
   static const _thumbnailUrlKey = 'thumbnail_url';
@@ -19,11 +15,11 @@ class ImageEntity {
   static const _createdAtKey = 'created_at';
 
   Map<String, dynamic> toMap() => {
-    _originalUrlKey: originalUrl,
-    _thumbnailUrlKey: thumbnailUrl,
-    _posterUidKey: posterUid,
-    _createdAtKey: createdAt
-  };
+        _originalUrlKey: originalUrl,
+        _thumbnailUrlKey: thumbnailUrl,
+        _posterUidKey: posterUid,
+        _createdAtKey: createdAt
+      };
 
   factory ImageEntity.fromMap(Map<String, dynamic> map) {
     final originalUrl = map[_originalUrlKey];

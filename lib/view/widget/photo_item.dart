@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PhotoItem extends StatelessWidget {
-
   final String url;
 
   PhotoItem(this.url);
@@ -11,10 +10,7 @@ class PhotoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Ink.image(
-          image: ExtendedNetworkImageProvider(url)
-      ),
+      child: Ink.image(image: ExtendedNetworkImageProvider(url)),
     );
   }
-
 }

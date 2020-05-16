@@ -8,7 +8,6 @@ import 'package:inbear_app/view/widget/logo.dart';
 import 'package:provider/provider.dart';
 
 class SplashPage extends StatelessWidget {
-
   void _goToTargetPage(BuildContext context, bool isSignIn) {
     Timer(Duration(seconds: 3), () {
       if (isSignIn) {
@@ -23,7 +22,8 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // 画面描画後にログイン済かの判定処理を実行
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      var isSignIn = await Provider.of<UserRepository>(context, listen: false).isSignIn();
+      var isSignIn =
+          await Provider.of<UserRepository>(context, listen: false).isSignIn();
       _goToTargetPage(context, isSignIn);
     });
     return Container(
@@ -31,9 +31,10 @@ class SplashPage extends StatelessWidget {
       height: MediaQuery.of(context).size.height,
       color: Colors.white,
       child: Center(
-        child: Logo(fontSize: 100,),
+        child: Logo(
+          fontSize: 100,
+        ),
       ),
     );
   }
-
 }

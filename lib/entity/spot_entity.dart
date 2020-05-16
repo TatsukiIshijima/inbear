@@ -4,7 +4,6 @@ import 'address_entity.dart';
 // http://zipcloud.ibsnet.co.jp/doc/api
 
 class SpotEntity {
-
   final List<AddressEntity> addresses;
 
   SpotEntity(this.addresses);
@@ -14,8 +13,8 @@ class SpotEntity {
   factory SpotEntity.fromJson(Map<String, dynamic> json) {
     var results = json[_resultsKey] as List;
     List<AddressEntity> addressList = results == null
-        ? List<AddressEntity>() :
-        results.map((result) => AddressEntity.fromJson(result)).toList();
+        ? List<AddressEntity>()
+        : results.map((result) => AddressEntity.fromJson(result)).toList();
     return SpotEntity(addressList);
   }
 }

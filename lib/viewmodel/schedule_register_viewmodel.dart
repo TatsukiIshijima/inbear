@@ -21,21 +21,21 @@ class ScheduleRegisterStatus extends Status {
 }
 
 class ScheduleRegisterViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
   final AddressRepositoryImpl _addressRepositoryImpl;
 
-  ScheduleRegisterViewModel(
-    this._userRepositoryImpl,
-    this._scheduleRepositoryImpl,
-    this._addressRepositoryImpl
-  );
+  ScheduleRegisterViewModel(this._userRepositoryImpl,
+      this._scheduleRepositoryImpl, this._addressRepositoryImpl);
 
-  final TextEditingController groomTextEditingController = TextEditingController();
-  final TextEditingController brideTextEditingController = TextEditingController();
-  final TextEditingController postalCodeTextEditingController = TextEditingController();
-  final TextEditingController addressTextEditingController = TextEditingController();
+  final TextEditingController groomTextEditingController =
+      TextEditingController();
+  final TextEditingController brideTextEditingController =
+      TextEditingController();
+  final TextEditingController postalCodeTextEditingController =
+      TextEditingController();
+  final TextEditingController addressTextEditingController =
+      TextEditingController();
   final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
   final Completer<GoogleMapController> _googleMapController = Completer();
 
@@ -64,7 +64,8 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     try {
       status = Status.loading;
       notifyListeners();
-      var result = await _addressRepositoryImpl.fetchAddress(postalCodeTextEditingController.text);
+      var result = await _addressRepositoryImpl
+          .fetchAddress(postalCodeTextEditingController.text);
       if (result == null) {
         status = ScheduleRegisterStatus.invalidPostalCodeError;
         notifyListeners();
@@ -112,8 +113,8 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       var location = await _addressRepositoryImpl
           .convertToLocation(addressTextEditingController.text);
       if (location != null && _googleMapController != null) {
-          debugPrint('lat: ${location.latitude}, lng: ${location.longitude}');
-          _googleMapController.future.then((map) {
+        debugPrint('lat: ${location.latitude}, lng: ${location.longitude}');
+        _googleMapController.future.then((map) {
           var latLng = LatLng(location.latitude, location.longitude);
           _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
           map.animateCamera(CameraUpdate.newLatLng(latLng));
@@ -131,7 +132,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
-  
+
   Future<void> registerSchedule() async {
     try {
       status = Status.loading;
@@ -159,9 +160,7 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
               _addressGeoPoint,
               uid,
               DateTime.now(),
-              DateTime.now()
-          )
-      );
+              DateTime.now()));
       await _userRepositoryImpl.addScheduleReference(scheduleId);
       await _userRepositoryImpl.selectSchedule(scheduleId);
       status = Status.success;

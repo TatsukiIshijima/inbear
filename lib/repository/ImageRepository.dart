@@ -3,7 +3,6 @@ import 'package:inbear_app/repository/image_repository_impl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 class ImageRepository implements ImageRepositoryImpl {
-
   final ImageDataSourceImpl _imageDataSourceImpl;
 
   ImageRepository(
@@ -11,8 +10,7 @@ class ImageRepository implements ImageRepositoryImpl {
   );
 
   @override
-  Future<Map<String, String>> uploadImage(Asset asset) async{
+  Future<Map<String, String>> uploadImage(Asset asset) async {
     return await _imageDataSourceImpl.uploadImage(asset);
   }
-
 }

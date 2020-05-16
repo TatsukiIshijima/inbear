@@ -2,7 +2,6 @@
 // http://zipcloud.ibsnet.co.jp/doc/api
 
 class AddressEntity {
-
   final String zipCode;
   final String prefCode;
   final String prefecture;
@@ -10,12 +9,7 @@ class AddressEntity {
   final String street;
 
   AddressEntity(
-    this.zipCode,
-    this.prefCode,
-    this.prefecture,
-    this.city,
-    this.street
-  );
+      this.zipCode, this.prefCode, this.prefecture, this.city, this.street);
 
   static const _zipCodeKey = 'zipcode';
   static const _prefCodeKey = 'prefcode';
