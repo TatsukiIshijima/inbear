@@ -86,7 +86,7 @@ class UserRepository implements UserRepositoryImpl {
         .document(uid)
         .collection(_scheduleSubCollection)
         .document(scheduleId)
-        .setData({'ref': scheduleReference});
+        .setData(<String, DocumentReference>{'ref': scheduleReference});
   }
 
   @override
@@ -95,10 +95,9 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    await _db
-        .collection(_userCollection)
-        .document(uid)
-        .setData({'select_schedule_id': scheduleId}, merge: true);
+    await _db.collection(_userCollection).document(uid).setData(
+        <String, String>{'select_schedule_id': scheduleId},
+        merge: true);
     // キャッシュの User が残ったままだと schedule を切り替えた時に
     // 前の scheduleId を参照してしまうので、キャッシュをクリアする
     _userCache.clear();
@@ -120,15 +119,13 @@ class UserRepository implements UserRepositoryImpl {
     for (var doc in documents) {
       // Reference型から直接データ参照できなかったため、
       // 冗長にデータを引っ張ってくる
-      var docReference = doc.data['ref'];
-      if (docReference is DocumentReference) {
-        var scheduleDoc =
-            await docReference.parent().document(docReference.documentID).get();
-        var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
-        var item = ScheduleSelectItemModel.from(
-            docReference.documentID, schedule, user);
-        scheduleItems.add(item);
-      }
+      var docReference = doc.data['ref'] as DocumentReference;
+      var scheduleDoc =
+          await docReference.parent().document(docReference.documentID).get();
+      var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
+      var item =
+          ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
+      scheduleItems.add(item);
     }
     return scheduleItems;
   }

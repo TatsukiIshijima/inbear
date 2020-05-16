@@ -242,7 +242,7 @@ class ScheduleRegisterContent extends StatelessWidget {
   }
 
   void _showErrorDialog(BuildContext context, String title, String message) {
-    showDialog(
+    showDialog<SingleButtonDialog>(
         context: context,
         builder: (context) => SingleButtonDialog(
               title: title,

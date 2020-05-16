@@ -31,7 +31,8 @@ class LoginViewModel extends ChangeNotifier {
           emailTextEditingController.text, passwordTextEditingController.text);
       authStatus = Status.success;
     } catch (error) {
-      switch (error.code) {
+      final errorCode = error.code.toString();
+      switch (errorCode) {
         case 'ERROR_INVALID_EMAIL':
           authStatus = AuthStatus.invalidEmailError;
           break;

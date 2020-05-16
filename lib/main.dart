@@ -75,12 +75,12 @@ class InbearApp extends StatelessWidget {
         const Locale('ja'),
       ],
       routes: <String, WidgetBuilder>{
-        Routes.SplashPagePath: (_) => SplashPage(),
-        Routes.LoginPagePath: (_) => LoginPage(),
-        Routes.ResetPasswordPagePath: (_) => ResetPasswordPage(),
-        Routes.RegisterPagePath: (_) => RegisterPage(),
-        Routes.HomePagePath: (_) => HomePage(),
-        Routes.ScheduleRegisterPagePath: (_) => ScheduleRegisterPage(),
+        Routes.splashPagePath: (_) => SplashPage(),
+        Routes.loginPagePath: (_) => LoginPage(),
+        Routes.resetPasswordPagePath: (_) => ResetPasswordPage(),
+        Routes.registerPagePath: (_) => RegisterPage(),
+        Routes.homePagePath: (_) => HomePage(),
+        Routes.scheduleRegisterPagePath: (_) => ScheduleRegisterPage(),
       },
       theme: ThemeData(
         primaryColor: Color(0xfff48fb1),
@@ -89,7 +89,7 @@ class InbearApp extends StatelessWidget {
         secondaryHeaderColor: Color(0xffbf5f82),
         accentColor: Color(0xfff06292),
       ),
-      initialRoute: Routes.SplashPagePath,
+      initialRoute: Routes.splashPagePath,
     );
   }
 }

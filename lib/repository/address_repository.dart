@@ -17,14 +17,16 @@ class AddressRepository implements AddressRepositoryImpl {
   @override
   Future<AddressEntity> fetchAddress(String zipCode) async {
     var response = await _addressSearchApiImpl.fetchAddress(zipCode);
-    var spot = SpotEntity.fromJson(json.decode(response));
-    return spot.addresses.length == 0 ? null : spot.addresses.first;
+    var spot =
+        SpotEntity.fromJson(json.decode(response) as Map<String, dynamic>);
+    return spot.addresses.isEmpty ? null : spot.addresses.first;
   }
 
   @override
   Future<LocationEntity> convertToLocation(String address) async {
-    var response = await _geocodeApiImpl.convertAddressToGeoCode(address);
-    var geoCode = GeoCodeEntity.fromJson(json.decode(response));
+    final response = await _geocodeApiImpl.convertAddressToGeoCode(address);
+    final geoCode =
+        GeoCodeEntity.fromJson(json.decode(response) as Map<String, dynamic>);
     return geoCode.geometries.first.location;
   }
 }
