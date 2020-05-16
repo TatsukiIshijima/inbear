@@ -95,7 +95,6 @@ class AlbumViewModel extends ChangeNotifier {
   Future<void> fetchImageAtStart() async {
     try {
       _images.clear();
-      imagesSink.add(_images);
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
       final imageDocuments =
