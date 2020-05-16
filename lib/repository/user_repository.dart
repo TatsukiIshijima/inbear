@@ -7,45 +7,34 @@ import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 class UserRepository implements UserRepositoryImpl {
-
   final FirebaseAuth _auth;
   final Firestore _db;
   final String _userCollection = 'user';
   final String _scheduleSubCollection = 'schedule';
 
-  UserRepository(
-    this._auth,
-    this._db
-  );
+  Map<String, UserEntity> _userCache = Map();
+
+  UserRepository(this._auth, this._db);
 
   @override
   Future<void> signIn(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password
-    );
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
   @override
   Future<void> signUp(String name, String email, String password) async {
     var result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password
-    );
-    var user = UserEntity(
-      result.user.uid,
-      name,
-      email,
-      '',
-      DateTime.now()
-    );
-    await _db.collection(_userCollection)
-      .document(result.user.uid)
-      .setData(user.toMap());
+        email: email, password: password);
+    var user = UserEntity(result.user.uid, name, email, '', DateTime.now());
+    await _db
+        .collection(_userCollection)
+        .document(result.user.uid)
+        .setData(user.toMap());
   }
 
   @override
   Future<void> signOut() async {
+    _userCache.clear();
     await _auth.signOut();
   }
 
@@ -72,13 +61,16 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    var userDocument = await _db.collection(_userCollection)
-        .document(uid)
-        .get();
+    if (_userCache.containsKey(uid)) {
+      return _userCache[uid];
+    }
+    var userDocument =
+        await _db.collection(_userCollection).document(uid).get();
     if (!userDocument.exists) {
       throw DocumentNotExistException();
     }
-    return UserEntity.fromMap(userDocument.data);
+    _userCache[uid] = UserEntity.fromMap(userDocument.data);
+    return _userCache[uid];
   }
 
   @override
@@ -87,9 +79,10 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    var scheduleReference = _db.collection(_scheduleSubCollection)
-        .document(scheduleId);
-    await _db.collection(_userCollection)
+    var scheduleReference =
+        _db.collection(_scheduleSubCollection).document(scheduleId);
+    await _db
+        .collection(_userCollection)
         .document(uid)
         .collection(_scheduleSubCollection)
         .document(scheduleId)
@@ -102,9 +95,13 @@ class UserRepository implements UserRepositoryImpl {
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    await _db.collection(_userCollection)
+    await _db
+        .collection(_userCollection)
         .document(uid)
         .setData({'select_schedule_id': scheduleId}, merge: true);
+    // キャッシュの User が残ったままだと schedule を切り替えた時に
+    // 前の scheduleId を参照してしまうので、キャッシュをクリアする
+    _userCache.clear();
   }
 
   @override
@@ -114,20 +111,22 @@ class UserRepository implements UserRepositoryImpl {
       throw UnLoginException();
     }
     var scheduleItems = List<ScheduleSelectItemModel>();
-    var documents = (await _db.collection(_userCollection)
-        .document(user.uid)
-        .collection(_scheduleSubCollection)
-        .getDocuments()).documents;
+    var documents = (await _db
+            .collection(_userCollection)
+            .document(user.uid)
+            .collection(_scheduleSubCollection)
+            .getDocuments())
+        .documents;
     for (var doc in documents) {
       // Reference型から直接データ参照できなかったため、
       // 冗長にデータを引っ張ってくる
       var docReference = doc.data['ref'];
       if (docReference is DocumentReference) {
-        var scheduleDoc = await docReference.parent()
-            .document(docReference.documentID)
-            .get();
+        var scheduleDoc =
+            await docReference.parent().document(docReference.documentID).get();
         var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
-        var item = ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
+        var item = ScheduleSelectItemModel.from(
+            docReference.documentID, schedule, user);
         scheduleItems.add(item);
       }
     }

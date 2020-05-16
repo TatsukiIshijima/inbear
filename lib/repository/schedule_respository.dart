@@ -6,7 +6,6 @@ import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
 class ScheduleRepository implements ScheduleRepositoryImpl {
-
   final FirebaseAuth _auth;
   final Firestore _db;
   final String _scheduleCollection = 'schedule';
@@ -15,6 +14,8 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
 
   ScheduleRepository(this._auth, this._db);
 
+  Map<String, ScheduleEntity> _scheduleCache = Map();
+
   @override
   Future<String> registerSchedule(ScheduleEntity schedule) async {
     var user = await _auth.currentUser();
@@ -22,12 +23,12 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
       throw UnLoginException();
     }
     // FIXME:batchで書き直せるかも
-    var document = await _db.collection(_scheduleCollection)
-        .add(schedule.toMap());
+    var document =
+        await _db.collection(_scheduleCollection).add(schedule.toMap());
     const String _userCollection = 'user';
-    var userReference = _db.collection(_userCollection)
-        .document(user.uid);
-    await _db.collection(_scheduleCollection)
+    var userReference = _db.collection(_userCollection).document(user.uid);
+    await _db
+        .collection(_scheduleCollection)
         .document(document.documentID)
         .collection(_participantSubCollection)
         .document(user.uid)
@@ -40,26 +41,61 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     if (selectScheduleId.isEmpty) {
       throw NoSelectScheduleException();
     }
-    var scheduleDocument = await _db.collection(_scheduleCollection)
+    if (_scheduleCache.containsKey(selectScheduleId)) {
+      return _scheduleCache[selectScheduleId];
+    }
+    var scheduleDocument = await _db
+        .collection(_scheduleCollection)
         .document(selectScheduleId)
         .get();
     if (!scheduleDocument.exists) {
       throw DocumentNotExistException();
     }
-    return (ScheduleEntity.fromMap(scheduleDocument.data));
+    _scheduleCache.clear();
+    _scheduleCache[selectScheduleId] =
+        ScheduleEntity.fromMap(scheduleDocument.data);
+    return _scheduleCache[selectScheduleId];
   }
 
   @override
-  Future<void> postImages(String selectScheduleId, List<ImageEntity> images) async {
+  Future<void> postImages(
+      String selectScheduleId, List<ImageEntity> images) async {
     final WriteBatch batch = _db.batch();
-    final imageReference = _db.collection(_scheduleCollection)
-        .document(selectScheduleId)
-        .collection(_imageSubCollection)
-        .document();
     for (var image in images) {
+      final imageReference = _db
+          .collection(_scheduleCollection)
+          .document(selectScheduleId)
+          .collection(_imageSubCollection)
+          .document();
       batch.setData(imageReference, image.toMap());
     }
     await batch.commit();
   }
 
+  @override
+  Future<List<DocumentSnapshot>> fetchImagesAtStart(
+      String selectScheduleId) async {
+    return (await _db
+            .collection(_scheduleCollection)
+            .document(selectScheduleId)
+            .collection(_imageSubCollection)
+            .orderBy('created_at', descending: true)
+            .limit(20)
+            .getDocuments())
+        .documents;
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> fetchImagesNext(
+      String selectScheduleId, DocumentSnapshot startSnapshot) async {
+    return (await _db
+            .collection(_scheduleCollection)
+            .document(selectScheduleId)
+            .collection(_imageSubCollection)
+            .orderBy('created_at', descending: true)
+            .limit(20)
+            .startAfterDocument(startSnapshot)
+            .getDocuments())
+        .documents;
+  }
 }
