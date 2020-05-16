@@ -12,39 +12,32 @@ import 'package:inbear_app/viewmodel/rest_password_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => ResetPasswordViewModel(
-        Provider.of<UserRepository>(context, listen: false)
-      ),
-      child: Scaffold(
-        body: ResetPasswordContent(resource)
-      ),
+          Provider.of<UserRepository>(context, listen: false)),
+      child: Scaffold(body: ResetPasswordContent(resource)),
     );
   }
-
 }
 
 class ResetPasswordContent extends StatelessWidget {
-  
   final AppLocalizations resource;
-  
+
   ResetPasswordContent(this.resource);
 
-  void _showResetPasswordDialog(BuildContext context, String title, String message) {
+  void _showResetPasswordDialog(
+      BuildContext context, String title, String message) {
     showDialog(
-      context: context,
-      builder: (context) =>
-        SingleButtonDialog(
-          title: title,
-          message: message,
-          positiveButtonTitle: resource.defaultPositiveButtonTitle,
-          onPressed: () => Navigator.pop(context),
-        )
-    );
+        context: context,
+        builder: (context) => SingleButtonDialog(
+              title: title,
+              message: message,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              onPressed: () => Navigator.pop(context),
+            ));
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -54,109 +47,104 @@ class ResetPasswordContent extends StatelessWidget {
   Widget build(BuildContext context) {
     // ルートページでなければ、pushの時点で build が呼ばれ、
     // pop の時点で viewModel の dispose が呼ばれている
-    final viewModel = Provider.of<ResetPasswordViewModel>(context, listen: false);
+    final viewModel =
+        Provider.of<ResetPasswordViewModel>(context, listen: false);
     return Stack(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.topRight,
-            margin: EdgeInsets.only(top: 24, right: 24),
-            child: CloseButton(),
-          ),
-          Form(
-            key: _formKey,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Logo(
-                    fontSize: 80,
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Text(
-                    resource.resetPasswordDescription,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey[600]
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  InputField(
-                    labelText: resource.emailLabelText,
-                    textInputType: TextInputType.emailAddress,
-                    textEditingController: viewModel.emailTextEditingController,
-                    validator: (text) => text.isEmpty ? resource.emptyError : null,
-                    focusNode: _emailFocus,
-                    onFieldSubmitted: (text) => _emailFocus.unfocus(),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  RoundButton(
-                    minWidth: MediaQuery.of(context).size.width,
-                    text: resource.resetPasswordButtonTitle,
-                    backgroundColor: Colors.pink[200],
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        await viewModel.sendPasswordResetEmail();
-                      }
-                    },
-                  ),
-                ],
-              ),
+      children: <Widget>[
+        Container(
+          alignment: Alignment.topRight,
+          margin: EdgeInsets.only(top: 24, right: 24),
+          child: CloseButton(),
+        ),
+        Form(
+          key: _formKey,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Logo(
+                  fontSize: 80,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  resource.resetPasswordDescription,
+                  style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                InputField(
+                  labelText: resource.emailLabelText,
+                  textInputType: TextInputType.emailAddress,
+                  textEditingController: viewModel.emailTextEditingController,
+                  validator: (text) =>
+                      text.isEmpty ? resource.emptyError : null,
+                  focusNode: _emailFocus,
+                  onFieldSubmitted: (text) => _emailFocus.unfocus(),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                RoundButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  text: resource.resetPasswordButtonTitle,
+                  backgroundColor: Colors.pink[200],
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      await viewModel.sendPasswordResetEmail();
+                    }
+                  },
+                ),
+              ],
             ),
           ),
-          Selector<ResetPasswordViewModel, String>(
-            selector: (context, viewModel) => viewModel.authStatus,
-            builder: (context, authStatus, child) {
-              switch (authStatus) {
-                case Status.loading:
-                  return Container(
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(0, 0, 0, 0.3)
-                    ),
-                    child: Center(
-                      child: Loading(),
-                    ),
-                  );
-                case Status.success:
-                  WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      _showResetPasswordDialog(
+        ),
+        Selector<ResetPasswordViewModel, String>(
+          selector: (context, viewModel) => viewModel.authStatus,
+          builder: (context, authStatus, child) {
+            switch (authStatus) {
+              case Status.loading:
+                return Container(
+                  decoration:
+                      BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
+                  child: Center(
+                    child: Loading(),
+                  ),
+                );
+              case Status.success:
+                WidgetsBinding.instance.addPostFrameCallback((_) =>
+                    _showResetPasswordDialog(
                         context,
                         resource.resetPasswordTitle,
                         resource.resetPasswordSuccessMessage));
-                  break;
-                case AuthStatus.invalidEmailError:
-                  WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      _showResetPasswordDialog(
+                break;
+              case AuthStatus.invalidEmailError:
+                WidgetsBinding.instance.addPostFrameCallback((_) =>
+                    _showResetPasswordDialog(
                         context,
                         resource.resetPasswordErrorTitle,
                         resource.invalidEmailError));
-                  break;
-                case AuthStatus.userNotFoundError:
-                  WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      _showResetPasswordDialog(
+                break;
+              case AuthStatus.userNotFoundError:
+                WidgetsBinding.instance.addPostFrameCallback((_) =>
+                    _showResetPasswordDialog(
                         context,
                         resource.resetPasswordTitle,
                         resource.userNotFoundError));
-                  break;
-                case AuthStatus.unDefinedError:
-                  WidgetsBinding.instance.addPostFrameCallback((_) =>
-                      _showResetPasswordDialog(
-                          context,
-                          resource.resetPasswordTitle,
-                          resource.generalError));
-                  break;
-              }
-              return Container();
-            },
-          )
-        ],
+                break;
+              case AuthStatus.unDefinedError:
+                WidgetsBinding.instance.addPostFrameCallback((_) =>
+                    _showResetPasswordDialog(context,
+                        resource.resetPasswordTitle, resource.generalError));
+                break;
+            }
+            return Container();
+          },
+        )
+      ],
     );
   }
-
 }

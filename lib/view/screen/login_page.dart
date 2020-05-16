@@ -15,14 +15,12 @@ import 'package:provider/provider.dart';
 import '../../routes.dart';
 
 class LoginPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
-      create: (context) => LoginViewModel(
-          Provider.of<UserRepository>(context, listen: false)
-      ),
+      create: (context) =>
+          LoginViewModel(Provider.of<UserRepository>(context, listen: false)),
       child: Scaffold(
         body: LoginPageContent(resource),
       ),
@@ -31,7 +29,6 @@ class LoginPage extends StatelessWidget {
 }
 
 class LoginPageContent extends StatelessWidget {
-
   final AppLocalizations resource;
 
   LoginPageContent(this.resource);
@@ -42,15 +39,13 @@ class LoginPageContent extends StatelessWidget {
 
   void _showLoginError(BuildContext context, String message) {
     showDialog(
-      context: context,
-      builder: (context) =>
-        SingleButtonDialog(
-          title: resource.loginErrorTitle,
-          message: message,
-          positiveButtonTitle: resource.defaultPositiveButtonTitle,
-          onPressed: () => Navigator.pop(context),
-        )
-    );
+        context: context,
+        builder: (context) => SingleButtonDialog(
+              title: resource.loginErrorTitle,
+              message: message,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              onPressed: () => Navigator.pop(context),
+            ));
   }
 
   @override
@@ -75,32 +70,37 @@ class LoginPageContent extends StatelessWidget {
                       height: 30,
                     ),
                     Selector<LoginViewModel, TextEditingController>(
-                      selector: (context, viewModel) => viewModel.emailTextEditingController,
+                      selector: (context, viewModel) =>
+                          viewModel.emailTextEditingController,
                       builder: (context, textEditingController, child) =>
                           InputField(
-                            labelText: resource.emailLabelText,
-                            textInputType: TextInputType.emailAddress,
-                            textEditingController: textEditingController,
-                            validator: (text) => text.isEmpty ? resource.emptyError : null,
-                            focusNode: _emailFocus,
-                            onFieldSubmitted: (text) => FocusScope.of(context).requestFocus(_passwordFocus),
-                          ),
+                        labelText: resource.emailLabelText,
+                        textInputType: TextInputType.emailAddress,
+                        textEditingController: textEditingController,
+                        validator: (text) =>
+                            text.isEmpty ? resource.emptyError : null,
+                        focusNode: _emailFocus,
+                        onFieldSubmitted: (text) =>
+                            FocusScope.of(context).requestFocus(_passwordFocus),
+                      ),
                     ),
                     SizedBox(
                       height: 30,
                     ),
                     Selector<LoginViewModel, TextEditingController>(
-                      selector: (context, viewModel) => viewModel.passwordTextEditingController,
+                      selector: (context, viewModel) =>
+                          viewModel.passwordTextEditingController,
                       builder: (context, textEditingController, child) =>
                           InputField(
-                            labelText: resource.passwordLabelText,
-                            obscureText: true,
-                            textInputType: TextInputType.visiblePassword,
-                            textEditingController: textEditingController,
-                            validator: (text) => text.isEmpty ? resource.emptyError : null,
-                            focusNode: _passwordFocus,
-                            onFieldSubmitted: (text) => _passwordFocus.unfocus(),
-                          ),
+                        labelText: resource.passwordLabelText,
+                        obscureText: true,
+                        textInputType: TextInputType.visiblePassword,
+                        textEditingController: textEditingController,
+                        validator: (text) =>
+                            text.isEmpty ? resource.emptyError : null,
+                        focusNode: _passwordFocus,
+                        onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                      ),
                     ),
                     SizedBox(
                       height: 30,
@@ -149,9 +149,8 @@ class LoginPageContent extends StatelessWidget {
                 switch (authStatus) {
                   case Status.loading:
                     return Container(
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(0, 0, 0, 0.3)
-                      ),
+                      decoration:
+                          BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
                       child: Center(
                         child: Loading(),
                       ),
@@ -160,7 +159,8 @@ class LoginPageContent extends StatelessWidget {
                     // ビルド前にメソッドが呼ばれるとエラーになるので
                     // addPostFrameCallback で任意処理を実行
                     // https://www.didierboelens.com/2019/04/addpostframecallback/
-                    WidgetsBinding.instance.addPostFrameCallback((_) => Routes.goToHome(context));
+                    WidgetsBinding.instance
+                        .addPostFrameCallback((_) => Routes.goToHome(context));
                     break;
                   case AuthStatus.invalidEmailError:
                     WidgetsBinding.instance.addPostFrameCallback((_) =>
@@ -180,7 +180,8 @@ class LoginPageContent extends StatelessWidget {
                     break;
                   case AuthStatus.tooManyRequestsError:
                     WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showLoginError(context, resource.tooManyRequestsError));
+                        _showLoginError(
+                            context, resource.tooManyRequestsError));
                     break;
                   case AuthStatus.unDefinedError:
                     WidgetsBinding.instance.addPostFrameCallback((_) =>
@@ -195,6 +196,4 @@ class LoginPageContent extends StatelessWidget {
       ),
     );
   }
-
-
 }

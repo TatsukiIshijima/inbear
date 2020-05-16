@@ -4,25 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ClosedQuestionDialog extends StatelessWidget {
-
   final String title;
   final String message;
   final String positiveButtonTitle;
   final String negativeButtonTitle;
   final VoidCallback onPositiveButtonPressed;
-  
-  ClosedQuestionDialog({
-    @required
-    this.title,
-    @required
-    this.message,
-    @required
-    this.positiveButtonTitle,
-    @required
-    this.negativeButtonTitle,
-    @required
-    this.onPositiveButtonPressed
-  });
+
+  ClosedQuestionDialog(
+      {@required this.title,
+      @required this.message,
+      @required this.positiveButtonTitle,
+      @required this.negativeButtonTitle,
+      @required this.onPositiveButtonPressed});
 
   Widget _androidAlertDialog(BuildContext context) {
     return AlertDialog(
@@ -57,12 +50,11 @@ class ClosedQuestionDialog extends StatelessWidget {
       ],
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ?
-    _iOSAlertDialog(context) :
-    _androidAlertDialog(context);
+    return Platform.isIOS
+        ? _iOSAlertDialog(context)
+        : _androidAlertDialog(context);
   }
-  
 }

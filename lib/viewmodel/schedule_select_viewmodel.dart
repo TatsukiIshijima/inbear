@@ -4,12 +4,9 @@ import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
-class ScheduleSelectStatus extends Status {
-
-}
+class ScheduleSelectStatus extends Status {}
 
 class ScheduleSelectViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepositoryImpl;
 
   ScheduleSelectViewModel(

@@ -11,24 +11,21 @@ import 'package:inbear_app/viewmodel/schedule_select_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleSelectPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => ScheduleSelectViewModel(
-        Provider.of<UserRepository>(context, listen: false)
-      ),
+          Provider.of<UserRepository>(context, listen: false)),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(resource.scheduleSelectTitle,
+          title: Text(
+            resource.scheduleSelectTitle,
             style: TextStyle(
-                color: Colors.white,
+              color: Colors.white,
             ),
           ),
-          iconTheme: IconThemeData(
-              color: Colors.white
-          ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: SafeArea(
           child: ScheduleSelectContent(resource),
@@ -36,88 +33,75 @@ class ScheduleSelectPage extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class ScheduleSelectContent extends StatelessWidget {
-
   final AppLocalizations resource;
 
   ScheduleSelectContent(this.resource);
 
-  void _showConfirmDialog(
-      BuildContext context,
-      AppLocalizations resource,
-      ScheduleSelectViewModel viewModel,
-      String selectScheduleId) {
+  void _showConfirmDialog(BuildContext context, AppLocalizations resource,
+      ScheduleSelectViewModel viewModel, String selectScheduleId) {
     showDialog(
-      context: context,
-      builder: (context) =>
-        ClosedQuestionDialog(
-          title: resource.scheduleSelectConfirmTitle,
-          message: resource.scheduleSelectConfirmMessage,
-          positiveButtonTitle: resource.defaultPositiveButtonTitle,
-          negativeButtonTitle: resource.defaultNegativeButtonTitle,
-          onPositiveButtonPressed: () async {
-            Navigator.pop(context);
-            await viewModel.selectSchedule(selectScheduleId);
-          }
-        )
-    );
+        context: context,
+        builder: (context) => ClosedQuestionDialog(
+            title: resource.scheduleSelectConfirmTitle,
+            message: resource.scheduleSelectConfirmMessage,
+            positiveButtonTitle: resource.defaultPositiveButtonTitle,
+            negativeButtonTitle: resource.defaultNegativeButtonTitle,
+            onPositiveButtonPressed: () async {
+              Navigator.pop(context);
+              await viewModel.selectSchedule(selectScheduleId);
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<ScheduleSelectViewModel>(context, listen: false);
+    final viewModel =
+        Provider.of<ScheduleSelectViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await viewModel.fetchEntrySchedule();
     });
     return Selector<ScheduleSelectViewModel, String>(
-      selector: (context, viewModel) => viewModel.status,
-      builder: (context, status, child) {
-        switch(status) {
-          case Status.loading:
-            return Center(
-              child: Loading(),
-            );
-          case Status.success:
-            return Selector<ScheduleSelectViewModel, List<ScheduleSelectItemModel>>(
-              selector: (context, viewModel) => viewModel.scheduleItems,
-              builder: (context, schedules, child) {
-                if (schedules.length != 0) {
-                  return ListView.builder(
-                      itemCount: schedules.length,
-                      itemBuilder: (context, int index) =>
-                          ScheduleSelectItem(
-                            pairName: schedules[index].pairName,
-                            isSelect: schedules[index].isSelected,
-                            onTap: () {
-                              if (!schedules[index].isSelected) {
-                                _showConfirmDialog(
-                                    context,
-                                    resource,
-                                    viewModel,
-                                    schedules[index].id
-                                );
-                              }
-                            },
-                          )
-                  );
-                } else {
-                  return Center(
-                    child: Text(resource.notExistEntryScheduleError),
-                  );
-                }
-              }
-            );
-          case Status.unLoginError:
-            return Center(
-              child: Text(resource.unloginError),
-            );
-          default:
-            return Container();
-        }
-      }
-    );
+        selector: (context, viewModel) => viewModel.status,
+        builder: (context, status, child) {
+          switch (status) {
+            case Status.loading:
+              return Center(
+                child: Loading(),
+              );
+            case Status.success:
+              return Selector<ScheduleSelectViewModel,
+                      List<ScheduleSelectItemModel>>(
+                  selector: (context, viewModel) => viewModel.scheduleItems,
+                  builder: (context, schedules, child) {
+                    if (schedules.length != 0) {
+                      return ListView.builder(
+                          itemCount: schedules.length,
+                          itemBuilder: (context, int index) =>
+                              ScheduleSelectItem(
+                                pairName: schedules[index].pairName,
+                                isSelect: schedules[index].isSelected,
+                                onTap: () {
+                                  if (!schedules[index].isSelected) {
+                                    _showConfirmDialog(context, resource,
+                                        viewModel, schedules[index].id);
+                                  }
+                                },
+                              ));
+                    } else {
+                      return Center(
+                        child: Text(resource.notExistEntryScheduleError),
+                      );
+                    }
+                  });
+            case Status.unLoginError:
+              return Center(
+                child: Text(resource.unloginError),
+              );
+            default:
+              return Container();
+          }
+        });
   }
 }

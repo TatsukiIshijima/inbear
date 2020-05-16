@@ -10,16 +10,8 @@ class ScheduleEntity {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  ScheduleEntity(
-    this.groom,
-    this.bride,
-    this.dateTime,
-    this.address,
-    this.geoPoint,
-    this.ownerUid,
-    this.createdAt,
-    this.updatedAt
-  );
+  ScheduleEntity(this.groom, this.bride, this.dateTime, this.address,
+      this.geoPoint, this.ownerUid, this.createdAt, this.updatedAt);
 
   static const _groomKey = 'groom';
   static const _brideKey = 'bride';
@@ -31,15 +23,15 @@ class ScheduleEntity {
   static const _updatedAtKey = 'updated_at';
 
   Map<String, dynamic> toMap() => {
-    _groomKey: groom,
-    _brideKey: bride,
-    _dateTimeKey: dateTime,
-    _addressKey: address,
-    _geoPointKey: geoPoint,
-    _ownerUidKey: ownerUid,
-    _createdAtKey: createdAt,
-    _updatedAtKey: updatedAt
-  };
+        _groomKey: groom,
+        _brideKey: bride,
+        _dateTimeKey: dateTime,
+        _addressKey: address,
+        _geoPointKey: geoPoint,
+        _ownerUidKey: ownerUid,
+        _createdAtKey: createdAt,
+        _updatedAtKey: updatedAt
+      };
 
   factory ScheduleEntity.fromMap(Map<String, dynamic> map) {
     var groom = map[_groomKey];
@@ -53,15 +45,7 @@ class ScheduleEntity {
     var createdAt = _createdAt is Timestamp ? _createdAt.toDate() : null;
     var _updatedAt = map[_updatedAtKey];
     var updatedAt = _updatedAt is Timestamp ? _updatedAt.toDate() : null;
-    return ScheduleEntity(
-      groom,
-      bride,
-      dateTime,
-      address,
-      geoPoint,
-      ownerUid,
-      createdAt,
-      updatedAt
-    );
+    return ScheduleEntity(groom, bride, dateTime, address, geoPoint, ownerUid,
+        createdAt, updatedAt);
   }
 }

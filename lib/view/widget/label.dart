@@ -2,16 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Label extends StatelessWidget {
-
   final String text;
   final IconData iconData;
 
-  Label({
-    @required
-    this.text,
-    @required
-    this.iconData
-  });
+  Label({@required this.text, @required this.iconData});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +21,9 @@ class Label extends StatelessWidget {
                 iconData,
                 color: Colors.black54,
               ),
-              SizedBox(width: 8,),
+              SizedBox(
+                width: 8,
+              ),
               Text(
                 text,
                 maxLines: 1,
@@ -35,8 +31,7 @@ class Label extends StatelessWidget {
                 style: TextStyle(
                     color: Colors.black54,
                     fontSize: 22,
-                    fontWeight: FontWeight.bold
-                ),
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -48,5 +43,4 @@ class Label extends StatelessWidget {
       ),
     );
   }
-
 }

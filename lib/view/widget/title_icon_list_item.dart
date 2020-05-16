@@ -2,18 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TitleAndIconListItem extends StatelessWidget {
-
   final String title;
   final IconData iconData;
   final VoidCallback onTap;
 
   TitleAndIconListItem({
-    @required
-    this.title,
-    @required
-    this.iconData,
-    @required
-    this.onTap,
+    @required this.title,
+    @required this.iconData,
+    @required this.onTap,
   });
 
   @override
@@ -24,15 +20,10 @@ class TitleAndIconListItem extends StatelessWidget {
         padding: EdgeInsets.all(12.0),
         child: ListTile(
           leading: Icon(iconData),
-          title: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis
-          ),
+          title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
       ),
       onTap: () => onTap(),
     );
   }
-
 }

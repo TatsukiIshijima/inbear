@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SingleButtonDialog extends StatelessWidget {
-
   final String title;
   final String message;
   final String positiveButtonTitle;
@@ -45,8 +44,8 @@ class SingleButtonDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ?
-      _iOSAlertDialog(context) :
-      _androidAlertDialog(context);
+    return Platform.isIOS
+        ? _iOSAlertDialog(context)
+        : _androidAlertDialog(context);
   }
 }

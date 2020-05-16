@@ -9,14 +9,10 @@ import 'package:inbear_app/entity/spot_entity.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 
 class AddressRepository implements AddressRepositoryImpl {
-  
   final AddressSearchApiImpl _addressSearchApiImpl;
   final GeocodeApiImpl _geocodeApiImpl;
-  
-  AddressRepository(
-    this._addressSearchApiImpl,
-    this._geocodeApiImpl
-  );
+
+  AddressRepository(this._addressSearchApiImpl, this._geocodeApiImpl);
 
   @override
   Future<AddressEntity> fetchAddress(String zipCode) async {
@@ -31,5 +27,4 @@ class AddressRepository implements AddressRepositoryImpl {
     var geoCode = GeoCodeEntity.fromJson(json.decode(response));
     return geoCode.geometries.first.location;
   }
-
 }

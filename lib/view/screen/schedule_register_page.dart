@@ -16,26 +16,21 @@ import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleRegisterPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => ScheduleRegisterViewModel(
-        Provider.of<UserRepository>(context, listen: false),
-        Provider.of<ScheduleRepository>(context, listen: false),
-        Provider.of<AddressRepository>(context, listen: false)
-      ),
+          Provider.of<UserRepository>(context, listen: false),
+          Provider.of<ScheduleRepository>(context, listen: false),
+          Provider.of<AddressRepository>(context, listen: false)),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(resource.scheduleRegisterTitle,
-            style: TextStyle(
-                color: Colors.white
-            ),
+          title: Text(
+            resource.scheduleRegisterTitle,
+            style: TextStyle(color: Colors.white),
           ),
-          iconTheme: IconThemeData(
-              color: Colors.white
-          ),
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: SafeArea(
           child: ScheduleRegisterContent(resource),
@@ -43,11 +38,9 @@ class ScheduleRegisterPage extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class ScheduleRegisterContent extends StatelessWidget {
-
   final AppLocalizations resource;
 
   ScheduleRegisterContent(this.resource);
@@ -58,7 +51,8 @@ class ScheduleRegisterContent extends StatelessWidget {
   final _postalCodeFocus = FocusNode();
   final _addressFocus = FocusNode();
 
-  Widget _formContent(BuildContext context, ScheduleRegisterViewModel viewModel) {
+  Widget _formContent(
+      BuildContext context, ScheduleRegisterViewModel viewModel) {
     return SingleChildScrollView(
       child: Form(
         key: _formKey,
@@ -71,7 +65,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                 text: resource.scheduleNameLabelText,
                 iconData: Icons.account_circle,
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               InputField(
                 labelText: resource.scheduleGroomNameLabelText,
                 textInputType: TextInputType.text,
@@ -80,7 +76,9 @@ class ScheduleRegisterContent extends StatelessWidget {
                 focusNode: _groomNameFocus,
                 onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               InputField(
                 labelText: resource.scheduleBrideNameLabelText,
                 textInputType: TextInputType.text,
@@ -89,55 +87,56 @@ class ScheduleRegisterContent extends StatelessWidget {
                 focusNode: _brideNameFocus,
                 onFieldSubmitted: (text) {},
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               Label(
                 text: resource.scheduleDateLabelText,
                 iconData: Icons.calendar_today,
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               RaisedButton(
                 padding: EdgeInsets.all(20),
                 child: Selector<ScheduleRegisterViewModel, DateTime>(
                   selector: (context, viewModel) => viewModel.scheduledDateTime,
-                  builder: (context, dateTime, child) =>
-                      Text(
-                        dateTime == null ?
-                        resource.scheduleDateSelectDescription :
-                        viewModel.dateToString(dateTime),
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
+                  builder: (context, dateTime, child) => Text(
+                    dateTime == null
+                        ? resource.scheduleDateSelectDescription
+                        : viewModel.dateToString(dateTime),
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 color: Colors.grey[50],
                 shape: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    borderSide: BorderSide(
-                        color: Colors.grey
-                    )
-                ),
+                    borderSide: BorderSide(color: Colors.grey)),
                 elevation: 0,
                 onPressed: () {
-                  DatePicker.showDateTimePicker(
-                      context,
-                      showTitleActions: true,
+                  DatePicker.showDateTimePicker(context, showTitleActions: true,
                       onConfirm: (date) {
-                        viewModel.updateDate(date);
-                        _postalCodeFocus.requestFocus();
-                      } ,
-                      locale: LocaleType.jp,
-                      currentTime: DateTime.now()
-                  );
+                    viewModel.updateDate(date);
+                    _postalCodeFocus.requestFocus();
+                  }, locale: LocaleType.jp, currentTime: DateTime.now());
                 },
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               Label(
                 text: resource.schedulePlaceLabelText,
                 iconData: Icons.place,
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Text(resource.schedulePostalCodeSearchDescription),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -146,68 +145,85 @@ class ScheduleRegisterContent extends StatelessWidget {
                     child: InputField(
                       labelText: resource.schedulePostalCodeLabelText,
                       textInputType: TextInputType.number,
-                      textEditingController: viewModel.postalCodeTextEditingController,
+                      textEditingController:
+                          viewModel.postalCodeTextEditingController,
                       validator: (text) => null,
                       focusNode: _postalCodeFocus,
                     ),
                   ),
-                  SizedBox(width: 1,),
+                  SizedBox(
+                    width: 1,
+                  ),
                   Expanded(
                     flex: 2,
                     child: Container(
                       height: 60,
                       child: Selector<ScheduleRegisterViewModel, bool>(
-                        selector: (context, viewModel) => viewModel.isPostalCodeFormat,
+                        selector: (context, viewModel) =>
+                            viewModel.isPostalCodeFormat,
                         builder: (context, isPostalCodeFormat, child) =>
                             FlatButton(
-                              shape: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                                  borderSide: BorderSide(color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey)
-                              ),
-                              color: isPostalCodeFormat ? Colors.pink[200] : Colors.grey[400],
-                              child: Icon(
-                                Icons.search,
-                                color: Colors.white,
-                              ),
-                              onPressed: () async {
-                                if (viewModel.validatePostalCode()) {
-                                  await viewModel.fetchAddress();
-                                  _addressFocus.requestFocus();
-                                }
-                              },
-                            ),
+                          shape: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                              borderSide: BorderSide(
+                                  color: isPostalCodeFormat
+                                      ? Colors.pink[200]
+                                      : Colors.grey)),
+                          color: isPostalCodeFormat
+                              ? Colors.pink[200]
+                              : Colors.grey[400],
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
+                          onPressed: () async {
+                            if (viewModel.validatePostalCode()) {
+                              await viewModel.fetchAddress();
+                              _addressFocus.requestFocus();
+                            }
+                          },
+                        ),
                       ),
                     ),
                   )
                 ],
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               Selector<ScheduleRegisterViewModel, TextEditingController>(
-                selector: (context, viewModel) => viewModel.addressTextEditingController,
+                selector: (context, viewModel) =>
+                    viewModel.addressTextEditingController,
                 builder: (context, textEditingController, child) => InputField(
                   labelText: resource.scheduleAddressLabelText,
                   textInputType: TextInputType.text,
                   textEditingController: textEditingController,
-                  validator: (text) => text.isEmpty ? resource.emptyError : null,
+                  validator: (text) =>
+                      text.isEmpty ? resource.emptyError : null,
                   focusNode: _addressFocus,
-                  onFieldSubmitted: (text) async => await viewModel.convertPostalCodeToLocation(),
+                  onFieldSubmitted: (text) async =>
+                      await viewModel.convertPostalCodeToLocation(),
                 ),
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width * ( 3 / 4),
+                height: MediaQuery.of(context).size.width * (3 / 4),
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
-                      target: LatLng(35.681236, 139.767125),
-                      zoom: 17.0
-                  ),
+                      target: LatLng(35.681236, 139.767125), zoom: 17.0),
                   mapType: MapType.normal,
                   myLocationButtonEnabled: false,
-                  onMapCreated: (mapController) => viewModel.mapCreated(mapController),
+                  onMapCreated: (mapController) =>
+                      viewModel.mapCreated(mapController),
                 ),
               ),
-              SizedBox(height: 24,),
+              SizedBox(
+                height: 24,
+              ),
               RoundButton(
                 text: resource.registerButtonTitle,
                 minWidth: MediaQuery.of(context).size.width,
@@ -225,25 +241,21 @@ class ScheduleRegisterContent extends StatelessWidget {
     );
   }
 
-  void _showErrorDialog(
-      BuildContext context,
-      String title,
-      String message) {
+  void _showErrorDialog(BuildContext context, String title, String message) {
     showDialog(
-      context: context,
-      builder: (context) =>
-        SingleButtonDialog(
-          title: title,
-          message: message,
-          positiveButtonTitle: resource.defaultPositiveButtonTitle,
-          onPressed: () => Navigator.pop(context),
-        )
-    );
+        context: context,
+        builder: (context) => SingleButtonDialog(
+              title: title,
+              message: message,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              onPressed: () => Navigator.pop(context),
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<ScheduleRegisterViewModel>(context, listen: false);
+    final viewModel =
+        Provider.of<ScheduleRegisterViewModel>(context, listen: false);
     viewModel.setPostalCodeInputEvent();
     return Stack(
       children: <Widget>[
@@ -255,72 +267,50 @@ class ScheduleRegisterContent extends StatelessWidget {
             switch (status) {
               case Status.loading:
                 return Container(
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(0, 0, 0, 0.3)
-                  ),
+                  decoration:
+                      BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
                   child: Center(
                     child: Loading(),
                   ),
                 );
               case Status.success:
-                WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    Navigator.pop(context));
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) => Navigator.pop(context));
                 break;
               case ScheduleRegisterStatus.unSelectDateError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.inputFormErrorTitle,
-                        resource.unselectDateError
-                    ));
+                    _showErrorDialog(context, resource.inputFormErrorTitle,
+                        resource.unselectDateError));
                 break;
               case ScheduleRegisterStatus.invalidPostalCodeError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.inputFormErrorTitle,
-                        resource.invalidPostalCodeError
-                    ));
+                    _showErrorDialog(context, resource.inputFormErrorTitle,
+                        resource.invalidPostalCodeError));
                 break;
               case ScheduleRegisterStatus.unableSearchAddressError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.generalErrorTitle,
-                        resource.unableSearchAddressError
-                    ));
+                    _showErrorDialog(context, resource.generalErrorTitle,
+                        resource.unableSearchAddressError));
                 break;
               case Status.unLoginError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.generalErrorTitle,
-                        resource.unloginError
-                    ));
+                    _showErrorDialog(context, resource.generalErrorTitle,
+                        resource.unloginError));
                 break;
               case Status.timeoutError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.connectionErrorTitle,
-                        resource.timeoutError
-                    ));
+                    _showErrorDialog(context, resource.connectionErrorTitle,
+                        resource.timeoutError));
                 break;
               case Status.httpError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.connectionErrorTitle,
-                        resource.httpError
-                    ));
+                    _showErrorDialog(context, resource.connectionErrorTitle,
+                        resource.httpError));
                 break;
               case Status.socketError:
                 WidgetsBinding.instance.addPostFrameCallback((_) =>
-                    _showErrorDialog(
-                        context,
-                        resource.connectionErrorTitle,
-                        resource.socketError
-                    ));
+                    _showErrorDialog(context, resource.connectionErrorTitle,
+                        resource.socketError));
                 break;
             }
             return Container();
@@ -329,5 +319,4 @@ class ScheduleRegisterContent extends StatelessWidget {
       ],
     );
   }
-
 }

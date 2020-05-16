@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class InputField extends StatelessWidget {
-
   final String labelText;
   final TextEditingController textEditingController;
   final bool obscureText;
@@ -13,10 +12,8 @@ class InputField extends StatelessWidget {
   final void Function(String) onChanged;
 
   InputField({
-    @required
-    this.labelText,
-    @required
-    this.textEditingController,
+    @required this.labelText,
+    @required this.textEditingController,
     this.obscureText = false,
     this.textInputType,
     this.focusNode,
@@ -28,10 +25,8 @@ class InputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: labelText
-      ),
+      decoration:
+          InputDecoration(border: OutlineInputBorder(), labelText: labelText),
       controller: textEditingController,
       keyboardType: textInputType,
       obscureText: obscureText,
@@ -41,5 +36,4 @@ class InputField extends StatelessWidget {
       onChanged: (text) => onChanged(text),
     );
   }
-
 }

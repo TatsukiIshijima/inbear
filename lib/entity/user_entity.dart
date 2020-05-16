@@ -8,12 +8,7 @@ class UserEntity {
   final DateTime createdAt;
 
   UserEntity(
-    this.uid,
-    this.name,
-    this.email,
-    this.selectScheduleId,
-    this.createdAt
-  );
+      this.uid, this.name, this.email, this.selectScheduleId, this.createdAt);
 
   static const _uidKey = 'uid';
   static const _nameKey = 'name';
@@ -22,12 +17,12 @@ class UserEntity {
   static const _createdAtKey = 'created_at';
 
   Map<String, dynamic> toMap() => {
-    _uidKey: uid,
-    _nameKey: name,
-    _emailKey: email,
-    _selectScheduleIdKey: selectScheduleId,
-    _createdAtKey: createdAt
-  };
+        _uidKey: uid,
+        _nameKey: name,
+        _emailKey: email,
+        _selectScheduleIdKey: selectScheduleId,
+        _createdAtKey: createdAt
+      };
 
   factory UserEntity.fromMap(Map<String, dynamic> map) {
     var uid = map[_uidKey];

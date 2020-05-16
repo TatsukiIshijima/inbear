@@ -3,14 +3,12 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
 class ResetPasswordViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepository;
 
-  ResetPasswordViewModel(
-    this._userRepository
-  );
+  ResetPasswordViewModel(this._userRepository);
 
-  final TextEditingController emailTextEditingController = TextEditingController();
+  final TextEditingController emailTextEditingController =
+      TextEditingController();
 
   String authStatus;
 
@@ -18,7 +16,8 @@ class ResetPasswordViewModel extends ChangeNotifier {
     try {
       authStatus = Status.loading;
       notifyListeners();
-      await _userRepository.sendPasswordResetEmail(emailTextEditingController.text);
+      await _userRepository
+          .sendPasswordResetEmail(emailTextEditingController.text);
       authStatus = Status.success;
     } catch (error) {
       switch (error.code) {

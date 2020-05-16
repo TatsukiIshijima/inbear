@@ -4,10 +4,11 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
 class LoginViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepository;
-  final TextEditingController emailTextEditingController = TextEditingController();
-  final TextEditingController passwordTextEditingController = TextEditingController();
+  final TextEditingController emailTextEditingController =
+      TextEditingController();
+  final TextEditingController passwordTextEditingController =
+      TextEditingController();
 
   String authStatus = Status.none;
 
@@ -27,9 +28,7 @@ class LoginViewModel extends ChangeNotifier {
       authStatus = Status.loading;
       notifyListeners();
       await _userRepository.signIn(
-          emailTextEditingController.text,
-          passwordTextEditingController.text
-      );
+          emailTextEditingController.text, passwordTextEditingController.text);
       authStatus = Status.success;
     } catch (error) {
       switch (error.code) {

@@ -13,34 +13,28 @@ class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => SettingViewModel(
-        Provider.of<UserRepository>(context, listen: false)
-      ),
+      create: (context) =>
+          SettingViewModel(Provider.of<UserRepository>(context, listen: false)),
       child: SettingPageContent(),
     );
   }
 }
 
 class SettingPageContent extends StatelessWidget {
-
-  void _showLogoutDialog(
-      BuildContext context,
-      AppLocalizations resource,
+  void _showLogoutDialog(BuildContext context, AppLocalizations resource,
       SettingViewModel viewModel) {
     showDialog(
         context: context,
-        builder: (context) =>
-          ClosedQuestionDialog(
-            title: resource.logoutTitle,
-            message: resource.logoutMessage,
-            positiveButtonTitle: resource.defaultPositiveButtonTitle,
-            negativeButtonTitle: resource.defaultNegativeButtonTitle,
-            onPositiveButtonPressed: () async {
-              await viewModel.signOut();
-              Routes.goToLoginWhenLogout(context);
-            },
-          )
-    );
+        builder: (context) => ClosedQuestionDialog(
+              title: resource.logoutTitle,
+              message: resource.logoutMessage,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              negativeButtonTitle: resource.defaultNegativeButtonTitle,
+              onPositiveButtonPressed: () async {
+                await viewModel.signOut();
+                Routes.goToLoginWhenLogout(context);
+              },
+            ));
   }
 
   @override
@@ -67,6 +61,7 @@ class SettingPageContent extends StatelessWidget {
           )
         ],
       ),
-    );;
+    );
+    ;
   }
 }

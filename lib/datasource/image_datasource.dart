@@ -6,7 +6,6 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:uuid/uuid.dart';
 
 class ImageDataSource implements ImageDataSourceImpl {
-
   final FirebaseStorage _storage;
 
   ImageDataSource(this._storage);
@@ -26,7 +25,8 @@ class ImageDataSource implements ImageDataSourceImpl {
 
   @override
   Future<Map<String, String>> uploadImage(Asset asset) async {
-    final ByteData byteData = await asset.getByteData(quality: _originalImageQuality);
+    final ByteData byteData =
+        await asset.getByteData(quality: _originalImageQuality);
     final ByteData thumbnailByteData = await asset.getThumbByteData(
         (asset.originalWidth * _thumbnailImageRate).round(),
         (asset.originalHeight * _thumbnailImageRate).round(),
@@ -34,23 +34,28 @@ class ImageDataSource implements ImageDataSourceImpl {
     final Uuid uuid = Uuid();
     List<int> imageData = byteData.buffer.asUint8List();
     List<int> thumbnailData = thumbnailByteData.buffer.asUint8List();
-    final StorageReference imageReference = _storage.ref().child('${uuid.v4()}.jpg');
-    final StorageReference thumbnailReference = _storage.ref().child('${uuid.v4()}-thumb.jpg');
+    final StorageReference imageReference =
+        _storage.ref().child('${uuid.v4()}.jpg');
+    final StorageReference thumbnailReference =
+        _storage.ref().child('${uuid.v4()}-thumb.jpg');
     final StorageMetadata metadata = StorageMetadata(contentType: 'image/jpeg');
-    final StorageUploadTask imageUploadTask = imageReference.putData(imageData, metadata);
-    final StorageUploadTask thumbnailUploadTask = thumbnailReference.putData(thumbnailData, metadata);
-    final StorageTaskSnapshot imageUploadTaskSnapshot = await imageUploadTask.onComplete;
-    final StorageTaskSnapshot thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
-    if ( imageUploadTaskSnapshot.error == null && thumbnailUploadTaskSnapshot.error == null) {
-      final String imageUrl = await imageUploadTaskSnapshot.ref.getDownloadURL();
-      final String thumbnailUrl = await thumbnailUploadTaskSnapshot.ref.getDownloadURL();
-      return {
-        _imageUrlKey: imageUrl,
-        _thumbnailUrlKey: thumbnailUrl
-      };
+    final StorageUploadTask imageUploadTask =
+        imageReference.putData(imageData, metadata);
+    final StorageUploadTask thumbnailUploadTask =
+        thumbnailReference.putData(thumbnailData, metadata);
+    final StorageTaskSnapshot imageUploadTaskSnapshot =
+        await imageUploadTask.onComplete;
+    final StorageTaskSnapshot thumbnailUploadTaskSnapshot =
+        await thumbnailUploadTask.onComplete;
+    if (imageUploadTaskSnapshot.error == null &&
+        thumbnailUploadTaskSnapshot.error == null) {
+      final String imageUrl =
+          await imageUploadTaskSnapshot.ref.getDownloadURL();
+      final String thumbnailUrl =
+          await thumbnailUploadTaskSnapshot.ref.getDownloadURL();
+      return {_imageUrlKey: imageUrl, _thumbnailUrlKey: thumbnailUrl};
     } else {
       throw UploadImageException();
     }
   }
-
 }

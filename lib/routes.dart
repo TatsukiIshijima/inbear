@@ -17,22 +17,18 @@ class Routes {
 
   static void goToRegisterFromLogin(BuildContext context) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => RegisterPage(),
-        fullscreenDialog: true
-      )
-    );
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => RegisterPage(),
+            fullscreenDialog: true));
   }
 
   static void goToResetPasswordFromLogin(BuildContext context) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => ResetPasswordPage(),
-        fullscreenDialog: true
-      )
-    );
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => ResetPasswordPage(),
+            fullscreenDialog: true));
   }
 
   static void goToHome(BuildContext context) {
@@ -40,19 +36,15 @@ class Routes {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => HomePage(),
-            fullscreenDialog: true
-        )
-    );
+            fullscreenDialog: true));
   }
 
   static void goToLogin(BuildContext context) {
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginPage(),
-        fullscreenDialog: true
-      )
-    );
+        context,
+        MaterialPageRoute(
+            builder: (BuildContext context) => LoginPage(),
+            fullscreenDialog: true));
   }
 
   static void goToLoginWhenLogout(BuildContext context) {
@@ -60,26 +52,20 @@ class Routes {
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => LoginPage(),
-            fullscreenDialog: true
-        ),
-            (_) => false);
+            fullscreenDialog: true),
+        (_) => false);
   }
 
   static void goToScheduleRegister(BuildContext context) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScheduleRegisterPage(),
-      )
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => ScheduleRegisterPage(),
+        ));
   }
 
   static void goToScheduleSelect(BuildContext context) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScheduleSelectPage()
-      )
-    );
+        context, MaterialPageRoute(builder: (context) => ScheduleSelectPage()));
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-class FallbackCupertinoLocationsDelegate extends LocalizationsDelegate<CupertinoLocalizations>{
-
+class FallbackCupertinoLocationsDelegate
+    extends LocalizationsDelegate<CupertinoLocalizations> {
   const FallbackCupertinoLocationsDelegate();
 
   @override
@@ -13,5 +13,4 @@ class FallbackCupertinoLocationsDelegate extends LocalizationsDelegate<Cupertino
 
   @override
   bool shouldReload(LocalizationsDelegate<CupertinoLocalizations> old) => false;
-
 }

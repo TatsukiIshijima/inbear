@@ -11,14 +11,10 @@ class ScheduleGetStatus extends Status {
 }
 
 class ScheduleViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
 
-  ScheduleViewModel(
-    this._userRepositoryImpl,
-    this._scheduleRepositoryImpl
-  );
+  ScheduleViewModel(this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
   final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
@@ -30,7 +26,8 @@ class ScheduleViewModel extends ChangeNotifier {
       status = Status.loading;
       notifyListeners();
       var user = await _userRepositoryImpl.fetchUser();
-      schedule = await _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId);
+      schedule =
+          await _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId);
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;

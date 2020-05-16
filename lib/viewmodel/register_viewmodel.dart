@@ -3,31 +3,28 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
 class RegisterViewModel extends ChangeNotifier {
-
   final UserRepositoryImpl _userRepository;
-  final TextEditingController nameTextEditingController = TextEditingController();
-  final TextEditingController emailTextEditingController = TextEditingController();
-  final TextEditingController passwordTextEditingController = TextEditingController();
+  final TextEditingController nameTextEditingController =
+      TextEditingController();
+  final TextEditingController emailTextEditingController =
+      TextEditingController();
+  final TextEditingController passwordTextEditingController =
+      TextEditingController();
 
   String authStatus = Status.none;
 
-  RegisterViewModel(
-    this._userRepository
-  );
+  RegisterViewModel(this._userRepository);
 
   Future<void> signUp() async {
     try {
       authStatus = Status.loading;
       notifyListeners();
-       await _userRepository.signUp(
-          nameTextEditingController.text,
-          emailTextEditingController.text,
-          passwordTextEditingController.text
-      );
-       authStatus = Status.success;
+      await _userRepository.signUp(nameTextEditingController.text,
+          emailTextEditingController.text, passwordTextEditingController.text);
+      authStatus = Status.success;
     } catch (error) {
       switch (error.code) {
-      // ここのエラーは変わる可能性があるので、直接記述
+        // ここのエラーは変わる可能性があるので、直接記述
         case "ERROR_WEAK_PASSWORD":
           authStatus = AuthStatus.weakPasswordError;
           break;
