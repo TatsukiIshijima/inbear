@@ -37,6 +37,9 @@ class AppLocalizations {
   static const _scheduleTitleKey = 'schedule_title';
   static const _settingTitleKey = 'setting_title';
 
+  // 画像一覧画面
+  static const _albumNotRegisterKey = 'album_not_register';
+
   // スケジュール確認画面
   static const _scheduleGroomTextKey = 'schedule_groom_text';
   static const _scheduleBrideTextKey = 'schedule_bride_text';
@@ -108,7 +111,7 @@ class AppLocalizations {
   static const _defaultPositiveButtonTitleKey = 'defalut_positive_button_title';
   static const _defaultNegativeButtonTitleKey = 'defalut_negative_button_title';
 
-  static Map<String, Map<String, String>> _localizedValues = {
+  static final Map<String, Map<String, String>> _localizedValues = {
     'ja': {
       _appTitleKey: 'inbear',
 
@@ -137,6 +140,9 @@ class AppLocalizations {
       _homeTitleKey: 'ホーム',
       _scheduleTitleKey: 'スケジュール',
       _settingTitleKey: '設定',
+
+      // 画像一覧画面
+      _albumNotRegisterKey: '画像が登録されていません。\n「+」ボタンより画像を追加してみましょう。',
 
       // スケジュール確認画面
       _scheduleGroomTextKey: '新郎',
@@ -224,6 +230,8 @@ class AppLocalizations {
   String get homeTitle => _getText(_homeTitleKey);
   String get scheduleTitle => _getText(_scheduleTitleKey);
   String get settingTitle => _getText(_settingTitleKey);
+
+  String get albumNotRegisterMessage => _getText(_albumNotRegisterKey);
 
   String get scheduleGroomText => _getText(_scheduleGroomTextKey);
   String get scheduleBrideText => _getText(_scheduleBrideTextKey);

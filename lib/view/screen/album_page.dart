@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/ImageRepository.dart';
@@ -33,6 +34,13 @@ class AlbumPageContent extends StatelessWidget {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
+  Widget _errorText(String errorMessage) {
+    return Text(
+      errorMessage,
+      textAlign: TextAlign.center,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
@@ -44,43 +52,53 @@ class AlbumPageContent extends StatelessWidget {
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: () async => await viewModel.fetchImageAtStart(),
-        child: StreamBuilder(
+        child: StreamBuilder<List<ImageEntity>>(
           initialData: null,
           stream: viewModel.imagesStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<ImageEntity>> snapshot) {
-            if (snapshot.hasError) {
-              return Center(child: Text('エラー ${snapshot.error}'));
-            }
+          builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                debugPrint('ローディング中');
                 return Center(child: Loading());
               default:
-                break;
+                if (snapshot.hasError) {
+                  if (snapshot.error is UnLoginException) {
+                    return Center(child: _errorText(resource.unloginError));
+                  } else if (snapshot.error is DocumentNotExistException) {
+                    return Center(
+                        child: _errorText(resource.notExistDataError));
+                  } else if (snapshot.error is NoSelectScheduleException) {
+                    return Center(
+                        child: _errorText(resource.noSelectScheduleError));
+                  } else {
+                    return Center(child: _errorText(resource.generalError));
+                  }
+                } else if (!snapshot.hasData) {
+                  return Center(
+                      child: _errorText(resource.albumNotRegisterMessage));
+                } else if (snapshot.data.isEmpty) {
+                  return Center(
+                      child: _errorText(resource.albumNotRegisterMessage));
+                } else {
+                  return GridView.builder(
+                      padding: const EdgeInsets.all(4),
+                      itemCount: snapshot.data.length,
+                      controller: viewModel.scrollController,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 4,
+                        crossAxisSpacing: 4,
+                      ),
+                      itemBuilder: (context, index) {
+                        return PhotoItem(snapshot.data[index].thumbnailUrl);
+                      });
+                }
             }
-            if (!snapshot.hasData || snapshot.data.isEmpty) {
-              return Center(child: Text('写真が登録されていません。'));
-            }
-            return GridView.builder(
-                padding: const EdgeInsets.all(4),
-                itemCount: snapshot.data.length,
-                controller: viewModel.scrollController,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemBuilder: (context, index) {
-                  return PhotoItem(snapshot.data[index].thumbnailUrl);
-                });
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await viewModel.uploadSelectImages();
-        },
+        onPressed: () async => await viewModel.uploadSelectImages(),
         child: const Icon(Icons.add),
       ),
     );

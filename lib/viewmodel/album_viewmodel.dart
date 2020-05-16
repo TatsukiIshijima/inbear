@@ -100,6 +100,8 @@ class AlbumViewModel extends ChangeNotifier {
       final imageDocuments =
           await _scheduleRepositoryImpl.fetchImagesAtStart(selectScheduleId);
       if (imageDocuments.isEmpty) {
+        // データがないことを通知する
+        imagesSink.add(_images);
         return;
       }
       final imageEntities =
@@ -108,9 +110,11 @@ class AlbumViewModel extends ChangeNotifier {
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
     } on UnLoginException {
-      imagesSink.addError('ログインしていない');
+      imagesSink.addError(UnLoginException());
     } on DocumentNotExistException {
-      imagesSink.addError('スケジュールが選択されていない');
+      imagesSink.addError(DocumentNotExistException());
+    } on NoSelectScheduleException {
+      imagesSink.addError(NoSelectScheduleException());
     }
   }
 
@@ -134,9 +138,11 @@ class AlbumViewModel extends ChangeNotifier {
       _lastSnapshot = imageDocuments.last;
       debugPrint('追加読み込み, ${_images.length}');
     } on UnLoginException {
-      imagesSink.addError('ログインしていない');
+      imagesSink.addError(UnLoginException());
     } on DocumentNotExistException {
-      imagesSink.addError('スケジュールが選択されていない');
+      imagesSink.addError(DocumentNotExistException());
+    } on NoSelectScheduleException {
+      imagesSink.addError(NoSelectScheduleException);
     }
   }
 }
