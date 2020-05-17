@@ -106,6 +106,13 @@ class AppLocalizations {
       'not_exist_entry_schedule_error_message';
   static const _noSelectScheduleErrorMessageKey =
       'no_select_schedule_error_message';
+  static const _uploadImageErrorTitleKey = '_upload_image_error_title';
+  static const _uploadImageErrorMessageKey = '_upload_image_error_message';
+  static const _permissionErrorTitleKey = '_permission_error_title';
+  static const _photoPermissionDeniedErrorMessageKey =
+      'photo_permission_denied_error_message';
+  static const _photoPermissionPermanentlyDeniedErrorMessageKey =
+      'photo_permission_permanently_denied_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
@@ -200,6 +207,13 @@ class AppLocalizations {
       _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
       _noSelectScheduleErrorMessageKey:
           '表示するスケジュールが選択されていません。\n「設定」からスケジュールを登録するか、\n「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
+      _uploadImageErrorTitleKey: 'アップロードエラー',
+      _uploadImageErrorMessageKey: '写真のアップロードに失敗しました。しばらくしてから、もう一度お試し下さい。',
+      _permissionErrorTitleKey: '権限エラー',
+      _photoPermissionDeniedErrorMessageKey:
+          'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
+      _photoPermissionPermanentlyDeniedErrorMessageKey:
+          'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
       _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -300,6 +314,13 @@ class AppLocalizations {
       _getText(_notExistEntryScheduleErrorMessageKey);
   String get noSelectScheduleError =>
       _getText(_noSelectScheduleErrorMessageKey);
+  String get uploadImageErrorTitle => _getText(_uploadImageErrorTitleKey);
+  String get uploadImageError => _getText(_uploadImageErrorMessageKey);
+  String get permissionErrorTitle => _getText(_permissionErrorTitleKey);
+  String get photoPermissionDeniedError =>
+      _getText(_photoPermissionDeniedErrorMessageKey);
+  String get photoPermissionPermanentlyDeniedError =>
+      _getText(_photoPermissionPermanentlyDeniedErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
