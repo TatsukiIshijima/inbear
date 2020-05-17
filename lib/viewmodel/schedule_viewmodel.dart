@@ -7,6 +7,9 @@ import 'package:inbear_app/status.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleGetStatus extends Status {
+  static const String notExistUserDataError = 'NOT_EXIST_USER_DATA_ERROR';
+  static const String notExistScheduleDataError =
+      'NOT_EXIST_SCHEDULE_DATA_ERROR';
   static const String noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
 }
 
@@ -16,7 +19,7 @@ class ScheduleViewModel extends ChangeNotifier {
 
   ScheduleViewModel(this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
-  final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
+  final DateFormat _formatter = DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   String status = Status.none;
   ScheduleEntity schedule;
@@ -31,8 +34,10 @@ class ScheduleViewModel extends ChangeNotifier {
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;
-    } on DocumentNotExistException {
-      status = Status.notExistDocumentError;
+    } on UserDocumentNotExistException {
+      status = ScheduleGetStatus.notExistUserDataError;
+    } on ScheduleDocumentNotExistException {
+      status = ScheduleGetStatus.notExistScheduleDataError;
     } on NoSelectScheduleException {
       status = ScheduleGetStatus.noSelectScheduleError;
     }

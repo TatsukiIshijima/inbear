@@ -98,6 +98,10 @@ class AppLocalizations {
   static const _unableSearchAddressErrorMessageKey =
       'unable_search_address_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
+  static const _notExistUserDataErrorMessageKey =
+      'not_exist_user_data_error_message';
+  static const _notExistScheduleDataErrorMessageKey =
+      'not_exist_schedule_data_error_message';
   static const _notExistEntryScheduleErrorMessageKey =
       'not_exist_entry_schedule_error_message';
   static const _noSelectScheduleErrorMessageKey =
@@ -191,6 +195,8 @@ class AppLocalizations {
       _unableSearchAddressErrorMessageKey:
           '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
+      _notExistUserDataErrorMessageKey: 'ユーザーデータが存在しません。',
+      _notExistScheduleDataErrorMessageKey: 'スケジュールデータが存在しません。',
       _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
       _noSelectScheduleErrorMessageKey:
           '表示するスケジュールが選択されていません。\n「設定」からスケジュールを登録するか、\n「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
@@ -286,6 +292,10 @@ class AppLocalizations {
   String get unableSearchAddressError =>
       _getText(_unableSearchAddressErrorMessageKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
+  String get notExistUserDataError =>
+      _getText(_notExistUserDataErrorMessageKey);
+  String get notExistScheduleDataError =>
+      _getText(_notExistScheduleDataErrorMessageKey);
   String get notExistEntryScheduleError =>
       _getText(_notExistEntryScheduleErrorMessageKey);
   String get noSelectScheduleError =>
