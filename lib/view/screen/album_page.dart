@@ -31,6 +31,33 @@ class AlbumPageContent extends StatelessWidget {
 
   AlbumPageContent(this.resource);
 
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      viewModel.setScrollListener();
+      await viewModel.fetchImageAtStart();
+    });
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          AlbumGridView(resource, viewModel),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async => await viewModel.uploadSelectImages(),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class AlbumGridView extends StatelessWidget {
+  final AppLocalizations resource;
+  final AlbumViewModel albumViewModel;
+
+  AlbumGridView(this.resource, this.albumViewModel);
+
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -43,63 +70,51 @@ class AlbumPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      viewModel.setScrollListener();
-      await viewModel.fetchImageAtStart();
-    });
-    return Scaffold(
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: () async => await viewModel.fetchImageAtStart(),
-        child: StreamBuilder<List<ImageEntity>>(
-          initialData: null,
-          stream: viewModel.imagesStream,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return Center(child: Loading());
-              default:
-                if (snapshot.hasError) {
-                  if (snapshot.error is UnLoginException) {
-                    return Center(child: _errorText(resource.unloginError));
-                  } else if (snapshot.error is DocumentNotExistException) {
-                    return Center(
-                        child: _errorText(resource.notExistDataError));
-                  } else if (snapshot.error is NoSelectScheduleException) {
-                    return Center(
-                        child: _errorText(resource.noSelectScheduleError));
-                  } else {
-                    return Center(child: _errorText(resource.generalError));
-                  }
-                } else if (!snapshot.hasData) {
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: () async => await albumViewModel.fetchImageAtStart(),
+      child: StreamBuilder<List<ImageEntity>>(
+        initialData: null,
+        stream: albumViewModel.imagesStream,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Center(child: Loading());
+            default:
+              if (snapshot.hasError) {
+                if (snapshot.error is UnLoginException) {
+                  return Center(child: _errorText(resource.unloginError));
+                } else if (snapshot.error is DocumentNotExistException) {
+                  return Center(child: _errorText(resource.notExistDataError));
+                } else if (snapshot.error is NoSelectScheduleException) {
                   return Center(
-                      child: _errorText(resource.albumNotRegisterMessage));
-                } else if (snapshot.data.isEmpty) {
-                  return Center(
-                      child: _errorText(resource.albumNotRegisterMessage));
+                      child: _errorText(resource.noSelectScheduleError));
                 } else {
-                  return GridView.builder(
-                      padding: const EdgeInsets.all(4),
-                      itemCount: snapshot.data.length,
-                      controller: viewModel.scrollController,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 4,
-                        crossAxisSpacing: 4,
-                      ),
-                      itemBuilder: (context, index) {
-                        return PhotoItem(snapshot.data[index].thumbnailUrl);
-                      });
+                  return Center(child: _errorText(resource.generalError));
                 }
-            }
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async => await viewModel.uploadSelectImages(),
-        child: const Icon(Icons.add),
+              } else if (!snapshot.hasData) {
+                return Center(
+                    child: _errorText(resource.albumNotRegisterMessage));
+              } else if (snapshot.data.isEmpty) {
+                return Center(
+                    child: _errorText(resource.albumNotRegisterMessage));
+              } else {
+                return GridView.builder(
+                    padding: const EdgeInsets.all(4),
+                    itemCount: snapshot.data.length,
+                    controller: albumViewModel.scrollController,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                    ),
+                    itemBuilder: (context, index) {
+                      return PhotoItem(snapshot.data[index].thumbnailUrl);
+                    });
+              }
+          }
+        },
       ),
     );
   }
