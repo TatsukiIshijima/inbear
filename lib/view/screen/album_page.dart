@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/ImageRepository.dart';
@@ -7,8 +8,11 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
+import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
+
+import '../../status.dart';
 
 class AlbumPage extends StatelessWidget {
   @override
@@ -30,9 +34,6 @@ class AlbumPageContent extends StatelessWidget {
 
   AlbumPageContent(this.resource);
 
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
-
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
@@ -41,48 +42,149 @@ class AlbumPageContent extends StatelessWidget {
       await viewModel.fetchImageAtStart();
     });
     return Scaffold(
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: () async => await viewModel.fetchImageAtStart(),
-        child: StreamBuilder(
-          initialData: null,
-          stream: viewModel.imagesStream,
-          builder: (BuildContext context,
-              AsyncSnapshot<List<ImageEntity>> snapshot) {
-            if (snapshot.hasError) {
-              return Center(child: Text('エラー ${snapshot.error}'));
-            }
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                debugPrint('ローディング中');
-                return Center(child: Loading());
-              default:
-                break;
-            }
-            if (!snapshot.hasData || snapshot.data.isEmpty) {
-              return Center(child: Text('写真が登録されていません。'));
-            }
-            return GridView.builder(
-                padding: const EdgeInsets.all(4),
-                itemCount: snapshot.data.length,
-                controller: viewModel.scrollController,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemBuilder: (context, index) {
-                  return PhotoItem(snapshot.data[index].thumbnailUrl);
-                });
-          },
-        ),
+      body: Stack(
+        children: <Widget>[
+          AlbumGridView(resource, viewModel),
+          OverlapLoading(resource, viewModel),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await viewModel.uploadSelectImages();
-        },
+        onPressed: () async => await viewModel.uploadSelectImages(),
         child: const Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class AlbumGridView extends StatelessWidget {
+  final AppLocalizations resource;
+  final AlbumViewModel albumViewModel;
+
+  AlbumGridView(this.resource, this.albumViewModel);
+
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  Widget _errorText(String errorMessage) {
+    return Text(
+      errorMessage,
+      textAlign: TextAlign.center,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: () async => await albumViewModel.fetchImageAtStart(),
+      child: StreamBuilder<List<ImageEntity>>(
+        initialData: null,
+        stream: albumViewModel.imagesStream,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Center(child: Loading());
+            default:
+              if (snapshot.hasError) {
+                if (snapshot.error is UnLoginException) {
+                  return Center(child: _errorText(resource.unloginError));
+                } else if (snapshot.error is UserDocumentNotExistException) {
+                  return Center(
+                      child: _errorText(resource.notExistUserDataError));
+                } else if (snapshot.error is NoSelectScheduleException) {
+                  return Center(
+                      child: _errorText(resource.noSelectScheduleError));
+                } else if (snapshot.error is NotRegisterAnyImagesException) {
+                  return Center(
+                    child: _errorText(resource.albumNotRegisterMessage),
+                  );
+                } else {
+                  return Center(child: _errorText(resource.generalError));
+                }
+              } else if (!snapshot.hasData) {
+                return Center(
+                    child: _errorText(resource.albumNotRegisterMessage));
+              } else {
+                return GridView.builder(
+                    padding: const EdgeInsets.all(4),
+                    itemCount: snapshot.data.length,
+                    controller: albumViewModel.scrollController,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 4,
+                    ),
+                    itemBuilder: (context, index) {
+                      return PhotoItem(snapshot.data[index].thumbnailUrl);
+                    });
+              }
+          }
+        },
+      ),
+    );
+  }
+}
+
+class OverlapLoading extends StatelessWidget {
+  final AppLocalizations resource;
+  final AlbumViewModel albumViewModel;
+
+  OverlapLoading(this.resource, this.albumViewModel);
+
+  void _showErrorDialog(BuildContext context, String title, String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog<SingleButtonDialog>(
+          context: context,
+          builder: (context) => SingleButtonDialog(
+                title: title,
+                message: message,
+                positiveButtonTitle: resource.defaultPositiveButtonTitle,
+                onPressed: () => Navigator.pop(context),
+              ));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<AlbumViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case Status.loading:
+            return Container(
+              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
+              child: Center(
+                child: Loading(),
+              ),
+            );
+          case Status.unLoginError:
+            _showErrorDialog(
+                context, resource.uploadImageErrorTitle, resource.unloginError);
+            break;
+          case AlbumStatus.userDataNotExistError:
+            _showErrorDialog(context, resource.uploadImageErrorTitle,
+                resource.notExistUserDataError);
+            break;
+          case AlbumStatus.noSelectScheduleError:
+            _showErrorDialog(context, resource.uploadImageErrorTitle,
+                resource.noSelectScheduleError);
+            break;
+          case AlbumStatus.permissionDeniedError:
+            _showErrorDialog(context, resource.permissionErrorTitle,
+                resource.photoPermissionDeniedError);
+            break;
+          case AlbumStatus.permissionPermanentlyDeniedError:
+            _showErrorDialog(context, resource.permissionErrorTitle,
+                resource.photoPermissionPermanentlyDeniedError);
+            break;
+          case AlbumStatus.imageUploadError:
+            _showErrorDialog(context, resource.uploadImageErrorTitle,
+                resource.uploadImageError);
+            break;
+        }
+        return Container();
+      },
     );
   }
 }

@@ -125,8 +125,10 @@ class SchedulePageContent extends StatelessWidget {
             return Center(child: Loading());
           case Status.unLoginError:
             return _errorMessage(resource.unloginError);
-          case Status.notExistDocumentError:
-            return _errorMessage(resource.notExistDataError);
+          case ScheduleGetStatus.notExistUserDataError:
+            return _errorMessage(resource.notExistUserDataError);
+          case ScheduleGetStatus.notExistScheduleDataError:
+            return _errorMessage(resource.notExistScheduleDataError);
           case ScheduleGetStatus.noSelectScheduleError:
             return _errorMessage(resource.noSelectScheduleError);
           case Status.success:

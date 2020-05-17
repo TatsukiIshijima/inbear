@@ -48,7 +48,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .document(selectScheduleId)
         .get();
     if (!scheduleDocument.exists) {
-      throw DocumentNotExistException();
+      throw ScheduleDocumentNotExistException();
     }
     _scheduleCache.clear();
     _scheduleCache[selectScheduleId] =

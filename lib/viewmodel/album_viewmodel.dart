@@ -10,6 +10,17 @@ import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
+import '../status.dart';
+
+class AlbumStatus extends Status {
+  static const userDataNotExistError = 'USER_DATA_NOT_EXIST_ERROR';
+  static const noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
+  static const permissionDeniedError = 'PERMISSION_DENIED_ERROR';
+  static const permissionPermanentlyDeniedError =
+      'PERMISSION_PERMANENTLY_DENIED_ERROR';
+  static const imageUploadError = 'IMAGE_UPLOAD_ERROR';
+}
+
 class AlbumViewModel extends ChangeNotifier {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
@@ -22,12 +33,13 @@ class AlbumViewModel extends ChangeNotifier {
   static const _thumbnailUrlKey = 'thumbnail_url';
 
   final _imagesStreamController = StreamController<List<ImageEntity>>();
+  final List<ImageEntity> _images = <ImageEntity>[];
   final scrollController = ScrollController();
 
   Stream<List<ImageEntity>> get imagesStream => _imagesStreamController.stream;
   StreamSink<List<ImageEntity>> get imagesSink => _imagesStreamController.sink;
 
-  List<ImageEntity> _images = List<ImageEntity>();
+  String status = Status.none;
   DocumentSnapshot _lastSnapshot;
   bool _isLoading = false;
 
@@ -54,7 +66,12 @@ class AlbumViewModel extends ChangeNotifier {
 
   Future<void> uploadSelectImages() async {
     try {
+      status = Status.loading;
+      notifyListeners();
       final user = await _userRepositoryImpl.fetchUser();
+      if (user.selectScheduleId.isEmpty) {
+        throw NoSelectScheduleException();
+      }
       var pickUpImages = await MultiImagePicker.pickImages(
           maxImages: 5,
           enableCamera: false,
@@ -65,6 +82,8 @@ class AlbumViewModel extends ChangeNotifier {
             actionBarTitle: '写真',
           ));
       if (pickUpImages.isEmpty) {
+        status = Status.none;
+        notifyListeners();
         return;
       }
       final imageEntities = <ImageEntity>[];
@@ -77,31 +96,37 @@ class AlbumViewModel extends ChangeNotifier {
       await _scheduleRepositoryImpl.postImages(
           user.selectScheduleId, imageEntities);
       await fetchImageAtStart();
+      status = Status.success;
     } on UnLoginException {
-      debugPrint('ログインしていない');
-    } on DocumentNotExistException {
-      debugPrint('スケジュールが選択されていない');
+      status = Status.unLoginError;
+    } on UserDocumentNotExistException {
+      status = AlbumStatus.userDataNotExistError;
+    } on NoSelectScheduleException {
+      status = AlbumStatus.noSelectScheduleError;
     } on NoImagesSelectedException {
-      debugPrint('画像の選択のキャンセル');
+      status = Status.none;
     } on PermissionDeniedException {
-      debugPrint('写真へのアクセス拒否');
+      status = AlbumStatus.permissionDeniedError;
     } on PermissionPermanentlyDeniedExeption {
-      debugPrint('写真へのアクセルを完全に拒否');
+      status = AlbumStatus.permissionPermanentlyDeniedError;
     } on UploadImageException {
-      debugPrint('アップロード失敗');
+      status = AlbumStatus.imageUploadError;
     }
+    notifyListeners();
   }
 
   Future<void> fetchImageAtStart() async {
     try {
       _images.clear();
-      imagesSink.add(_images);
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
+      if (selectScheduleId.isEmpty) {
+        throw NoSelectScheduleException();
+      }
       final imageDocuments =
           await _scheduleRepositoryImpl.fetchImagesAtStart(selectScheduleId);
       if (imageDocuments.isEmpty) {
-        return;
+        throw NotRegisterAnyImagesException();
       }
       final imageEntities =
           imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
@@ -109,9 +134,13 @@ class AlbumViewModel extends ChangeNotifier {
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
     } on UnLoginException {
-      imagesSink.addError('ログインしていない');
-    } on DocumentNotExistException {
-      imagesSink.addError('スケジュールが選択されていない');
+      imagesSink.addError(UnLoginException());
+    } on UserDocumentNotExistException {
+      imagesSink.addError(UserDocumentNotExistException());
+    } on NoSelectScheduleException {
+      imagesSink.addError(NoSelectScheduleException());
+    } on NotRegisterAnyImagesException {
+      imagesSink.addError(NotRegisterAnyImagesException());
     }
   }
 
@@ -119,6 +148,9 @@ class AlbumViewModel extends ChangeNotifier {
     try {
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
+      if (selectScheduleId.isEmpty) {
+        throw NoSelectScheduleException();
+      }
       if (_lastSnapshot == null) {
         return;
       }
@@ -135,9 +167,11 @@ class AlbumViewModel extends ChangeNotifier {
       _lastSnapshot = imageDocuments.last;
       debugPrint('追加読み込み, ${_images.length}');
     } on UnLoginException {
-      imagesSink.addError('ログインしていない');
-    } on DocumentNotExistException {
-      imagesSink.addError('スケジュールが選択されていない');
+      imagesSink.addError(UnLoginException());
+    } on UserDocumentNotExistException {
+      imagesSink.addError(UserDocumentNotExistException());
+    } on NoSelectScheduleException {
+      imagesSink.addError(NoSelectScheduleException());
     }
   }
 }

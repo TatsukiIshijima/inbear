@@ -67,7 +67,7 @@ class UserRepository implements UserRepositoryImpl {
     var userDocument =
         await _db.collection(_userCollection).document(uid).get();
     if (!userDocument.exists) {
-      throw DocumentNotExistException();
+      throw UserDocumentNotExistException();
     }
     _userCache[uid] = UserEntity.fromMap(userDocument.data);
     return _userCache[uid];

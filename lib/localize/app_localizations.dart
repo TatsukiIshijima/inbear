@@ -37,6 +37,9 @@ class AppLocalizations {
   static const _scheduleTitleKey = 'schedule_title';
   static const _settingTitleKey = 'setting_title';
 
+  // 画像一覧画面
+  static const _albumNotRegisterKey = 'album_not_register';
+
   // スケジュール確認画面
   static const _scheduleGroomTextKey = 'schedule_groom_text';
   static const _scheduleBrideTextKey = 'schedule_bride_text';
@@ -95,10 +98,21 @@ class AppLocalizations {
   static const _unableSearchAddressErrorMessageKey =
       'unable_search_address_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
+  static const _notExistUserDataErrorMessageKey =
+      'not_exist_user_data_error_message';
+  static const _notExistScheduleDataErrorMessageKey =
+      'not_exist_schedule_data_error_message';
   static const _notExistEntryScheduleErrorMessageKey =
       'not_exist_entry_schedule_error_message';
   static const _noSelectScheduleErrorMessageKey =
       'no_select_schedule_error_message';
+  static const _uploadImageErrorTitleKey = '_upload_image_error_title';
+  static const _uploadImageErrorMessageKey = '_upload_image_error_message';
+  static const _permissionErrorTitleKey = '_permission_error_title';
+  static const _photoPermissionDeniedErrorMessageKey =
+      'photo_permission_denied_error_message';
+  static const _photoPermissionPermanentlyDeniedErrorMessageKey =
+      'photo_permission_permanently_denied_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
@@ -108,7 +122,7 @@ class AppLocalizations {
   static const _defaultPositiveButtonTitleKey = 'defalut_positive_button_title';
   static const _defaultNegativeButtonTitleKey = 'defalut_negative_button_title';
 
-  static Map<String, Map<String, String>> _localizedValues = {
+  static final Map<String, Map<String, String>> _localizedValues = {
     'ja': {
       _appTitleKey: 'inbear',
 
@@ -137,6 +151,9 @@ class AppLocalizations {
       _homeTitleKey: 'ホーム',
       _scheduleTitleKey: 'スケジュール',
       _settingTitleKey: '設定',
+
+      // 画像一覧画面
+      _albumNotRegisterKey: '画像が登録されていません。\n「+」ボタンより画像を追加してみましょう。',
 
       // スケジュール確認画面
       _scheduleGroomTextKey: '新郎',
@@ -185,9 +202,18 @@ class AppLocalizations {
       _unableSearchAddressErrorMessageKey:
           '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
+      _notExistUserDataErrorMessageKey: 'ユーザーデータが存在しません。',
+      _notExistScheduleDataErrorMessageKey: 'スケジュールデータが存在しません。',
       _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
       _noSelectScheduleErrorMessageKey:
           '表示するスケジュールが選択されていません。\n「設定」からスケジュールを登録するか、\n「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
+      _uploadImageErrorTitleKey: 'アップロードエラー',
+      _uploadImageErrorMessageKey: '写真のアップロードに失敗しました。しばらくしてから、もう一度お試し下さい。',
+      _permissionErrorTitleKey: '権限エラー',
+      _photoPermissionDeniedErrorMessageKey:
+          'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
+      _photoPermissionPermanentlyDeniedErrorMessageKey:
+          'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
       _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -224,6 +250,8 @@ class AppLocalizations {
   String get homeTitle => _getText(_homeTitleKey);
   String get scheduleTitle => _getText(_scheduleTitleKey);
   String get settingTitle => _getText(_settingTitleKey);
+
+  String get albumNotRegisterMessage => _getText(_albumNotRegisterKey);
 
   String get scheduleGroomText => _getText(_scheduleGroomTextKey);
   String get scheduleBrideText => _getText(_scheduleBrideTextKey);
@@ -278,10 +306,21 @@ class AppLocalizations {
   String get unableSearchAddressError =>
       _getText(_unableSearchAddressErrorMessageKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
+  String get notExistUserDataError =>
+      _getText(_notExistUserDataErrorMessageKey);
+  String get notExistScheduleDataError =>
+      _getText(_notExistScheduleDataErrorMessageKey);
   String get notExistEntryScheduleError =>
       _getText(_notExistEntryScheduleErrorMessageKey);
   String get noSelectScheduleError =>
       _getText(_noSelectScheduleErrorMessageKey);
+  String get uploadImageErrorTitle => _getText(_uploadImageErrorTitleKey);
+  String get uploadImageError => _getText(_uploadImageErrorMessageKey);
+  String get permissionErrorTitle => _getText(_permissionErrorTitleKey);
+  String get photoPermissionDeniedError =>
+      _getText(_photoPermissionDeniedErrorMessageKey);
+  String get photoPermissionPermanentlyDeniedError =>
+      _getText(_photoPermissionPermanentlyDeniedErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
