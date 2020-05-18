@@ -1,10 +1,21 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
+
+const invalidEmailError = 'ERROR_INVALID_EMAIL';
+const wrongPasswordError = 'ERROR_WRONG_PASSWORD';
+const userNotFoundError = 'ERROR_USER_NOT_FOUND';
+const userDisabledError = 'ERROR_USER_DISABLED';
+const tooManyRequestsError = 'ERROR_TOO_MANY_REQUESTS';
+const networkRequestFailed = 'ERROR_NETWORK_REQUEST_FAILED';
 
 class UserRepository implements UserRepositoryImpl {
   final FirebaseAuth _auth;
@@ -12,13 +23,41 @@ class UserRepository implements UserRepositoryImpl {
   final String _userCollection = 'user';
   final String _scheduleSubCollection = 'schedule';
 
-  Map<String, UserEntity> _userCache = Map();
+  final Map<String, UserEntity> _userCache = {};
 
   UserRepository(this._auth, this._db);
 
   @override
   Future<void> signIn(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+    try {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .timeout(Duration(seconds: 3),
+              onTimeout: () => throw TimeoutException('signIn time out.'));
+    } on PlatformException catch (error) {
+      final errorCode = error.code;
+      debugPrint('signIn Error : $errorCode');
+      switch (errorCode) {
+        case invalidEmailError:
+          throw InvalidEmailException();
+          break;
+        case wrongPasswordError:
+          throw WrongPasswordException();
+          break;
+        case userNotFoundError:
+          throw UserNotFoundException();
+          break;
+        case userDisabledError:
+          throw UserDisabledException();
+          break;
+        case tooManyRequestsError:
+          throw TooManyRequestException();
+          break;
+        case networkRequestFailed:
+          throw NetworkRequestException();
+          break;
+      }
+    }
   }
 
   @override

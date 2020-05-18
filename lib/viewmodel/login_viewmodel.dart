@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
@@ -30,28 +33,20 @@ class LoginViewModel extends ChangeNotifier {
       await _userRepository.signIn(
           emailTextEditingController.text, passwordTextEditingController.text);
       authStatus = Status.success;
-    } catch (error) {
-      final errorCode = error.code.toString();
-      switch (errorCode) {
-        case 'ERROR_INVALID_EMAIL':
-          authStatus = AuthStatus.invalidEmailError;
-          break;
-        case 'ERROR_WRONG_PASSWORD':
-          authStatus = AuthStatus.wrongPasswordError;
-          break;
-        case 'ERROR_USER_NOT_FOUND':
-          authStatus = AuthStatus.userNotFoundError;
-          break;
-        case 'ERROR_USER_DISABLED':
-          authStatus = AuthStatus.userDisabledError;
-          break;
-        case 'ERROR_TOO_MANY_REQUESTS':
-          authStatus = AuthStatus.tooManyRequestsError;
-          break;
-        default:
-          authStatus = AuthStatus.unDefinedError;
-          break;
-      }
+    } on InvalidEmailException {
+      authStatus = AuthStatus.invalidEmailError;
+    } on WrongPasswordException {
+      authStatus = AuthStatus.wrongPasswordError;
+    } on UserNotFoundException {
+      authStatus = AuthStatus.userNotFoundError;
+    } on UserDisabledException {
+      authStatus = AuthStatus.userDisabledError;
+    } on TooManyRequestException {
+      authStatus = AuthStatus.tooManyRequestsError;
+    } on NetworkRequestException {
+      authStatus = Status.networkError;
+    } on TimeoutException {
+      authStatus = Status.timeoutError;
     }
     notifyListeners();
   }
