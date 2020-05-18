@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
@@ -19,18 +22,18 @@ class ResetPasswordViewModel extends ChangeNotifier {
       await _userRepository
           .sendPasswordResetEmail(emailTextEditingController.text);
       authStatus = Status.success;
-    } catch (error) {
-      final errorCode = error.code.toString();
-      switch (errorCode) {
-        case 'ERROR_INVALID_EMAIL':
-          authStatus = AuthStatus.invalidEmailError;
-          break;
-        case 'ERROR_USER_NOT_FOUND':
-          authStatus = AuthStatus.userNotFoundError;
-          break;
-        default:
-          authStatus = AuthStatus.unDefinedError;
-      }
+    } on InvalidEmailException {
+      authStatus = AuthStatus.invalidEmailError;
+    } on UserNotFoundException {
+      authStatus = AuthStatus.userNotFoundError;
+    } on UserDisabledException {
+      authStatus = AuthStatus.userDisabledError;
+    } on TooManyRequestException {
+      authStatus = AuthStatus.tooManyRequestsError;
+    } on NetworkRequestException {
+      authStatus = Status.networkError;
+    } on TimeoutException {
+      authStatus = Status.timeoutError;
     }
     notifyListeners();
   }

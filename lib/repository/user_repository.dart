@@ -27,6 +27,29 @@ class UserRepository implements UserRepositoryImpl {
 
   UserRepository(this._auth, this._db);
 
+  void _rethrowAuthException(String errorCode) {
+    switch (errorCode) {
+      case invalidEmailError:
+        throw InvalidEmailException();
+        break;
+      case wrongPasswordError:
+        throw WrongPasswordException();
+        break;
+      case userNotFoundError:
+        throw UserNotFoundException();
+        break;
+      case userDisabledError:
+        throw UserDisabledException();
+        break;
+      case tooManyRequestsError:
+        throw TooManyRequestException();
+        break;
+      case networkRequestFailed:
+        throw NetworkRequestException();
+        break;
+    }
+  }
+
   @override
   Future<void> signIn(String email, String password) async {
     try {
@@ -37,26 +60,7 @@ class UserRepository implements UserRepositoryImpl {
     } on PlatformException catch (error) {
       final errorCode = error.code;
       debugPrint('signIn Error : $errorCode');
-      switch (errorCode) {
-        case invalidEmailError:
-          throw InvalidEmailException();
-          break;
-        case wrongPasswordError:
-          throw WrongPasswordException();
-          break;
-        case userNotFoundError:
-          throw UserNotFoundException();
-          break;
-        case userDisabledError:
-          throw UserDisabledException();
-          break;
-        case tooManyRequestsError:
-          throw TooManyRequestException();
-          break;
-        case networkRequestFailed:
-          throw NetworkRequestException();
-          break;
-      }
+      _rethrowAuthException(errorCode);
     }
   }
 
@@ -85,7 +89,15 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+    try {
+      await _auth.sendPasswordResetEmail(email: email).timeout(
+          Duration(seconds: 3),
+          onTimeout: () => throw TimeoutException('send reset mail time out.'));
+    } on PlatformException catch (error) {
+      final errorCode = error.code;
+      debugPrint('Send password reset mail error : $errorCode');
+      _rethrowAuthException(errorCode);
+    }
   }
 
   @override
