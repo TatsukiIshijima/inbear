@@ -1,27 +1,31 @@
-class UnLoginException implements Exception {
-  UnLoginException();
-}
+class InvalidEmailException implements Exception {}
 
-class DocumentNotExistException implements Exception {
-  DocumentNotExistException();
-}
+class WrongPasswordException implements Exception {}
 
-class UserDocumentNotExistException extends DocumentNotExistException {
-  UserDocumentNotExistException();
-}
+class UserNotFoundException implements Exception {}
 
-class ScheduleDocumentNotExistException extends DocumentNotExistException {
-  ScheduleDocumentNotExistException();
-}
+class UserDisabledException implements Exception {}
 
-class NoSelectScheduleException implements Exception {
-  NoSelectScheduleException();
-}
+class WeakPasswordException implements Exception {}
 
-class UploadImageException implements Exception {
-  UploadImageException();
-}
+class EmailAlreadyInUseException implements Exception {}
 
-class NotRegisterAnyImagesException implements Exception {
-  NotRegisterAnyImagesException();
-}
+class InvalidCredentialException implements Exception {}
+
+class TooManyRequestException implements Exception {}
+
+class NetworkRequestException implements Exception {}
+
+class UnLoginException implements Exception {}
+
+class DocumentNotExistException implements Exception {}
+
+class UserDocumentNotExistException extends DocumentNotExistException {}
+
+class ScheduleDocumentNotExistException extends DocumentNotExistException {}
+
+class NoSelectScheduleException implements Exception {}
+
+class UploadImageException implements Exception {}
+
+class NotRegisterAnyImagesException implements Exception {}
