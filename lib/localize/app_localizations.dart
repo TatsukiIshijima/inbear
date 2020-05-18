@@ -116,6 +116,7 @@ class AppLocalizations {
   static const _timeoutErrorMessageKey = 'timeout_error';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
+  static const _networkErrorMessageKey = 'network_error';
   static const _unLoginErrorMessageKey = 'unlogin_error';
   static const _generalErrorMessageKey = 'general_error_message';
 
@@ -217,6 +218,7 @@ class AppLocalizations {
       _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
+      _networkErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _unLoginErrorMessageKey: '未ログイン状態です。再度ログインして下さい。',
       _generalErrorMessageKey: 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
 
@@ -324,6 +326,7 @@ class AppLocalizations {
   String get timeoutError => _getText(_timeoutErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
+  String get networkError => _getText(_networkErrorMessageKey);
   String get unloginError => _getText(_unLoginErrorMessageKey);
   String get generalError => _getText(_generalErrorMessageKey);
 

@@ -7,6 +7,7 @@ class Status {
   static const String timeoutError = 'TIME_OUT_ERROR';
   static const String httpError = 'HTTP_ERROR';
   static const String socketError = 'SOCKET_ERROR';
+  static const String networkError = 'NETWORK_ERROR';
   static const String generalError = 'GENERAL_ERROR';
 }
 
