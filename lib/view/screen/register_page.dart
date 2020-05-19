@@ -35,16 +35,62 @@ class RegisterPageContent extends StatelessWidget {
   final _passwordFocus = FocusNode();
 
   void _showRegisterError(BuildContext context, String message) {
-    var resource = AppLocalizations.of(context);
-    showDialog<SingleButtonDialog>(
-        context: context,
-        builder: (context) => SingleButtonDialog(
-              title: resource.registerErrorTitle,
-              message: message,
-              positiveButtonTitle: resource.defaultPositiveButtonTitle,
-              onPressed: () => Navigator.pop(context),
-            ));
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => showDialog<SingleButtonDialog>(
+            context: context,
+            builder: (context) => SingleButtonDialog(
+                  title: resource.registerErrorTitle,
+                  message: message,
+                  positiveButtonTitle: resource.defaultPositiveButtonTitle,
+                  onPressed: () => Navigator.pop(context),
+                )));
   }
+
+  Widget _authStatusWidget() => Selector<RegisterViewModel, String>(
+        selector: (context, viewModel) => viewModel.authStatus,
+        builder: (context, authStatus, child) {
+          switch (authStatus) {
+            case Status.loading:
+              return Container(
+                decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
+                child: Center(
+                  child: Loading(),
+                ),
+              );
+            case Status.success:
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                // 一旦popで新規画面をクローズしてから
+                // ルートをホーム画面に設定して遷移させることで
+                // ホーム遷移後にバックボタン押下でアプリ終了とさせる
+                Navigator.pop(context);
+                Routes.goToHome(context);
+              });
+              break;
+            case AuthStatus.weakPasswordError:
+              _showRegisterError(context, resource.weakPasswordError);
+              break;
+            case AuthStatus.invalidEmailError:
+              _showRegisterError(context, resource.invalidEmailError);
+              break;
+            case AuthStatus.emailAlreadyUsedError:
+              _showRegisterError(context, resource.alreadyUsedEmailError);
+              break;
+            case AuthStatus.invalidCredentialError:
+              _showRegisterError(context, resource.invalidCredentialError);
+              break;
+            case AuthStatus.tooManyRequestsError:
+              _showRegisterError(context, resource.tooManyRequestsError);
+              break;
+            case Status.networkError:
+              _showRegisterError(context, resource.networkError);
+              break;
+            case Status.timeoutError:
+              _showRegisterError(context, resource.timeoutError);
+              break;
+          }
+          return Container();
+        },
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -142,55 +188,7 @@ class RegisterPageContent extends StatelessWidget {
                 ),
               ),
             ),
-            Selector<RegisterViewModel, String>(
-              selector: (context, viewModel) => viewModel.authStatus,
-              builder: (context, authStatus, child) {
-                switch (authStatus) {
-                  case Status.loading:
-                    return Container(
-                      decoration:
-                          BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-                      child: Center(
-                        child: Loading(),
-                      ),
-                    );
-                  case Status.success:
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      // 一旦popで新規画面をクローズしてから
-                      // ルートをホーム画面に設定して遷移させることで
-                      // ホーム遷移後にバックボタン押下でアプリ終了とさせる
-                      Navigator.pop(context);
-                      Routes.goToHome(context);
-                    });
-                    break;
-                  case AuthStatus.weakPasswordError:
-                    WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showRegisterError(
-                            context, resource.weakPasswordError));
-                    break;
-                  case AuthStatus.invalidEmailError:
-                    WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showRegisterError(
-                            context, resource.invalidEmailError));
-                    break;
-                  case AuthStatus.invalidCredentialError:
-                    WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showRegisterError(
-                            context, resource.invalidCredentialError));
-                    break;
-                  case AuthStatus.tooManyRequestsError:
-                    WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showRegisterError(
-                            context, resource.tooManyRequestsError));
-                    break;
-                  case AuthStatus.unDefinedError:
-                    WidgetsBinding.instance.addPostFrameCallback((_) =>
-                        _showRegisterError(context, resource.generalError));
-                    break;
-                }
-                return Container();
-              },
-            )
+            _authStatusWidget(),
           ],
         ),
       ),
