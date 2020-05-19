@@ -14,6 +14,9 @@ const invalidEmailError = 'ERROR_INVALID_EMAIL';
 const wrongPasswordError = 'ERROR_WRONG_PASSWORD';
 const userNotFoundError = 'ERROR_USER_NOT_FOUND';
 const userDisabledError = 'ERROR_USER_DISABLED';
+const weakPasswordError = 'ERROR_WEAK_PASSWORD';
+const emailAlreadyUsedError = 'ERROR_EMAIL_ALREADY_IN_USE';
+const invalidCredentialError = 'ERROR_INVALID_CREDENTIAL';
 const tooManyRequestsError = 'ERROR_TOO_MANY_REQUESTS';
 const networkRequestFailed = 'ERROR_NETWORK_REQUEST_FAILED';
 
@@ -41,6 +44,12 @@ class UserRepository implements UserRepositoryImpl {
       case userDisabledError:
         throw UserDisabledException();
         break;
+      case weakPasswordError:
+        throw WeakPasswordException();
+        break;
+      case invalidCredentialError:
+        throw InvalidCredentialException();
+        break;
       case tooManyRequestsError:
         throw TooManyRequestException();
         break;
@@ -58,21 +67,33 @@ class UserRepository implements UserRepositoryImpl {
           .timeout(Duration(seconds: 3),
               onTimeout: () => throw TimeoutException('signIn time out.'));
     } on PlatformException catch (error) {
-      final errorCode = error.code;
-      debugPrint('signIn Error : $errorCode');
-      _rethrowAuthException(errorCode);
+      debugPrint('signIn Error : ${error.code} ${error.message}');
+      _rethrowAuthException(error.code);
     }
   }
 
   @override
   Future<void> signUp(String name, String email, String password) async {
-    var result = await _auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    var user = UserEntity(result.user.uid, name, email, '', DateTime.now());
-    await _db
-        .collection(_userCollection)
-        .document(result.user.uid)
-        .setData(user.toMap());
+    try {
+      final result = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .timeout(Duration(seconds: 3),
+              onTimeout: () => throw TimeoutException('create user time out.'));
+      final user = UserEntity(result.user.uid, name, email, '', DateTime.now());
+      await _db
+          .collection(_userCollection)
+          .document(result.user.uid)
+          .setData(user.toMap())
+          .timeout(Duration(seconds: 3), onTimeout: () {
+        // Firestoreに書き込む時点でユーザーが作成されているので、
+        // 再度新規登録しても問題ないようにユーザーを消しておく
+        result.user.delete();
+        throw TimeoutException('set user data time out.');
+      });
+    } on PlatformException catch (error) {
+      debugPrint('signUp Error: ${error.code}, ${error.message}');
+      _rethrowAuthException(error.code);
+    }
   }
 
   @override
