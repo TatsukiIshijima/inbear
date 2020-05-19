@@ -120,6 +120,7 @@ class AppLocalizations {
   static const _unLoginErrorMessageKey = 'unlogin_error';
   static const _generalErrorMessageKey = 'general_error_message';
 
+  static const _reloadMessageKey = 'reload_message';
   static const _defaultPositiveButtonTitleKey = 'defalut_positive_button_title';
   static const _defaultNegativeButtonTitleKey = 'defalut_negative_button_title';
 
@@ -215,13 +216,14 @@ class AppLocalizations {
           'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
       _photoPermissionPermanentlyDeniedErrorMessageKey:
           'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
-      _timeoutErrorMessageKey: 'タイムアウトしました。しばらくしてから、もう一度お試し下さい。',
+      _timeoutErrorMessageKey: 'タイムアウトしました。\nしばらくしてから、もう一度お試し下さい。',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _networkErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _unLoginErrorMessageKey: '未ログイン状態です。再度ログインして下さい。',
       _generalErrorMessageKey: 'エラーが発生しました。\nしばらくしてからもう一度お試し下さい。',
 
+      _reloadMessageKey: '再読み込み',
       _defaultPositiveButtonTitleKey: 'OK',
       _defaultNegativeButtonTitleKey: 'キャンセル'
     },
@@ -330,6 +332,7 @@ class AppLocalizations {
   String get unloginError => _getText(_unLoginErrorMessageKey);
   String get generalError => _getText(_generalErrorMessageKey);
 
+  String get reloadMessage => _getText(_reloadMessageKey);
   String get defaultPositiveButtonTitle =>
       _getText(_defaultPositiveButtonTitleKey);
   String get defaultNegativeButtonTitle =>
