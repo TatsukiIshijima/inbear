@@ -104,7 +104,8 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<bool> isSignIn() async {
-    var currentUser = (await _auth.currentUser());
+    // オフライン時でも前にログインしていると User が取得できる
+    final currentUser = (await _auth.currentUser());
     return currentUser != null;
   }
 
@@ -129,15 +130,20 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<UserEntity> fetchUser() async {
-    var uid = await getUid();
+    final uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
     }
     if (_userCache.containsKey(uid)) {
       return _userCache[uid];
     }
-    var userDocument =
-        await _db.collection(_userCollection).document(uid).get();
+    final userDocument = await _db
+        .collection(_userCollection)
+        .document(uid)
+        .get()
+        .timeout(Duration(seconds: 3),
+            onTimeout: () =>
+                throw TimeoutException('fetch user document time out.'));
     if (!userDocument.exists) {
       throw UserDocumentNotExistException();
     }
