@@ -14,16 +14,21 @@ import 'package:provider/provider.dart';
 class SchedulePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
       create: (context) => ScheduleViewModel(
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false)),
-      child: SchedulePageContent(),
+      child: SchedulePageContent(resource),
     );
   }
 }
 
 class SchedulePageContent extends StatelessWidget {
+  final AppLocalizations resource;
+
+  SchedulePageContent(this.resource);
+
   Widget _scheduleContent(
       AppLocalizations resource, ScheduleViewModel viewModel) {
     return Selector<ScheduleViewModel, ScheduleEntity>(
@@ -111,12 +116,41 @@ class SchedulePageContent extends StatelessWidget {
     );
   }
 
+  Widget _reloadWidget(BuildContext context, Future<void> fun) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            resource.timeoutError,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          RaisedButton(
+            onPressed: () async => await fun,
+            child: Text(
+              resource.reloadMessage,
+              style: TextStyle(color: Color(0xfff48fb1)),
+            ),
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                side: BorderSide(color: Color(0xfff48fb1))),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
-    var resource = AppLocalizations.of(context);
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) async => await viewModel.fetchSelectSchedule());
+    final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async =>
+        await viewModel.fromCancelable(viewModel.fetchSelectSchedule()));
     return Selector<ScheduleViewModel, String>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
@@ -131,6 +165,8 @@ class SchedulePageContent extends StatelessWidget {
             return _errorMessage(resource.notExistScheduleDataError);
           case ScheduleGetStatus.noSelectScheduleError:
             return _errorMessage(resource.noSelectScheduleError);
+          case Status.timeoutError:
+            return _reloadWidget(context, viewModel.fetchSelectSchedule());
           case Status.success:
             return _scheduleContent(resource, viewModel);
           default:
