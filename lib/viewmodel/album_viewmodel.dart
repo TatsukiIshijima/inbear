@@ -131,6 +131,11 @@ class AlbumViewModel extends ChangeNotifier {
       final imageEntities =
           imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
       _images.addAll(imageEntities);
+      if (_imagesStreamController.isClosed) {
+        // 画面を閉じた時などでクローズされているままStreamに追加されないようにする
+        debugPrint('fetchImagesAtStart : imageStreamController is closed.');
+        return;
+      }
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
     } on UnLoginException {
@@ -141,6 +146,8 @@ class AlbumViewModel extends ChangeNotifier {
       imagesSink.addError(NoSelectScheduleException());
     } on NotRegisterAnyImagesException {
       imagesSink.addError(NotRegisterAnyImagesException());
+    } on TimeoutException {
+      imagesSink.addError(TimeoutException('fetch image at start time out.'));
     }
   }
 
@@ -163,6 +170,11 @@ class AlbumViewModel extends ChangeNotifier {
       final imageEntities =
           imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
       _images.addAll(imageEntities);
+      // 画面を閉じた時などでクローズされているままStreamに追加されないようにする
+      if (_imagesStreamController.isClosed) {
+        debugPrint('fetchImagesNext : imageStreamController is closed.');
+        return;
+      }
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
       debugPrint('追加読み込み, ${_images.length}');
