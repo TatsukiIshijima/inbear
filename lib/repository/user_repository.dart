@@ -141,7 +141,7 @@ class UserRepository implements UserRepositoryImpl {
         .collection(_userCollection)
         .document(uid)
         .get()
-        .timeout(Duration(seconds: 3),
+        .timeout(Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('fetch user document time out.'));
     if (!userDocument.exists) {

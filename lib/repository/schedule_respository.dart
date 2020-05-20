@@ -16,7 +16,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
 
   ScheduleRepository(this._auth, this._db);
 
-  Map<String, ScheduleEntity> _scheduleCache = Map();
+  final Map<String, ScheduleEntity> _scheduleCache = {};
 
   @override
   Future<String> registerSchedule(ScheduleEntity schedule) async {
@@ -49,7 +49,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .collection(_scheduleCollection)
         .document(selectScheduleId)
         .get()
-        .timeout(Duration(seconds: 3),
+        .timeout(Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('fetch schedule document time out.'));
     if (!scheduleDocument.exists) {
