@@ -116,7 +116,7 @@ class SchedulePageContent extends StatelessWidget {
     );
   }
 
-  Widget _reloadWidget(BuildContext context, Future<void> fun) {
+  Widget _reloadWidget(BuildContext context, ScheduleViewModel viewModel) {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Column(
@@ -131,7 +131,7 @@ class SchedulePageContent extends StatelessWidget {
             height: 10,
           ),
           RaisedButton(
-            onPressed: () async => await fun,
+            onPressed: () async => await viewModel.fetchSelectSchedule(),
             child: Text(
               resource.reloadMessage,
               style: TextStyle(color: Color(0xfff48fb1)),
@@ -149,8 +149,8 @@ class SchedulePageContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) async =>
-        await viewModel.fromCancelable(viewModel.fetchSelectSchedule()));
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) async => await viewModel.fetchSelectSchedule());
     return Selector<ScheduleViewModel, String>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
@@ -166,7 +166,7 @@ class SchedulePageContent extends StatelessWidget {
           case ScheduleGetStatus.noSelectScheduleError:
             return _errorMessage(resource.noSelectScheduleError);
           case Status.timeoutError:
-            return _reloadWidget(context, viewModel.fetchSelectSchedule());
+            return _reloadWidget(context, viewModel);
           case Status.success:
             return _scheduleContent(resource, viewModel);
           default:
