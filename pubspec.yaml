@@ -47,6 +47,7 @@ dependencies:
   extended_image: ^0.7.3+1
   # pedantic
   pedantic: ^1.9.0
+  async: ^2.4.1
 
 dev_dependencies:
   flutter_test:
