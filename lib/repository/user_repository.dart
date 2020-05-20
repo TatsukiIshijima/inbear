@@ -104,7 +104,8 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<bool> isSignIn() async {
-    var currentUser = (await _auth.currentUser());
+    // オフライン時でも前にログインしていると User が取得できる
+    final currentUser = (await _auth.currentUser());
     return currentUser != null;
   }
 
@@ -129,15 +130,20 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<UserEntity> fetchUser() async {
-    var uid = await getUid();
+    final uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
     }
     if (_userCache.containsKey(uid)) {
       return _userCache[uid];
     }
-    var userDocument =
-        await _db.collection(_userCollection).document(uid).get();
+    final userDocument = await _db
+        .collection(_userCollection)
+        .document(uid)
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('fetch user document time out.'));
     if (!userDocument.exists) {
       throw UserDocumentNotExistException();
     }
@@ -163,13 +169,15 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<void> selectSchedule(String scheduleId) async {
-    var uid = await getUid();
+    final uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
     }
     await _db.collection(_userCollection).document(uid).setData(
         <String, String>{'select_schedule_id': scheduleId},
-        merge: true);
+        merge:
+            true).timeout(Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException('select schedule time out.'));
     // キャッシュの User が残ったままだと schedule を切り替えた時に
     // 前の scheduleId を参照してしまうので、キャッシュをクリアする
     _userCache.clear();
@@ -177,23 +185,31 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() async {
-    var user = await fetchUser();
+    final user = await fetchUser();
     if (user.uid.isEmpty) {
       throw UnLoginException();
     }
-    var scheduleItems = List<ScheduleSelectItemModel>();
-    var documents = (await _db
+    final scheduleItems = <ScheduleSelectItemModel>[];
+    final documents = (await _db
             .collection(_userCollection)
             .document(user.uid)
             .collection(_scheduleSubCollection)
-            .getDocuments())
+            .getDocuments()
+            .timeout(Duration(seconds: 5),
+                onTimeout: () =>
+                    throw TimeoutException('fetch entry schedule time out.')))
         .documents;
     for (var doc in documents) {
       // Reference型から直接データ参照できなかったため、
       // 冗長にデータを引っ張ってくる
       var docReference = doc.data['ref'] as DocumentReference;
-      var scheduleDoc =
-          await docReference.parent().document(docReference.documentID).get();
+      var scheduleDoc = await docReference
+          .parent()
+          .document(docReference.documentID)
+          .get()
+          .timeout(Duration(seconds: 5),
+              onTimeout: () =>
+                  throw TimeoutException('fetch entry schedule time out.'));
       var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
       var item =
           ScheduleSelectItemModel.from(docReference.documentID, schedule, user);

@@ -40,6 +40,7 @@ class ScheduleSelectContent extends StatelessWidget {
 
   ScheduleSelectContent(this.resource);
 
+  // FIXME:引数にViewModelではなくFuture<dynamic>みたいな感じで指定できるように
   void _showConfirmDialog(BuildContext context, AppLocalizations resource,
       ScheduleSelectViewModel viewModel, String selectScheduleId) {
     showDialog<ClosedQuestionDialog>(
@@ -53,6 +54,32 @@ class ScheduleSelectContent extends StatelessWidget {
               Navigator.pop(context);
               await viewModel.selectSchedule(selectScheduleId);
             }));
+  }
+
+  // FIXME:引数にViewModelではなくFuture<dynamic>みたいな感じで指定できるように
+  Widget _scheduleList(ScheduleSelectViewModel viewModel) {
+    return Selector<ScheduleSelectViewModel, List<ScheduleSelectItemModel>>(
+        selector: (context, viewModel) => viewModel.scheduleItems,
+        builder: (context, schedules, child) {
+          if (schedules.isNotEmpty) {
+            return ListView.builder(
+                itemCount: schedules.length,
+                itemBuilder: (context, index) => ScheduleSelectItem(
+                      pairName: schedules[index].pairName,
+                      isSelect: schedules[index].isSelected,
+                      onTap: () {
+                        if (!schedules[index].isSelected) {
+                          _showConfirmDialog(context, resource, viewModel,
+                              schedules[index].id);
+                        }
+                      },
+                    ));
+          } else {
+            return Center(
+              child: Text(resource.notExistEntryScheduleError),
+            );
+          }
+        });
   }
 
   @override
@@ -71,33 +98,14 @@ class ScheduleSelectContent extends StatelessWidget {
                 child: Loading(),
               );
             case Status.success:
-              return Selector<ScheduleSelectViewModel,
-                      List<ScheduleSelectItemModel>>(
-                  selector: (context, viewModel) => viewModel.scheduleItems,
-                  builder: (context, schedules, child) {
-                    if (schedules.length != 0) {
-                      return ListView.builder(
-                          itemCount: schedules.length,
-                          itemBuilder: (context, int index) =>
-                              ScheduleSelectItem(
-                                pairName: schedules[index].pairName,
-                                isSelect: schedules[index].isSelected,
-                                onTap: () {
-                                  if (!schedules[index].isSelected) {
-                                    _showConfirmDialog(context, resource,
-                                        viewModel, schedules[index].id);
-                                  }
-                                },
-                              ));
-                    } else {
-                      return Center(
-                        child: Text(resource.notExistEntryScheduleError),
-                      );
-                    }
-                  });
+              return _scheduleList(viewModel);
             case Status.unLoginError:
               return Center(
                 child: Text(resource.unloginError),
+              );
+            case Status.timeoutError:
+              return Center(
+                child: Text(resource.timeoutError),
               );
             default:
               return Container();

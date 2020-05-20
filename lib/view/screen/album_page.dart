@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
@@ -76,7 +78,7 @@ class AlbumGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       key: _refreshIndicatorKey,
-      onRefresh: () async => await albumViewModel.fetchImageAtStart(),
+      onRefresh: () async => albumViewModel.fetchImageAtStart(),
       child: StreamBuilder<List<ImageEntity>>(
         initialData: null,
         stream: albumViewModel.imagesStream,
@@ -97,6 +99,10 @@ class AlbumGridView extends StatelessWidget {
                 } else if (snapshot.error is NotRegisterAnyImagesException) {
                   return Center(
                     child: _errorText(resource.albumNotRegisterMessage),
+                  );
+                } else if (snapshot.error is TimeoutException) {
+                  return Center(
+                    child: _errorText(resource.timeoutError),
                   );
                 } else {
                   return Center(child: _errorText(resource.generalError));

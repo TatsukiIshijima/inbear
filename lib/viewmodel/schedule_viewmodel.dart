@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleGetStatus extends Status {
@@ -13,7 +15,7 @@ class ScheduleGetStatus extends Status {
   static const String noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
 }
 
-class ScheduleViewModel extends ChangeNotifier {
+class ScheduleViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
 
@@ -25,10 +27,14 @@ class ScheduleViewModel extends ChangeNotifier {
   ScheduleEntity schedule;
 
   Future<void> fetchSelectSchedule() async {
+    await fromCancelable(_fetchSelectSchedule());
+  }
+
+  Future<void> _fetchSelectSchedule() async {
     try {
       status = Status.loading;
       notifyListeners();
-      var user = await _userRepositoryImpl.fetchUser();
+      final user = await _userRepositoryImpl.fetchUser();
       schedule =
           await _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId);
       status = Status.success;
@@ -40,6 +46,8 @@ class ScheduleViewModel extends ChangeNotifier {
       status = ScheduleGetStatus.notExistScheduleDataError;
     } on NoSelectScheduleException {
       status = ScheduleGetStatus.noSelectScheduleError;
+    } on TimeoutException {
+      status = Status.timeoutError;
     }
     notifyListeners();
   }

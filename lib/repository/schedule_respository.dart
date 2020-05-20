@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
@@ -14,7 +16,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
 
   ScheduleRepository(this._auth, this._db);
 
-  Map<String, ScheduleEntity> _scheduleCache = Map();
+  final Map<String, ScheduleEntity> _scheduleCache = {};
 
   @override
   Future<String> registerSchedule(ScheduleEntity schedule) async {
@@ -43,10 +45,13 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     if (_scheduleCache.containsKey(selectScheduleId)) {
       return _scheduleCache[selectScheduleId];
     }
-    var scheduleDocument = await _db
+    final scheduleDocument = await _db
         .collection(_scheduleCollection)
         .document(selectScheduleId)
-        .get();
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('fetch schedule document time out.'));
     if (!scheduleDocument.exists) {
       throw ScheduleDocumentNotExistException();
     }

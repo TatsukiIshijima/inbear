@@ -8,6 +8,7 @@ import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../status.dart';
@@ -21,7 +22,7 @@ class AlbumStatus extends Status {
   static const imageUploadError = 'IMAGE_UPLOAD_ERROR';
 }
 
-class AlbumViewModel extends ChangeNotifier {
+class AlbumViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
   final ImageRepositoryImpl _imageRepositoryImpl;
@@ -58,7 +59,7 @@ class AlbumViewModel extends ChangeNotifier {
       // (スクロールの範囲がオーバーしない)ので条件には追加しない
       if (scrollController.offset >= maxScrollExtent && !_isLoading) {
         _isLoading = true;
-        await fetchImagesNext();
+        await fromCancelable(fetchImagesNext());
         _isLoading = false;
       }
     });
@@ -116,6 +117,10 @@ class AlbumViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchImageAtStart() async {
+    await fromCancelable(_fetchImageAtStart());
+  }
+
+  Future<void> _fetchImageAtStart() async {
     try {
       _images.clear();
       final selectScheduleId =
@@ -131,6 +136,11 @@ class AlbumViewModel extends ChangeNotifier {
       final imageEntities =
           imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
       _images.addAll(imageEntities);
+      if (_imagesStreamController.isClosed) {
+        // 画面を閉じた時などでクローズされているままStreamに追加されないようにする
+        debugPrint('fetchImagesAtStart : imageStreamController is closed.');
+        return;
+      }
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
     } on UnLoginException {
@@ -141,6 +151,8 @@ class AlbumViewModel extends ChangeNotifier {
       imagesSink.addError(NoSelectScheduleException());
     } on NotRegisterAnyImagesException {
       imagesSink.addError(NotRegisterAnyImagesException());
+    } on TimeoutException {
+      imagesSink.addError(TimeoutException('fetch image at start time out.'));
     }
   }
 
@@ -163,6 +175,11 @@ class AlbumViewModel extends ChangeNotifier {
       final imageEntities =
           imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
       _images.addAll(imageEntities);
+      // 画面を閉じた時などでクローズされているままStreamに追加されないようにする
+      if (_imagesStreamController.isClosed) {
+        debugPrint('fetchImagesNext : imageStreamController is closed.');
+        return;
+      }
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
       debugPrint('追加読み込み, ${_images.length}');
