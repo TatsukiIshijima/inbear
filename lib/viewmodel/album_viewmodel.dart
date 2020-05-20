@@ -8,6 +8,7 @@ import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../status.dart';
@@ -21,7 +22,7 @@ class AlbumStatus extends Status {
   static const imageUploadError = 'IMAGE_UPLOAD_ERROR';
 }
 
-class AlbumViewModel extends ChangeNotifier {
+class AlbumViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
   final ImageRepositoryImpl _imageRepositoryImpl;
@@ -58,7 +59,7 @@ class AlbumViewModel extends ChangeNotifier {
       // (スクロールの範囲がオーバーしない)ので条件には追加しない
       if (scrollController.offset >= maxScrollExtent && !_isLoading) {
         _isLoading = true;
-        await fetchImagesNext();
+        await fromCancelable(fetchImagesNext());
         _isLoading = false;
       }
     });
