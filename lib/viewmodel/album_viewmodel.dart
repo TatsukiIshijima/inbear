@@ -117,6 +117,10 @@ class AlbumViewModel extends BaseViewModel {
   }
 
   Future<void> fetchImageAtStart() async {
+    await fromCancelable(_fetchImageAtStart());
+  }
+
+  Future<void> _fetchImageAtStart() async {
     try {
       _images.clear();
       final selectScheduleId =

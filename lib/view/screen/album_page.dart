@@ -41,7 +41,7 @@ class AlbumPageContent extends StatelessWidget {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       viewModel.setScrollListener();
-      await viewModel.fromCancelable(viewModel.fetchImageAtStart());
+      await viewModel.fetchImageAtStart();
     });
     return Scaffold(
       body: Stack(
@@ -78,8 +78,7 @@ class AlbumGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       key: _refreshIndicatorKey,
-      onRefresh: () async => await albumViewModel
-          .fromCancelable(albumViewModel.fetchImageAtStart()),
+      onRefresh: () async => albumViewModel.fetchImageAtStart(),
       child: StreamBuilder<List<ImageEntity>>(
         initialData: null,
         stream: albumViewModel.imagesStream,
