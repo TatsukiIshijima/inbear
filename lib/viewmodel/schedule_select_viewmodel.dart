@@ -1,12 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 class ScheduleSelectStatus extends Status {}
 
-class ScheduleSelectViewModel extends ChangeNotifier {
+class ScheduleSelectViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
 
   ScheduleSelectViewModel(
@@ -14,9 +16,17 @@ class ScheduleSelectViewModel extends ChangeNotifier {
   );
 
   String status = Status.none;
-  List<ScheduleSelectItemModel> scheduleItems = List<ScheduleSelectItemModel>();
+  List<ScheduleSelectItemModel> scheduleItems = <ScheduleSelectItemModel>[];
 
   Future<void> fetchEntrySchedule() async {
+    await fromCancelable(_fetchEntrySchedule());
+  }
+
+  Future<void> selectSchedule(String scheduleId) async {
+    await fromCancelable(_selectSchedule(scheduleId));
+  }
+
+  Future<void> _fetchEntrySchedule() async {
     try {
       status = Status.loading;
       notifyListeners();
@@ -26,11 +36,13 @@ class ScheduleSelectViewModel extends ChangeNotifier {
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;
+    } on TimeoutException {
+      status = Status.timeoutError;
     }
     notifyListeners();
   }
 
-  Future<void> selectSchedule(String scheduleId) async {
+  Future<void> _selectSchedule(String scheduleId) async {
     try {
       status = Status.loading;
       notifyListeners();
@@ -41,6 +53,8 @@ class ScheduleSelectViewModel extends ChangeNotifier {
       status = Status.success;
     } on UnLoginException {
       status = Status.unLoginError;
+    } on TimeoutException {
+      status = Status.timeoutError;
     }
     notifyListeners();
   }
