@@ -26,9 +26,8 @@ class ScheduleViewModel extends BaseViewModel {
   String status = Status.none;
   ScheduleEntity schedule;
 
-  Future<void> fetchSelectSchedule() async {
-    await fromCancelable(_fetchSelectSchedule());
-  }
+  Future<void> fetchSelectSchedule() async =>
+      await fromCancelable(_fetchSelectSchedule());
 
   Future<void> _fetchSelectSchedule() async {
     try {

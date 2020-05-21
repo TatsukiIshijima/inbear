@@ -116,9 +116,8 @@ class AlbumViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  Future<void> fetchImageAtStart() async {
-    await fromCancelable(_fetchImageAtStart());
-  }
+  Future<void> fetchImageAtStart() async =>
+      await fromCancelable(_fetchImageAtStart());
 
   Future<void> _fetchImageAtStart() async {
     try {
