@@ -53,23 +53,7 @@ class ParticipantItem extends StatelessWidget {
                 ],
               )
             ],
-          )
-          /*
-        ListTile(
-          leading: const Icon(Icons.person),
-          title: Text(
-            userName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            email,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-         */
-          ),
+          )),
       onTap: () => onTap(),
     );
   }
