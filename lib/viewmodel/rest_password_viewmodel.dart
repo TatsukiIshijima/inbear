@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-class ResetPasswordViewModel extends ChangeNotifier {
+class ResetPasswordViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
 
   ResetPasswordViewModel(this._userRepository);
@@ -16,6 +17,10 @@ class ResetPasswordViewModel extends ChangeNotifier {
   String authStatus;
 
   Future<void> sendPasswordResetEmail() async {
+    await fromCancelable(_sendPasswordResetEmail());
+  }
+
+  Future<void> _sendPasswordResetEmail() async {
     try {
       authStatus = Status.loading;
       notifyListeners();

@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-class LoginViewModel extends ChangeNotifier {
+class LoginViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
   final TextEditingController emailTextEditingController =
       TextEditingController();
@@ -27,6 +27,10 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   Future<void> signIn() async {
+    await fromCancelable(_signIn());
+  }
+
+  Future<void> _signIn() async {
     try {
       authStatus = Status.loading;
       notifyListeners();
