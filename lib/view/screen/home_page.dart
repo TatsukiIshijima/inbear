@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/album_page.dart';
+import 'package:inbear_app/view/screen/participant_list_page.dart';
 import 'package:inbear_app/view/screen/schedule_page.dart';
 import 'package:inbear_app/view/screen/setting_page.dart';
 
@@ -15,9 +16,10 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = <Widget>[
     AlbumPage(),
     SchedulePage(),
+    ParticipantListPage(),
     SettingPage()
   ];
-  final List<String> _titleList = <String>['アルバム', 'スケジュール', '設定'];
+  final List<String> _titleList = <String>['アルバム', 'スケジュール', '参加者', '設定'];
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,8 @@ class _HomePageState extends State<HomePage> {
           child: _tabs.elementAt(_selectIndex),
         ),
         bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor: Color(0xfff48fb1),
+          unselectedItemColor: Colors.grey,
           currentIndex: _selectIndex,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -45,9 +49,11 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.schedule), title: Text('スケジュール')),
             BottomNavigationBarItem(
+                icon: Icon(Icons.people), title: Text('参加者')),
+            BottomNavigationBarItem(
                 icon: Icon(Icons.settings), title: Text('設定'))
           ],
-          onTap: (int index) {
+          onTap: (index) {
             setState(() {
               _selectIndex = index;
             });
