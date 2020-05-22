@@ -61,7 +61,6 @@ class ParticipantList extends StatelessWidget {
                   itemBuilder: (context, index) => ParticipantItem(
                         userName: snapshot.data[index].name,
                         email: snapshot.data[index].email,
-                        onTap: () {},
                       ));
             }
         }
