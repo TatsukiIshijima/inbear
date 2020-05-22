@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
 class ScheduleRepository implements ScheduleRepositoryImpl {
@@ -132,10 +133,30 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
             .document(selectScheduleId)
             .collection(_participantSubCollection)
             .limit(10)
+            .startAfterDocument(startSnapshot)
             .getDocuments()
             .timeout(Duration(seconds: 5),
                 onTimeout: () => throw TimeoutException(
                     'fetch participants next time out.')))
         .documents;
+  }
+
+  @override
+  Future<List<UserEntity>> convertToParticipantUsers(
+      List<DocumentSnapshot> participantDocuments) async {
+    final participants = <UserEntity>[];
+    for (final doc in participantDocuments) {
+      final docReference = doc.data['ref'] as DocumentReference;
+      final userDoc = await docReference
+          .parent()
+          .document(docReference.documentID)
+          .get()
+          .timeout(Duration(seconds: 5),
+              onTimeout: () =>
+                  throw TimeoutException('convert to participants time out.'));
+      final user = UserEntity.fromMap(userDoc.data);
+      participants.add(user);
+    }
+    return participants;
   }
 }

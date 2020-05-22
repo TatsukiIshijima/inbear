@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 
 class ScheduleRepositoryImpl {
   Future<String> registerSchedule(ScheduleEntity schedule) {}
@@ -13,4 +14,6 @@ class ScheduleRepositoryImpl {
       String selectScheduleId) {}
   Future<List<DocumentSnapshot>> fetchParticipantsNext(
       String selectScheduleId, DocumentSnapshot startSnapshot) {}
+  Future<List<UserEntity>> convertToParticipantUsers(
+      List<DocumentSnapshot> participantDocuments) {}
 }
