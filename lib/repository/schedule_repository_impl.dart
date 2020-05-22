@@ -9,4 +9,8 @@ class ScheduleRepositoryImpl {
   Future<List<DocumentSnapshot>> fetchImagesAtStart(String selectScheduleId) {}
   Future<List<DocumentSnapshot>> fetchImagesNext(
       String selectScheduleId, DocumentSnapshot startSnapshot) {}
+  Future<List<DocumentSnapshot>> fetchParticipantsAtStart(
+      String selectScheduleId) {}
+  Future<List<DocumentSnapshot>> fetchParticipantsNext(
+      String selectScheduleId, DocumentSnapshot startSnapshot) {}
 }
