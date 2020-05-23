@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class UserSearchDelegate extends SearchDelegate<void> {
+class UserSearchDelegate extends SearchDelegate<bool> {
   @override
   final String searchFieldLabel;
   @override
@@ -32,7 +32,7 @@ class UserSearchDelegate extends SearchDelegate<void> {
           Icons.arrow_back,
           color: Colors.white,
         ),
-        onPressed: () => close(context, null),
+        onPressed: () => close(context, true),
       );
 
   @override

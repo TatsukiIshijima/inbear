@@ -7,7 +7,7 @@ import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/view/screen/user_search_delegate.dart';
+import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
@@ -22,7 +22,7 @@ class ParticipantListPage extends StatelessWidget {
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
         body: ParticipantList(),
-        floatingActionButton: AddParticipantButton(),
+        floatingActionButton: EditParticipantButton(),
       ),
     );
   }
@@ -91,7 +91,7 @@ class ParticipantList extends StatelessWidget {
   }
 }
 
-class AddParticipantButton extends StatelessWidget {
+class EditParticipantButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel =
@@ -104,12 +104,8 @@ class AddParticipantButton extends StatelessWidget {
       builder: (context, isOwnerSchedule, child) {
         if (isOwnerSchedule) {
           return FloatingActionButton(
-            onPressed: () => showSearch(
-                context: context,
-                delegate: UserSearchDelegate(
-                    searchFieldLabel: 'メールアドレス',
-                    keyboardType: TextInputType.emailAddress)),
-            child: const Icon(Icons.add),
+            onPressed: () => Routes.goToParticipantEdit(context),
+            child: const Icon(Icons.edit),
           );
         } else {
           return Container();
