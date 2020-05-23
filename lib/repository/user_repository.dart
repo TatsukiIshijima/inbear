@@ -217,4 +217,17 @@ class UserRepository implements UserRepositoryImpl {
     }
     return scheduleItems;
   }
+
+  @override
+  Future<List<UserEntity>> searchUser(String email) async {
+    final userDocuments = await _db
+        .collection(_userCollection)
+        .where('email', isEqualTo: email)
+        .getDocuments()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('search user time out.'));
+    return userDocuments.documents
+        .map((doc) => UserEntity.fromMap(doc.data))
+        .toList();
+  }
 }

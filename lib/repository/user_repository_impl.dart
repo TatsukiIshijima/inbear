@@ -12,4 +12,5 @@ class UserRepositoryImpl {
   Future<void> addScheduleReference(String scheduleId) {}
   Future<void> selectSchedule(String scheduleId) {}
   Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() {}
+  Future<List<UserEntity>> searchUser(String email) {}
 }
