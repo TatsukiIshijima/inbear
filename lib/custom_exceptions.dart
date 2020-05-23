@@ -31,3 +31,5 @@ class UploadImageException implements Exception {}
 class NotRegisterAnyImagesException implements Exception {}
 
 class ParticipantsEmptyException implements Exception {}
+
+class SearchUsersEmptyException implements Exception {}
