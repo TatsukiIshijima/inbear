@@ -72,9 +72,23 @@ class ParticipantList extends StatelessWidget {
 class AddParticipantButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {},
-      child: const Icon(Icons.add),
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await viewModel.checkScheduleOwner();
+    });
+    return Selector<ParticipantListViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isOwnerSchedule,
+      builder: (context, isOwnerSchedule, child) {
+        if (isOwnerSchedule) {
+          return FloatingActionButton(
+            onPressed: () {},
+            child: const Icon(Icons.add),
+          );
+        } else {
+          return null;
+        }
+      },
     );
   }
 }

@@ -27,6 +27,7 @@ class ParticipantListViewModel extends BaseViewModel {
       _participantsStreamController.sink;
 
   String status = Status.none;
+  bool isOwnerSchedule = false;
   DocumentSnapshot _lastSnapshot;
 
   @override
@@ -115,5 +116,30 @@ class ParticipantListViewModel extends BaseViewModel {
       participantsSink
           .addError(TimeoutException('fetch participants next time out.'));
     }
+  }
+
+  Future<void> checkScheduleOwner() async {
+    await fromCancelable(_checkScheduleOwner());
+  }
+
+  Future<void> _checkScheduleOwner() async {
+    try {
+      final user = await _userRepositoryImpl.fetchUser();
+      if (user.selectScheduleId.isEmpty) {
+        throw NoSelectScheduleException();
+      }
+      final schedule =
+          await _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId);
+      isOwnerSchedule = schedule.ownerUid == user.uid;
+    } on UnLoginException {
+      isOwnerSchedule = false;
+    } on UserDocumentNotExistException {
+      isOwnerSchedule = false;
+    } on NoSelectScheduleException {
+      isOwnerSchedule = false;
+    } on TimeoutException {
+      isOwnerSchedule = false;
+    }
+    notifyListeners();
   }
 }
