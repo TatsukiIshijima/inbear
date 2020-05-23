@@ -69,6 +69,10 @@ class AppLocalizations {
   static const _scheduleSelectConfirmMessageKey =
       'schedule_select_confirm_message';
 
+  // 参加者一覧画面
+  static const _participantsEmptyErrorMessageKey =
+      'participants_empty_error_message';
+
   // 設定画面
   static const _logoutTitleKey = 'logout_title';
   static const _logoutMessageKey = 'logout_message';
@@ -179,6 +183,9 @@ class AppLocalizations {
       _scheduleSelectConfirmTitleKey: '確認',
       _scheduleSelectConfirmMessageKey: '選択したスケジュールを表示するよう切り替えます。\nよろしいですか？',
 
+      // 参加者一覧画面
+      _participantsEmptyErrorMessageKey: '参加者がおりません。',
+
       // 設定画面
       _logoutTitleKey: 'ログアウト',
       _logoutMessageKey: 'ログアウトしますか？',
@@ -283,6 +290,9 @@ class AppLocalizations {
       _getText(_scheduleSelectConfirmTitleKey);
   String get scheduleSelectConfirmMessage =>
       _getText(_scheduleSelectConfirmMessageKey);
+
+  String get participantsEmptyErrorMessage =>
+      _getText(_participantsEmptyErrorMessageKey);
 
   String get logoutTitle => _getText(_logoutTitleKey);
   String get logoutMessage => _getText(_logoutMessageKey);
