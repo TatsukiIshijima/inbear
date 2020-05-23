@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/view/widget/loading.dart';
+import 'package:inbear_app/view/widget/participant_item.dart';
+import 'package:inbear_app/viewmodel/participant_edit_viewmodel.dart';
 
 class UserSearchDelegate extends SearchDelegate<bool> {
   @override
   final String searchFieldLabel;
   @override
   final TextInputType keyboardType;
+  final ParticipantEditViewModel viewModel;
 
-  UserSearchDelegate({this.searchFieldLabel, this.keyboardType});
+  UserSearchDelegate(this.viewModel,
+      {this.searchFieldLabel, this.keyboardType});
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -37,20 +43,50 @@ class UserSearchDelegate extends SearchDelegate<bool> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO:ここに検索実行時のレイアウト追加
     if (query.isEmpty) {
       return Center(
         child: Text('メールアドレスからユーザーを検索しましょう。'),
       );
     } else {
-      return Center(
-        child: Text('ここに検索結果を表示'),
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await viewModel.searchUser(query);
+      });
+      return StreamBuilder<List<UserEntity>>(
+        initialData: null,
+        stream: viewModel.searchUsersStream,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Center(
+                child: Loading(),
+              );
+            default:
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else if (!snapshot.hasData) {
+                return Center(
+                  child: Text('ユーザーが見つかりませんでした。'),
+                );
+              } else {
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) => ParticipantItem(
+                          userName: snapshot.data[index].name,
+                          email: snapshot.data[index].email,
+                        ));
+              }
+          }
+        },
       );
     }
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Column();
+    return Center(
+      child: Text('メールアドレスからユーザーを検索しましょう。'),
+    );
   }
 }
