@@ -84,9 +84,10 @@ class InbearApp extends StatelessWidget {
       },
       theme: ThemeData(
           appBarTheme: AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.white),
-            actionsIconTheme: IconThemeData(color: Colors.white),
-          ),
+              iconTheme: IconThemeData(color: Colors.white),
+              actionsIconTheme: IconThemeData(color: Colors.white),
+              textTheme: TextTheme(
+                  headline6: TextStyle(color: Colors.white, fontSize: 20))),
           primaryColor: Color(0xfff48fb1),
           primaryColorLight: Color(0xffffc1e3),
           primaryColorDark: Color(0xffbf5f82),
