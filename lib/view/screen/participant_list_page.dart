@@ -36,6 +36,7 @@ class ParticipantList extends StatelessWidget {
     final viewModel =
         Provider.of<ParticipantListViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      viewModel.setScrollListener();
       await viewModel.fetchParticipantsStart();
     });
     return StreamBuilder<List<UserEntity>>(
@@ -86,7 +87,7 @@ class AddParticipantButton extends StatelessWidget {
             child: const Icon(Icons.add),
           );
         } else {
-          return null;
+          return Container();
         }
       },
     );

@@ -29,6 +29,7 @@ class ParticipantListViewModel extends BaseViewModel {
   String status = Status.none;
   bool isOwnerSchedule = false;
   DocumentSnapshot _lastSnapshot;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -36,6 +37,17 @@ class ParticipantListViewModel extends BaseViewModel {
     participantsSink.close();
     scrollController.dispose();
     super.dispose();
+  }
+
+  void setScrollListener() {
+    scrollController.addListener(() async {
+      final maxScrollExtent = scrollController.position.maxScrollExtent;
+      if (scrollController.offset >= maxScrollExtent && !_isLoading) {
+        _isLoading = true;
+        await fromCancelable(_fetchParticipantsNext());
+        _isLoading = false;
+      }
+    });
   }
 
   Future<void> fetchParticipantsStart() async {
@@ -75,10 +87,6 @@ class ParticipantListViewModel extends BaseViewModel {
       participantsSink
           .addError(TimeoutException('fetch participants start time out.'));
     }
-  }
-
-  Future<void> fetchParticipantsNext() async {
-    await fromCancelable(_fetchParticipantsNext());
   }
 
   Future<void> _fetchParticipantsNext() async {
