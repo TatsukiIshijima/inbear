@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/view/screen/user_search_delegate.dart';
+import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/viewmodel/participant_edit_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +11,8 @@ class ParticipantEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ParticipantEditViewModel(
-        Provider.of<UserRepository>(context, listen: false),
-        Provider.of<ScheduleRepository>(context, listen: false)
-      ),
+          Provider.of<UserRepository>(context, listen: false),
+          Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
         appBar: AppBar(
           title: Text('参加者編集'),
@@ -40,7 +39,7 @@ class AddParticipantButton extends StatelessWidget {
       onPressed: () async {
         final route = await showSearch<bool>(
             context: context,
-            delegate: UserSearchDelegate(viewModel,
+            delegate: UserSearchDelegate(
                 searchFieldLabel: 'メールアドレス',
                 keyboardType: TextInputType.emailAddress));
         // Navigator.pop で result に bool を入れて前の画面に戻したときに
