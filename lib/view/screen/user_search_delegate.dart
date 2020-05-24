@@ -79,6 +79,8 @@ class UserSearchDelegate extends SearchDelegate<bool> {
                     itemBuilder: (context, index) => ParticipantItem(
                           userName: snapshot.data[index].name,
                           email: snapshot.data[index].email,
+                          showAddButton: true,
+                          addButtonClick: () {},
                         ));
               }
           }
