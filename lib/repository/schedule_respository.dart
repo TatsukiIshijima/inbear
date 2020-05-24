@@ -173,4 +173,32 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
                 throw TimeoutException('is participant user time out.'));
     return participantDocument.exists;
   }
+
+  @override
+  Future<void> addParticipant(String selectScheduleId, String uid) async {
+    const _userCollection = 'user';
+    final userReference = _db.collection(_userCollection).document(uid);
+    await _db
+        .collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_participantSubCollection)
+        .document(uid)
+        .setData(<String, DocumentReference>{'ref': userReference}).timeout(
+            Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('add participant time out.'));
+  }
+
+  @override
+  Future<void> deleteParticipant(String selectScheduleId, String uid) async {
+    await _db
+        .collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_participantSubCollection)
+        .document(uid)
+        .delete()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('delete participant time out.'));
+  }
 }
