@@ -8,8 +8,6 @@ import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-import '../status.dart';
-
 class ParticipantListViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
@@ -26,7 +24,6 @@ class ParticipantListViewModel extends BaseViewModel {
   StreamSink<List<UserEntity>> get participantsSink =>
       _participantsStreamController.sink;
 
-  String status = Status.none;
   bool isOwnerSchedule = false;
   DocumentSnapshot _lastSnapshot;
   bool _isLoading = false;

@@ -73,6 +73,13 @@ class AppLocalizations {
   static const _participantsEmptyErrorMessageKey =
       'participants_empty_error_message';
 
+  // 参加者追加画面
+  static const _addParticipantSuggestMessageKey =
+      'add_participant_suggest_message';
+  static const _notFountEmailAddressUserMessageKey =
+      'not_found_email_address_message';
+  static const _addParticipantErrorTitle = 'add_participant_error_title';
+
   // 設定画面
   static const _logoutTitleKey = 'logout_title';
   static const _logoutMessageKey = 'logout_message';
@@ -186,6 +193,12 @@ class AppLocalizations {
       // 参加者一覧画面
       _participantsEmptyErrorMessageKey: '参加者がおりません。',
 
+      // 参加者追加画面
+      _addParticipantSuggestMessageKey: 'メールアドレスからユーザーを検索しましょう。',
+      _notFountEmailAddressUserMessageKey:
+          'ユーザーが見つかりません。\n（既に参加されている方や自分自身は表示されません。）',
+      _addParticipantErrorTitle: '追加エラー',
+
       // 設定画面
       _logoutTitleKey: 'ログアウト',
       _logoutMessageKey: 'ログアウトしますか？',
@@ -293,6 +306,12 @@ class AppLocalizations {
 
   String get participantsEmptyErrorMessage =>
       _getText(_participantsEmptyErrorMessageKey);
+
+  String get addParticipantSuggestMessage =>
+      _getText(_addParticipantSuggestMessageKey);
+  String get notFoundEmailAddressUserMessage =>
+      _getText(_notFountEmailAddressUserMessageKey);
+  String get addParticipantErrorTitle => _getText(_addParticipantErrorTitle);
 
   String get logoutTitle => _getText(_logoutTitleKey);
   String get logoutMessage => _getText(_logoutMessageKey);

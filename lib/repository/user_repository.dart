@@ -217,4 +217,40 @@ class UserRepository implements UserRepositoryImpl {
     }
     return scheduleItems;
   }
+
+  @override
+  Future<List<UserEntity>> searchUser(String email) async {
+    final userDocuments = await _db
+        .collection(_userCollection)
+        .where('email', isEqualTo: email)
+        .getDocuments()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('search user time out.'));
+    return userDocuments.documents
+        .map((doc) => UserEntity.fromMap(doc.data))
+        .toList();
+  }
+
+  @override
+  Future<void> addScheduleInTargetUser(
+      String targetUid, String targetScheduleId) async {
+    const scheduleCollection = 'schedule';
+    final scheduleReference =
+        _db.collection(scheduleCollection).document(targetScheduleId);
+    await _db
+        .collection(_userCollection)
+        .document(targetUid)
+        .collection(_scheduleSubCollection)
+        .document(targetScheduleId)
+        .setData(<String, DocumentReference>{'ref': scheduleReference},
+            merge:
+                true).timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('add schedule time out.'));
+  }
+
+  @override
+  Future<void> deleteSchedule(String targetUid, String targetScheduleId) {
+    // TODO: implement deleteSchedule
+    throw UnimplementedError();
+  }
 }

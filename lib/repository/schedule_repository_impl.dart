@@ -16,4 +16,7 @@ class ScheduleRepositoryImpl {
       String selectScheduleId, DocumentSnapshot startSnapshot) {}
   Future<List<UserEntity>> convertToParticipantUsers(
       List<DocumentSnapshot> participantDocuments) {}
+  Future<bool> isParticipantUser(String selectScheduleId, String uid) {}
+  Future<void> addParticipant(String selectScheduleId, String uid) {}
+  Future<void> deleteParticipant(String selectScheduleId, String uid) {}
 }
