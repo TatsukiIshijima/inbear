@@ -7,7 +7,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
-import 'package:inbear_app/view/widget/user_search_viewmodel.dart';
+import 'package:inbear_app/viewmodel/user_search_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 import '../../status.dart';

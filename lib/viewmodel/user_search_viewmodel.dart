@@ -6,8 +6,8 @@ import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-import '../../custom_exceptions.dart';
-import '../../status.dart';
+import '../custom_exceptions.dart';
+import '../status.dart';
 
 class UserSearchStatus extends Status {
   static const userDataNotExistError = 'USER_DATA_NOT_EXIST_ERROR';
