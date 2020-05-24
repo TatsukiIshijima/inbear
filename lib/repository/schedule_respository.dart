@@ -183,8 +183,9 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .document(selectScheduleId)
         .collection(_participantSubCollection)
         .document(uid)
-        .setData(<String, DocumentReference>{'ref': userReference}).timeout(
-            Duration(seconds: 5),
+        .setData(<String, DocumentReference>{'ref': userReference},
+            merge:
+                true).timeout(Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('add participant time out.'));
   }
