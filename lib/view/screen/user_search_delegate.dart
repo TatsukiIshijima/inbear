@@ -67,7 +67,11 @@ class UserSearchDelegate extends SearchDelegate<bool> {
                 );
               } else if (!snapshot.hasData) {
                 return Center(
-                  child: Text('ユーザーが見つかりませんでした。'),
+                  child: Text('ユーザーが見つかりません。\n（既に参加されている方や自分自身は表示されません。）'),
+                );
+              } else if (snapshot.data.isEmpty) {
+                return Center(
+                  child: Text('ユーザーが見つかりません。\n（既に参加されている方や自分自身は表示されません。）'),
                 );
               } else {
                 return ListView.builder(

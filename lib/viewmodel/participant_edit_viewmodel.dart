@@ -14,7 +14,8 @@ class ParticipantEditViewModel extends BaseViewModel {
   ParticipantEditViewModel(
       this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
-  final _searchUsersStreamController = StreamController<List<UserEntity>>();
+  final _searchUsersStreamController =
+      StreamController<List<UserEntity>>.broadcast();
   final _participantsStreamController = StreamController<List<UserEntity>>();
   final List<UserEntity> _searchUsers = <UserEntity>[];
   //final List<UserEntity> _participants = <UserEntity>[];
@@ -54,9 +55,27 @@ class ParticipantEditViewModel extends BaseViewModel {
       if (searchResult.isEmpty) {
         throw SearchUsersEmptyException();
       }
+      final userSelf = await _userRepositoryImpl.fetchUser();
+      // 既に参加済みの人は検索結果から除く
+      final notParticipantUsers = <UserEntity>[];
+      for (final userEntity in searchResult) {
+        final isParticipant = await _scheduleRepositoryImpl.isParticipantUser(
+            userSelf.selectScheduleId, userEntity.uid);
+        if (!isParticipant) {
+          notParticipantUsers.add(userEntity);
+        }
+      }
+      if (_searchUsersStreamController.isClosed) {
+        debugPrint('searchUser : searchUsersStreamController is closed.');
+        return;
+      }
       _searchUsers.clear();
-      _searchUsers.addAll(searchResult);
+      _searchUsers.addAll(notParticipantUsers);
       searchUsersSink.add(_searchUsers);
+    } on UnLoginException {
+      searchUsersSink.addError(UnLoginException());
+    } on UserDocumentNotExistException {
+      searchUsersSink.addError(UserDocumentNotExistException());
     } on SearchUsersEmptyException {
       searchUsersSink.addError(SearchUsersEmptyException());
     } on TimeoutException {

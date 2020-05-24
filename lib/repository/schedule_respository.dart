@@ -159,4 +159,18 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
     }
     return participants;
   }
+
+  @override
+  Future<bool> isParticipantUser(String selectScheduleId, String uid) async {
+    final participantDocument = await _db
+        .collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_participantSubCollection)
+        .document(uid)
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('is participant user time out.'));
+    return participantDocument.exists;
+  }
 }
