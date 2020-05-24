@@ -14,17 +14,9 @@ class ParticipantEditViewModel extends BaseViewModel {
   ParticipantEditViewModel(
       this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
-  final _searchUsersStreamController =
-      StreamController<List<UserEntity>>.broadcast();
   final _participantsStreamController = StreamController<List<UserEntity>>();
-  final List<UserEntity> _searchUsers = <UserEntity>[];
   //final List<UserEntity> _participants = <UserEntity>[];
   final scrollController = ScrollController();
-
-  Stream<List<UserEntity>> get searchUsersStream =>
-      _searchUsersStreamController.stream;
-  StreamSink<List<UserEntity>> get searchUsersSink =>
-      _searchUsersStreamController.sink;
 
   Stream<List<UserEntity>> get participantsStream =>
       _participantsStreamController.stream;
@@ -33,9 +25,7 @@ class ParticipantEditViewModel extends BaseViewModel {
 
   @override
   void dispose() {
-    _searchUsersStreamController.close();
     _participantsStreamController.close();
-    searchUsersSink.close();
     participantsSink.close();
     scrollController.dispose();
     super.dispose();
@@ -45,41 +35,11 @@ class ParticipantEditViewModel extends BaseViewModel {
     debugPrint('fetchParticipants');
   }
 
-  Future<void> searchUser(String email) async {
-    await fromCancelable(_searchUser(email));
-  }
-
-  Future<void> _searchUser(String email) async {
+  Future<void> deleteParticipant(String targetUid) async {
     try {
-      final searchResult = await _userRepositoryImpl.searchUser(email);
-      if (searchResult.isEmpty) {
-        throw SearchUsersEmptyException();
-      }
       final userSelf = await _userRepositoryImpl.fetchUser();
-      // 既に参加済みの人は検索結果から除く
-      final notParticipantUsers = <UserEntity>[];
-      for (final userEntity in searchResult) {
-        final isParticipant = await _scheduleRepositoryImpl.isParticipantUser(
-            userSelf.selectScheduleId, userEntity.uid);
-        if (!isParticipant) {
-          notParticipantUsers.add(userEntity);
-        }
-      }
-      if (_searchUsersStreamController.isClosed) {
-        debugPrint('searchUser : searchUsersStreamController is closed.');
-        return;
-      }
-      _searchUsers.clear();
-      _searchUsers.addAll(notParticipantUsers);
-      searchUsersSink.add(_searchUsers);
-    } on UnLoginException {
-      searchUsersSink.addError(UnLoginException());
-    } on UserDocumentNotExistException {
-      searchUsersSink.addError(UserDocumentNotExistException());
-    } on SearchUsersEmptyException {
-      searchUsersSink.addError(SearchUsersEmptyException());
-    } on TimeoutException {
-      searchUsersSink.addError(TimeoutException('search user time out.'));
-    }
+      await _scheduleRepositoryImpl.deleteParticipant(
+          userSelf.selectScheduleId, targetUid);
+    } on UnLoginException {} on UserDocumentNotExistException {} on TimeoutException {}
   }
 }

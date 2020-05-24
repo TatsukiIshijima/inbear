@@ -5,7 +5,7 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
-import 'package:inbear_app/viewmodel/participant_edit_viewmodel.dart';
+import 'package:inbear_app/view/widget/user_search_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class UserSearchPage extends StatelessWidget {
@@ -16,7 +16,7 @@ class UserSearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => ParticipantEditViewModel(
+        create: (context) => UserSearchViewModel(
             Provider.of<UserRepository>(context, listen: false),
             Provider.of<ScheduleRepository>(context, listen: false)),
         child: Stack(
@@ -35,8 +35,7 @@ class ParticipantYetUserList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel =
-        Provider.of<ParticipantEditViewModel>(context, listen: false);
+    final viewModel = Provider.of<UserSearchViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await viewModel.searchUser(query);
     });
