@@ -7,6 +7,11 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 import '../../custom_exceptions.dart';
+import '../../status.dart';
+
+class UserSearchStatus extends Status {
+  static const userDataNotExistError = 'USER_DATA_NOT_EXIST_ERROR';
+}
 
 class UserSearchViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
@@ -15,13 +20,14 @@ class UserSearchViewModel extends BaseViewModel {
   UserSearchViewModel(this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
   final _searchUsersStreamController = StreamController<List<UserEntity>>();
+  final List<UserEntity> _searchUsers = <UserEntity>[];
 
   Stream<List<UserEntity>> get searchUsersStream =>
       _searchUsersStreamController.stream;
   StreamSink<List<UserEntity>> get searchUsersSink =>
       _searchUsersStreamController.sink;
 
-  final List<UserEntity> _searchUsers = <UserEntity>[];
+  String status = Status.none;
 
   @override
   void dispose() {
@@ -74,9 +80,21 @@ class UserSearchViewModel extends BaseViewModel {
 
   Future<void> _addParticipant(String targetUid) async {
     try {
+      status = Status.loading;
+      notifyListeners();
       final userSelf = await _userRepositoryImpl.fetchUser();
       await _scheduleRepositoryImpl.addParticipant(
           userSelf.selectScheduleId, targetUid);
-    } on UnLoginException {} on UserDocumentNotExistException {} on TimeoutException {}
+      await _userRepositoryImpl.addScheduleInTargetUser(
+          targetUid, userSelf.selectScheduleId);
+      status = Status.success;
+    } on UnLoginException {
+      status = Status.unLoginError;
+    } on UserDocumentNotExistException {
+      status = UserSearchStatus.userDataNotExistError;
+    } on TimeoutException {
+      status = Status.timeoutError;
+    }
+    notifyListeners();
   }
 }

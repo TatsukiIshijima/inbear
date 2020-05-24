@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
+import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/view/widget/user_search_viewmodel.dart';
 import 'package:provider/provider.dart';
+
+import '../../status.dart';
 
 class UserSearchPage extends StatelessWidget {
   final String query;
@@ -15,14 +19,21 @@ class UserSearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
         create: (context) => UserSearchViewModel(
             Provider.of<UserRepository>(context, listen: false),
             Provider.of<ScheduleRepository>(context, listen: false)),
         child: Stack(
           children: <Widget>[
-            if (query.isEmpty) Center(child: Text('メールアドレスからユーザーを検索しましょう。')),
-            if (query.isNotEmpty) ParticipantYetUserList(query)
+            if (query.isEmpty)
+              Center(
+                  child: Text(
+                resource.addParticipantSuggestMessage,
+                textAlign: TextAlign.center,
+              )),
+            if (query.isNotEmpty) ParticipantYetUserList(query, resource),
+            OverlapLoading(resource)
           ],
         ));
   }
@@ -30,8 +41,16 @@ class UserSearchPage extends StatelessWidget {
 
 class ParticipantYetUserList extends StatelessWidget {
   final String query;
+  final AppLocalizations resource;
 
-  ParticipantYetUserList(this.query);
+  ParticipantYetUserList(this.query, this.resource);
+
+  Widget _errorText(String errorMessage) {
+    return Text(
+      errorMessage,
+      textAlign: TextAlign.center,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +69,11 @@ class ParticipantYetUserList extends StatelessWidget {
             );
           default:
             if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
+              return _errorText(snapshot.error.toString());
             } else if (!snapshot.hasData) {
-              return Center(
-                child: Text('ユーザーが見つかりません。\n（既に参加されている方や自分自身は表示されません。）'),
-              );
+              return _errorText(resource.notFoundEmailAddressUserMessage);
             } else if (snapshot.data.isEmpty) {
-              return Center(
-                child: Text('ユーザーが見つかりません。\n（既に参加されている方や自分自身は表示されません。）'),
-              );
+              return _errorText(resource.notFoundEmailAddressUserMessage);
             } else {
               return ListView.builder(
                   itemCount: snapshot.data.length,
@@ -68,7 +81,8 @@ class ParticipantYetUserList extends StatelessWidget {
                         userName: snapshot.data[index].name,
                         email: snapshot.data[index].email,
                         showAddButton: true,
-                        addButtonClick: () {},
+                        addButtonClick: () async => await viewModel
+                            .addParticipant(snapshot.data[index].uid),
                       ));
             }
         }
@@ -78,10 +92,57 @@ class ParticipantYetUserList extends StatelessWidget {
 }
 
 class OverlapLoading extends StatelessWidget {
+  final AppLocalizations resource;
+
+  OverlapLoading(this.resource);
+
+  void _showErrorDialog(BuildContext context, String title, String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog<SingleButtonDialog>(
+          context: context,
+          builder: (context) => SingleButtonDialog(
+                title: title,
+                message: message,
+                positiveButtonTitle: resource.defaultPositiveButtonTitle,
+                onPressed: () => Navigator.pop(context),
+              ));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Selector<UserSearchViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case Status.loading:
+            return Container(
+              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
+              child: Center(
+                child: Loading(),
+              ),
+            );
+          case Status.success:
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              Navigator.pop(context, true);
+            });
+            break;
+          case Status.unLoginError:
+            _showErrorDialog(context, resource.addParticipantErrorTitle,
+                resource.unloginError);
+            break;
+          case UserSearchStatus.userDataNotExistError:
+            _showErrorDialog(context, resource.addParticipantErrorTitle,
+                resource.notExistUserDataError);
+            break;
+          case Status.timeoutError:
+            _showErrorDialog(context, resource.addParticipantErrorTitle,
+                resource.timeoutError);
+            break;
+        }
+        return Container();
+      },
+    );
   }
 }
 
@@ -127,7 +188,10 @@ class UserSearchDelegate extends SearchDelegate<bool> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return Center(
-      child: Text('メールアドレスからユーザーを検索しましょう。'),
+      child: Text(
+        AppLocalizations.of(context).addParticipantSuggestMessage,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
