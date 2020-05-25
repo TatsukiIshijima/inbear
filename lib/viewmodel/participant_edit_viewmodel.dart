@@ -16,14 +16,13 @@ class ParticipantEditViewModel extends BaseViewModel {
       this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
   final _participantsStreamController =
-      StreamController<List<ParticipantDeleteItemModel>>();
-  final List<ParticipantDeleteItemModel> _participants =
-      <ParticipantDeleteItemModel>[];
+      StreamController<List<ParticipantItemModel>>();
+  final List<ParticipantItemModel> _participants = <ParticipantItemModel>[];
   final scrollController = ScrollController();
 
-  Stream<List<ParticipantDeleteItemModel>> get participantsStream =>
+  Stream<List<ParticipantItemModel>> get participantsStream =>
       _participantsStreamController.stream;
-  StreamSink<List<ParticipantDeleteItemModel>> get participantsSink =>
+  StreamSink<List<ParticipantItemModel>> get participantsSink =>
       _participantsStreamController.sink;
 
   DocumentSnapshot _lastSnapshot;
@@ -71,7 +70,7 @@ class ParticipantEditViewModel extends BaseViewModel {
           .convertToParticipantUsers(participantDocuments);
       final participantDeleteModels = participantUserEntities
           .map((userEntity) =>
-              ParticipantDeleteItemModel.from(userEntity, selectScheduleEntity))
+              ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
       _participants.addAll(participantDeleteModels);
       if (_participantsStreamController.isClosed) {
@@ -117,7 +116,7 @@ class ParticipantEditViewModel extends BaseViewModel {
           .convertToParticipantUsers(participantDocuments);
       final participantDeleteModels = participantUserEntities
           .map((userEntity) =>
-              ParticipantDeleteItemModel.from(userEntity, selectScheduleEntity))
+              ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
       _participants.addAll(participantDeleteModels);
       if (_participantsStreamController.isClosed) {

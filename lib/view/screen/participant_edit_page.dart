@@ -68,7 +68,7 @@ class ParticipantEditList extends StatelessWidget {
       viewModel.setScrollListener();
       await viewModel.fetchParticipantsStart();
     });
-    return StreamBuilder<List<ParticipantDeleteItemModel>>(
+    return StreamBuilder<List<ParticipantItemModel>>(
       initialData: null,
       stream: viewModel.participantsStream,
       builder: (context, snapshot) {
