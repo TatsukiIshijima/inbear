@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
-import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
@@ -15,13 +15,15 @@ class ParticipantEditViewModel extends BaseViewModel {
   ParticipantEditViewModel(
       this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
-  final _participantsStreamController = StreamController<List<UserEntity>>();
-  final List<UserEntity> _users = <UserEntity>[];
+  final _participantsStreamController =
+      StreamController<List<ParticipantDeleteItemModel>>();
+  final List<ParticipantDeleteItemModel> _participants =
+      <ParticipantDeleteItemModel>[];
   final scrollController = ScrollController();
 
-  Stream<List<UserEntity>> get participantsStream =>
+  Stream<List<ParticipantDeleteItemModel>> get participantsStream =>
       _participantsStreamController.stream;
-  StreamSink<List<UserEntity>> get participantsSink =>
+  StreamSink<List<ParticipantDeleteItemModel>> get participantsSink =>
       _participantsStreamController.sink;
 
   DocumentSnapshot _lastSnapshot;
@@ -52,7 +54,7 @@ class ParticipantEditViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsStart() async {
     try {
-      _users.clear();
+      _participants.clear();
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
       if (selectScheduleId.isEmpty) {
@@ -63,13 +65,19 @@ class ParticipantEditViewModel extends BaseViewModel {
       if (participantDocuments.isEmpty) {
         throw ParticipantsEmptyException();
       }
-      final userEntities = await _scheduleRepositoryImpl
+      final selectScheduleEntity =
+          await _scheduleRepositoryImpl.fetchSchedule(selectScheduleId);
+      final participantUserEntities = await _scheduleRepositoryImpl
           .convertToParticipantUsers(participantDocuments);
-      _users.addAll(userEntities);
+      final participantDeleteModels = participantUserEntities
+          .map((userEntity) =>
+              ParticipantDeleteItemModel.from(userEntity, selectScheduleEntity))
+          .toList();
+      _participants.addAll(participantDeleteModels);
       if (_participantsStreamController.isClosed) {
         return;
       }
-      participantsSink.add(_users);
+      participantsSink.add(_participants);
       _lastSnapshot = participantDocuments.last;
     } on UnLoginException {
       participantsSink.addError(UnLoginException());
@@ -79,6 +87,8 @@ class ParticipantEditViewModel extends BaseViewModel {
       participantsSink.addError(NoSelectScheduleException());
     } on ParticipantsEmptyException {
       participantsSink.addError(ParticipantsEmptyException());
+    } on ScheduleDocumentNotExistException {
+      participantsSink.addError(ScheduleDocumentNotExistException());
     } on TimeoutException {
       participantsSink
           .addError(TimeoutException('fetch participants start time out.'));
@@ -101,21 +111,29 @@ class ParticipantEditViewModel extends BaseViewModel {
         _lastSnapshot = null;
         return;
       }
-      final userEntities = await _scheduleRepositoryImpl
+      final selectScheduleEntity =
+          await _scheduleRepositoryImpl.fetchSchedule(selectScheduleId);
+      final participantUserEntities = await _scheduleRepositoryImpl
           .convertToParticipantUsers(participantDocuments);
-      _users.addAll(userEntities);
+      final participantDeleteModels = participantUserEntities
+          .map((userEntity) =>
+              ParticipantDeleteItemModel.from(userEntity, selectScheduleEntity))
+          .toList();
+      _participants.addAll(participantDeleteModels);
       if (_participantsStreamController.isClosed) {
         return;
       }
-      participantsSink.add(_users);
+      participantsSink.add(_participants);
       _lastSnapshot = participantDocuments.last;
-      debugPrint('追加読み込み, ${_users.length}');
+      debugPrint('追加読み込み, ${_participants.length}');
     } on UnLoginException {
       participantsSink.addError(UnLoginException());
     } on UserDocumentNotExistException {
       participantsSink.addError(UserDocumentNotExistException());
     } on NoSelectScheduleException {
       participantsSink.addError(NoSelectScheduleException());
+    } on ScheduleDocumentNotExistException {
+      participantsSink.addError(ScheduleDocumentNotExistException());
     } on TimeoutException {
       participantsSink
           .addError(TimeoutException('fetch participants next time out.'));

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
@@ -42,14 +42,14 @@ class AddParticipantButton extends StatelessWidget {
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async {
-        final route = await showSearch<bool>(
+        final updateFlag = await showSearch<bool>(
             context: context,
             delegate: UserSearchDelegate(
                 searchFieldLabel: 'メールアドレス',
                 keyboardType: TextInputType.emailAddress));
         // Navigator.pop で result に bool を入れて前の画面に戻したときに
         // result に値が入っているので、それで前の画面から戻ってきているか検知
-        if (route != null) {
+        if (updateFlag != null && updateFlag) {
           debugPrint('BackFromUserSearch');
           await viewModel.fetchParticipantsStart();
         }
@@ -68,7 +68,7 @@ class ParticipantEditList extends StatelessWidget {
       viewModel.setScrollListener();
       await viewModel.fetchParticipantsStart();
     });
-    return StreamBuilder<List<UserEntity>>(
+    return StreamBuilder<List<ParticipantDeleteItemModel>>(
       initialData: null,
       stream: viewModel.participantsStream,
       builder: (context, snapshot) {
@@ -91,7 +91,7 @@ class ParticipantEditList extends StatelessWidget {
                   itemBuilder: (context, index) => ParticipantItem(
                         userName: snapshot.data[index].name,
                         email: snapshot.data[index].email,
-                        showDeleteButton: true,
+                        showDeleteButton: !snapshot.data[index].isOwner,
                         deleteButtonClick: () {},
                       ));
             }

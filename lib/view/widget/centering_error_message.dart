@@ -21,6 +21,8 @@ class CenteringErrorMessage extends StatelessWidget {
         errorMessage = resource.unloginError;
       } else if (exception is UserDocumentNotExistException) {
         errorMessage = resource.notExistUserDataError;
+      } else if (exception is ScheduleDocumentNotExistException) {
+        errorMessage = resource.notExistScheduleDataError;
       } else if (exception is NoSelectScheduleException) {
         errorMessage = resource.noSelectScheduleError;
       } else if (exception is NotRegisterAnyImagesException) {
