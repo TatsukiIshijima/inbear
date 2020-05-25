@@ -4,6 +4,7 @@ import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
@@ -45,13 +46,6 @@ class ParticipantYetUserList extends StatelessWidget {
 
   ParticipantYetUserList(this.query, this.resource);
 
-  Widget _errorText(String errorMessage) {
-    return Text(
-      errorMessage,
-      textAlign: TextAlign.center,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserSearchViewModel>(context, listen: false);
@@ -69,11 +63,20 @@ class ParticipantYetUserList extends StatelessWidget {
             );
           default:
             if (snapshot.hasError) {
-              return _errorText(snapshot.error.toString());
+              return CenteringErrorMessage(
+                resource,
+                exception: snapshot.error,
+              );
             } else if (!snapshot.hasData) {
-              return _errorText(resource.notFoundEmailAddressUserMessage);
+              return CenteringErrorMessage(
+                resource,
+                message: resource.notFoundEmailAddressUserMessage,
+              );
             } else if (snapshot.data.isEmpty) {
-              return _errorText(resource.notFoundEmailAddressUserMessage);
+              return CenteringErrorMessage(
+                resource,
+                message: resource.notFoundEmailAddressUserMessage,
+              );
             } else {
               return ListView.builder(
                   itemCount: snapshot.data.length,
@@ -177,7 +180,7 @@ class UserSearchDelegate extends SearchDelegate<bool> {
           Icons.arrow_back,
           color: Colors.white,
         ),
-        onPressed: () => close(context, true),
+        onPressed: () => close(context, false),
       );
 
   @override
