@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
+import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
@@ -29,30 +27,6 @@ class ParticipantListPage extends StatelessWidget {
 }
 
 class ParticipantList extends StatelessWidget {
-  Widget _errorText(String errorMessage) {
-    return Center(
-        child: Text(
-      errorMessage,
-      textAlign: TextAlign.center,
-    ));
-  }
-
-  Widget _showErrorMessage(Object snapshotError, AppLocalizations resource) {
-    if (snapshotError is UnLoginException) {
-      return _errorText(resource.unloginError);
-    } else if (snapshotError is UserDocumentNotExistException) {
-      return _errorText(resource.notExistUserDataError);
-    } else if (snapshotError is NoSelectScheduleException) {
-      return _errorText(resource.noSelectScheduleError);
-    } else if (snapshotError is ParticipantsEmptyException) {
-      return _errorText(resource.participantsEmptyErrorMessage);
-    } else if (snapshotError is TimeoutException) {
-      return _errorText(resource.timeoutError);
-    } else {
-      return _errorText(resource.generalError);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
@@ -71,11 +45,16 @@ class ParticipantList extends StatelessWidget {
             return Center(child: Loading());
           default:
             if (snapshot.hasError) {
-              return _showErrorMessage(snapshot.error, resource);
-            } else if (!snapshot.hasData) {
-              return Center(
-                child: _errorText(resource.participantsEmptyErrorMessage),
+              return CenteringErrorMessage(
+                resource,
+                exception: snapshot.error,
               );
+            } else if (!snapshot.hasData) {
+              return CenteringErrorMessage(resource,
+                  message: resource.participantsEmptyErrorMessage);
+            } else if (snapshot.data.isEmpty) {
+              return CenteringErrorMessage(resource,
+                  message: resource.participantsEmptyErrorMessage);
             } else {
               return ListView.builder(
                   itemCount: snapshot.data.length,

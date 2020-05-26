@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
+import 'package:inbear_app/view/widget/centering_error_message.dart';
+import 'package:inbear_app/view/widget/closed_question_dialog.dart';
+import 'package:inbear_app/view/widget/loading.dart';
+import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_edit_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -37,16 +43,16 @@ class AddParticipantButton extends StatelessWidget {
         style: TextStyle(color: Colors.white),
       ),
       onPressed: () async {
-        final route = await showSearch<bool>(
+        final updateFlag = await showSearch<bool>(
             context: context,
             delegate: UserSearchDelegate(
                 searchFieldLabel: 'メールアドレス',
                 keyboardType: TextInputType.emailAddress));
         // Navigator.pop で result に bool を入れて前の画面に戻したときに
         // result に値が入っているので、それで前の画面から戻ってきているか検知
-        if (route != null) {
+        if (updateFlag != null && updateFlag) {
           debugPrint('BackFromUserSearch');
-          await viewModel.fetchParticipants();
+          await viewModel.fetchParticipantsStart();
         }
       },
     );
@@ -54,15 +60,65 @@ class AddParticipantButton extends StatelessWidget {
 }
 
 class ParticipantEditList extends StatelessWidget {
+  void _showConfirmDialog(
+      BuildContext context, Future<void> Function() deleteFunc) {
+    showDialog<ClosedQuestionDialog>(
+        context: context,
+        builder: (context) => ClosedQuestionDialog(
+              title: '確認',
+              message: 'ユーザーをこのスケジュールから削除します。\nよろしいですか？',
+              positiveButtonTitle: 'OK',
+              negativeButtonTitle: 'キャンセル',
+              onPositiveButtonPressed: () async {
+                Navigator.pop(context);
+                await deleteFunc();
+              },
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<ParticipantEditViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await viewModel.fetchParticipants();
+      viewModel.setScrollListener();
+      await viewModel.fetchParticipantsStart();
     });
-    return Center(
-      child: Text('一覧表示'),
+    return StreamBuilder<List<ParticipantItemModel>>(
+      initialData: null,
+      stream: viewModel.participantsStream,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(child: Loading());
+          default:
+            if (snapshot.hasError) {
+              return CenteringErrorMessage(
+                resource,
+                exception: snapshot.error,
+              );
+            } else if (!snapshot.hasData) {
+              return CenteringErrorMessage(resource,
+                  message: resource.participantsEmptyErrorMessage);
+            } else {
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  controller: viewModel.scrollController,
+                  itemBuilder: (context, index) => ParticipantItem(
+                        userName: snapshot.data[index].name,
+                        email: snapshot.data[index].email,
+                        showDeleteButton: !snapshot.data[index].isOwner,
+                        deleteButtonClick: () =>
+                            _showConfirmDialog(context, () async {
+                          await viewModel
+                              .deleteParticipant(snapshot.data[index].uid);
+                          await viewModel.fetchParticipantsStart();
+                        }),
+                      ));
+            }
+        }
+      },
     );
   }
 }
