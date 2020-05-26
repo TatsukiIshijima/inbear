@@ -249,8 +249,15 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> deleteSchedule(String targetUid, String targetScheduleId) {
-    // TODO: implement deleteSchedule
-    throw UnimplementedError();
+  Future<void> deleteSchedule(String targetUid, String targetScheduleId) async {
+    await _db
+        .collection(_userCollection)
+        .document(targetUid)
+        .collection(_scheduleSubCollection)
+        .document(targetScheduleId)
+        .delete()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('delete schedule time out.'));
   }
 }
