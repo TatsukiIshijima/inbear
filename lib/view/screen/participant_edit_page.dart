@@ -6,6 +6,7 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
+import 'package:inbear_app/view/widget/closed_question_dialog.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_edit_viewmodel.dart';
@@ -59,6 +60,22 @@ class AddParticipantButton extends StatelessWidget {
 }
 
 class ParticipantEditList extends StatelessWidget {
+  void _showConfirmDialog(
+      BuildContext context, Future<void> Function() deleteFunc) {
+    showDialog<ClosedQuestionDialog>(
+        context: context,
+        builder: (context) => ClosedQuestionDialog(
+              title: '確認',
+              message: 'ユーザーをこのスケジュールから削除します。\nよろしいですか？',
+              positiveButtonTitle: 'OK',
+              negativeButtonTitle: 'キャンセル',
+              onPositiveButtonPressed: () async {
+                Navigator.pop(context);
+                await deleteFunc();
+              },
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
@@ -92,7 +109,12 @@ class ParticipantEditList extends StatelessWidget {
                         userName: snapshot.data[index].name,
                         email: snapshot.data[index].email,
                         showDeleteButton: !snapshot.data[index].isOwner,
-                        deleteButtonClick: () {},
+                        deleteButtonClick: () =>
+                            _showConfirmDialog(context, () async {
+                          await viewModel
+                              .deleteParticipant(snapshot.data[index].uid);
+                          await viewModel.fetchParticipantsStart();
+                        }),
                       ));
             }
         }

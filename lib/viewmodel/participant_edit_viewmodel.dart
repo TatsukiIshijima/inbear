@@ -140,10 +140,14 @@ class ParticipantEditViewModel extends BaseViewModel {
   }
 
   Future<void> deleteParticipant(String targetUid) async {
-    try {
-      final userSelf = await _userRepositoryImpl.fetchUser();
-      await _scheduleRepositoryImpl.deleteParticipant(
-          userSelf.selectScheduleId, targetUid);
-    } on UnLoginException {} on UserDocumentNotExistException {} on TimeoutException {}
+    await futureWithCancel(() => _deleteParticipant(targetUid));
+  }
+
+  Future<void> _deleteParticipant(String targetUid) async {
+    final userSelf = await _userRepositoryImpl.fetchUser();
+    await _scheduleRepositoryImpl.deleteParticipant(
+        userSelf.selectScheduleId, targetUid);
+    await _userRepositoryImpl.deleteSchedule(
+        targetUid, userSelf.selectScheduleId);
   }
 }
