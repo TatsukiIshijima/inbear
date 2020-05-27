@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
@@ -15,8 +15,8 @@ class ResetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return ChangeNotifierProvider(
-      create: (context) => ResetPasswordViewModel(
+    return BasePage<ResetPasswordViewModel>(
+      viewModel: ResetPasswordViewModel(
           Provider.of<UserRepository>(context, listen: false)),
       child: Scaffold(body: ResetPasswordContent(resource)),
     );
@@ -44,16 +44,9 @@ class ResetPasswordContent extends StatelessWidget {
 
   Widget _resetPasswordStatusWidget() {
     return Selector<ResetPasswordViewModel, String>(
-      selector: (context, viewModel) => viewModel.authStatus,
+      selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
-          case Status.loading:
-            return Container(
-              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-              child: Center(
-                child: Loading(),
-              ),
-            );
           case Status.success:
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.resetPasswordSuccessMessage);
@@ -73,14 +66,6 @@ class ResetPasswordContent extends StatelessWidget {
           case AuthStatus.tooManyRequestsError:
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.tooManyRequestsError);
-            break;
-          case Status.networkError:
-            _showResetPasswordDialog(
-                context, resource.resetPasswordTitle, resource.networkError);
-            break;
-          case Status.timeoutError:
-            _showResetPasswordDialog(
-                context, resource.resetPasswordTitle, resource.timeoutError);
             break;
         }
         return Container();
@@ -147,7 +132,7 @@ class ResetPasswordContent extends StatelessWidget {
                         backgroundColor: Colors.pink[200],
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            await viewModel.sendPasswordResetEmail();
+                            await viewModel.executeSendResetPasswordMail();
                           }
                         },
                       ),

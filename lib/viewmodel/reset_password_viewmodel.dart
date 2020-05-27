@@ -14,31 +14,23 @@ class ResetPasswordViewModel extends BaseViewModel {
   final TextEditingController emailTextEditingController =
       TextEditingController();
 
-  String authStatus;
-
-  Future<void> sendPasswordResetEmail() async {
-    await fromCancelable(_sendPasswordResetEmail());
+  Future<void> executeSendResetPasswordMail() async {
+    await executeFutureOperation(() => _sendPasswordResetEmail());
   }
 
   Future<void> _sendPasswordResetEmail() async {
     try {
-      authStatus = Status.loading;
-      notifyListeners();
-      await _userRepository
-          .sendPasswordResetEmail(emailTextEditingController.text);
-      authStatus = Status.success;
+      await fromCancelable(_userRepository
+          .sendPasswordResetEmail(emailTextEditingController.text));
+      status = Status.success;
     } on InvalidEmailException {
-      authStatus = AuthStatus.invalidEmailError;
+      status = AuthStatus.invalidEmailError;
     } on UserNotFoundException {
-      authStatus = AuthStatus.userNotFoundError;
+      status = AuthStatus.userNotFoundError;
     } on UserDisabledException {
-      authStatus = AuthStatus.userDisabledError;
+      status = AuthStatus.userDisabledError;
     } on TooManyRequestException {
-      authStatus = AuthStatus.tooManyRequestsError;
-    } on NetworkRequestException {
-      authStatus = Status.networkError;
-    } on TimeoutException {
-      authStatus = Status.timeoutError;
+      status = AuthStatus.tooManyRequestsError;
     }
     notifyListeners();
   }
