@@ -8,7 +8,7 @@ import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
-import 'package:inbear_app/viewmodel/rest_password_viewmodel.dart';
+import 'package:inbear_app/viewmodel/reset_password_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordPage extends StatelessWidget {
