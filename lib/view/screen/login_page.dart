@@ -35,7 +35,7 @@ class LoginPageBody extends StatelessWidget {
         children: <Widget>[
           Center(
               child: SingleChildScrollView(
-                child: LoginForm(),
+            child: LoginForm(),
           )),
           AuthAlertDialog(),
         ],
@@ -112,7 +112,7 @@ class LoginForm extends StatelessWidget {
                 },
               ),
               SizedBox(
-                height: 30,
+                height: 12,
               ),
               LabelButton(
                 text: resource.passwordForgetLabelText,
@@ -122,7 +122,7 @@ class LoginForm extends StatelessWidget {
                 },
               ),
               SizedBox(
-                height: 12,
+                height: 30,
               ),
               LabelButton(
                 text: resource.createAccountLabelText,
