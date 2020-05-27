@@ -13,8 +13,6 @@ class LoginViewModel extends BaseViewModel {
   final TextEditingController passwordTextEditingController =
       TextEditingController();
 
-  String authStatus = Status.none;
-
   LoginViewModel(
     this._userRepository,
   );
@@ -26,31 +24,27 @@ class LoginViewModel extends BaseViewModel {
     super.dispose();
   }
 
-  Future<void> signIn() async {
-    await fromCancelable(_signIn());
+  Future<void> executeSignIn() async {
+    await executeFutureOperation(() => _signIn());
   }
 
   Future<void> _signIn() async {
     try {
-      authStatus = Status.loading;
-      notifyListeners();
-      await _userRepository.signIn(
-          emailTextEditingController.text, passwordTextEditingController.text);
-      authStatus = Status.success;
+      debugPrint('_signIn() execute. status: $status');
+      await fromCancelable(_userRepository.signIn(
+          emailTextEditingController.text, passwordTextEditingController.text));
+      debugPrint('_signIn() done. status: $status');
+      status = Status.success;
     } on InvalidEmailException {
-      authStatus = AuthStatus.invalidEmailError;
+      status = AuthStatus.invalidEmailError;
     } on WrongPasswordException {
-      authStatus = AuthStatus.wrongPasswordError;
+      status = AuthStatus.wrongPasswordError;
     } on UserNotFoundException {
-      authStatus = AuthStatus.userNotFoundError;
+      status = AuthStatus.userNotFoundError;
     } on UserDisabledException {
-      authStatus = AuthStatus.userDisabledError;
+      status = AuthStatus.userDisabledError;
     } on TooManyRequestException {
-      authStatus = AuthStatus.tooManyRequestsError;
-    } on NetworkRequestException {
-      authStatus = Status.networkError;
-    } on TimeoutException {
-      authStatus = Status.timeoutError;
+      status = AuthStatus.tooManyRequestsError;
     }
     notifyListeners();
   }
@@ -64,6 +58,6 @@ class LoginViewModel extends BaseViewModel {
   // リセットしないと以前のステータスが残ったままのため、
   // 勝手にアラートが表示されたりなどが起こる
   void resetAuthStatus() {
-    authStatus = Status.none;
+    status = Status.none;
   }
 }

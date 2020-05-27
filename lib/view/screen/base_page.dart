@@ -19,14 +19,17 @@ class BasePage<T extends BaseViewModel> extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => viewModel,
       child: Stack(
-        children: <Widget>[child],
+        children: <Widget>[child, OverlayLoading<T>()],
       ),
     );
   }
 }
 
 class OverlayLoading<T extends BaseViewModel> extends StatelessWidget {
-  void _showErrorDialog(BuildContext context, String message,) {
+  void _showErrorDialog(
+    BuildContext context,
+    String message,
+  ) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       showDialog<SingleButtonDialog>(

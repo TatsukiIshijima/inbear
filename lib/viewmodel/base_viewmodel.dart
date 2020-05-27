@@ -25,12 +25,13 @@ class BaseViewModel extends ChangeNotifier {
     return _cancelableOperation.value;
   }
 
-  Future<void> futureWithCancel(Future<void> Function() future) async {
+  Future<void> executeFutureOperation(Future<dynamic> Function() future) async {
     try {
       status = Status.loading;
       notifyListeners();
-      await fromCancelable(future());
-      status = Status.success;
+      // ステータス成功を返すのはfuture()内で行う
+      // ここで success にしてしまうと、catch できない Exception でも成功してしまうため
+      await future();
     } on UnLoginException {
       status = Status.unLoginError;
     } on UserDocumentNotExistException {

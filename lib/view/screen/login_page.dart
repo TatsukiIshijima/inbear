@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label_button.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
@@ -17,86 +17,24 @@ import '../../routes.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final resource = AppLocalizations.of(context);
-    return ChangeNotifierProvider(
-      create: (context) =>
+    return BasePage<LoginViewModel>(
+      viewModel:
           LoginViewModel(Provider.of<UserRepository>(context, listen: false)),
       child: Scaffold(
-        body: LoginPageContent(resource),
+        body: LoginPageBody(),
       ),
     );
   }
 }
 
-class LoginPageContent extends StatelessWidget {
-  final AppLocalizations resource;
-
-  LoginPageContent(this.resource);
-
+class LoginPageBody extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
-  void _showLoginError(BuildContext context, String message) {
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => showDialog<SingleButtonDialog>(
-            context: context,
-            builder: (context) => SingleButtonDialog(
-                  title: resource.loginErrorTitle,
-                  message: message,
-                  positiveButtonTitle: resource.defaultPositiveButtonTitle,
-                  onPressed: () => Navigator.pop(context),
-                )));
-  }
-
-  Widget _authStatusWidget() {
-    return Selector<LoginViewModel, String>(
-      selector: (context, viewModel) => viewModel.authStatus,
-      builder: (context, status, child) {
-        switch (status) {
-          case Status.loading:
-            return Container(
-              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-              child: Center(
-                child: Loading(),
-              ),
-            );
-          case Status.success:
-            // ビルド前にメソッドが呼ばれるとエラーになるので
-            // addPostFrameCallback で任意処理を実行
-            // https://www.didierboelens.com/2019/04/addpostframecallback/
-            WidgetsBinding.instance
-                .addPostFrameCallback((_) => Routes.goToHome(context));
-            break;
-          case AuthStatus.invalidEmailError:
-            _showLoginError(context, resource.invalidEmailError);
-            break;
-          case AuthStatus.wrongPasswordError:
-            _showLoginError(context, resource.wrongPasswordError);
-            break;
-          case AuthStatus.userNotFoundError:
-            _showLoginError(context, resource.userNotFoundError);
-            break;
-          case AuthStatus.userDisabledError:
-            _showLoginError(context, resource.userDisabledError);
-            break;
-          case AuthStatus.tooManyRequestsError:
-            _showLoginError(context, resource.tooManyRequestsError);
-            break;
-          case Status.networkError:
-            _showLoginError(context, resource.networkError);
-            break;
-          case Status.timeoutError:
-            _showLoginError(context, resource.timeoutError);
-            break;
-        }
-        return Container();
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Container(
@@ -158,7 +96,7 @@ class LoginPageContent extends StatelessWidget {
                       backgroundColor: Colors.pink[200],
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          await viewModel.signIn();
+                          await viewModel.executeSignIn();
                         }
                       },
                     ),
@@ -189,10 +127,60 @@ class LoginPageContent extends StatelessWidget {
                 ),
               ),
             ),
-            _authStatusWidget(),
+            AuthAlertDialog(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class AuthAlertDialog extends StatelessWidget {
+  void _showLoginError(BuildContext context, String message) {
+    final resource = AppLocalizations.of(context);
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => showDialog<SingleButtonDialog>(
+            context: context,
+            builder: (context) => SingleButtonDialog(
+                  title: resource.loginErrorTitle,
+                  message: message,
+                  positiveButtonTitle: resource.defaultPositiveButtonTitle,
+                  onPressed: () => Navigator.pop(context),
+                )));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
+    return Selector<LoginViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case Status.success:
+            // ビルド前にメソッドが呼ばれるとエラーになるので
+            // addPostFrameCallback で任意処理を実行
+            // https://www.didierboelens.com/2019/04/addpostframecallback/
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => Routes.goToHome(context));
+            break;
+          case AuthStatus.invalidEmailError:
+            _showLoginError(context, resource.invalidEmailError);
+            break;
+          case AuthStatus.wrongPasswordError:
+            _showLoginError(context, resource.wrongPasswordError);
+            break;
+          case AuthStatus.userNotFoundError:
+            _showLoginError(context, resource.userNotFoundError);
+            break;
+          case AuthStatus.userDisabledError:
+            _showLoginError(context, resource.userDisabledError);
+            break;
+          case AuthStatus.tooManyRequestsError:
+            _showLoginError(context, resource.tooManyRequestsError);
+            break;
+        }
+        return Container();
+      },
     );
   }
 }
