@@ -140,7 +140,7 @@ class ParticipantEditViewModel extends BaseViewModel {
   }
 
   Future<void> deleteParticipant(String targetUid) async {
-    await futureWithCancel(() => _deleteParticipant(targetUid));
+    await executeFutureOperation(() => _deleteParticipant(targetUid));
   }
 
   Future<void> _deleteParticipant(String targetUid) async {
