@@ -30,10 +30,8 @@ class LoginViewModel extends BaseViewModel {
 
   Future<void> _signIn() async {
     try {
-      debugPrint('_signIn() execute. status: $status');
       await fromCancelable(_userRepository.signIn(
           emailTextEditingController.text, passwordTextEditingController.text));
-      debugPrint('_signIn() done. status: $status');
       status = Status.success;
     } on InvalidEmailException {
       status = AuthStatus.invalidEmailError;
