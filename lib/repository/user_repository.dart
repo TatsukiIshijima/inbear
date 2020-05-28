@@ -64,10 +64,12 @@ class UserRepository implements UserRepositoryImpl {
     try {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
-          .timeout(Duration(seconds: 3),
-              onTimeout: () => throw TimeoutException('signIn time out.'));
+          .timeout(Duration(seconds: 5),
+              onTimeout: () =>
+                  throw TimeoutException('UserRepository: signIn Timeout.'));
     } on PlatformException catch (error) {
-      debugPrint('signIn Error : ${error.code} ${error.message}');
+      debugPrint(
+          'UserRepository: signIn Error : ${error.code} ${error.message}');
       _rethrowAuthException(error.code);
     }
   }
@@ -123,11 +125,12 @@ class UserRepository implements UserRepositoryImpl {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email).timeout(
-          Duration(seconds: 3),
-          onTimeout: () => throw TimeoutException('send reset mail time out.'));
+          Duration(seconds: 5),
+          onTimeout: () => throw TimeoutException(
+              'UserRepository: sendPasswordResetEmail Timeout.'));
     } on PlatformException catch (error) {
       final errorCode = error.code;
-      debugPrint('Send password reset mail error : $errorCode');
+      debugPrint('UserRepository: sendPasswordResetEmail Error: $errorCode');
       _rethrowAuthException(errorCode);
     }
   }
@@ -153,7 +156,7 @@ class UserRepository implements UserRepositoryImpl {
         .get()
         .timeout(Duration(seconds: 5),
             onTimeout: () =>
-                throw TimeoutException('fetch user document time out.'));
+                throw TimeoutException('UserRepository: fetchUser Timeout.'));
     if (!userDocument.exists) {
       throw UserDocumentNotExistException();
     }
@@ -187,7 +190,8 @@ class UserRepository implements UserRepositoryImpl {
         <String, String>{'select_schedule_id': scheduleId},
         merge:
             true).timeout(Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException('select schedule time out.'));
+        onTimeout: () =>
+            throw TimeoutException('UserRepository: selectSchedule Timeout.'));
     // キャッシュの User が残ったままだと schedule を切り替えた時に
     // 前の scheduleId を参照してしまうので、キャッシュをクリアする
     _userCache.clear();
@@ -206,8 +210,8 @@ class UserRepository implements UserRepositoryImpl {
             .collection(_scheduleSubCollection)
             .getDocuments()
             .timeout(Duration(seconds: 5),
-                onTimeout: () =>
-                    throw TimeoutException('fetch entry schedule time out.')))
+                onTimeout: () => throw TimeoutException(
+                    'UserRepository: fetchEntrySchedule Timeout.')))
         .documents;
     for (var doc in documents) {
       // Reference型から直接データ参照できなかったため、
@@ -218,8 +222,8 @@ class UserRepository implements UserRepositoryImpl {
           .document(docReference.documentID)
           .get()
           .timeout(Duration(seconds: 5),
-              onTimeout: () =>
-                  throw TimeoutException('fetch entry schedule time out.'));
+              onTimeout: () => throw TimeoutException(
+                  'UserRepository: fetchEntrySchedule Timeout.'));
       var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
       var item =
           ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
@@ -235,7 +239,8 @@ class UserRepository implements UserRepositoryImpl {
         .where('email', isEqualTo: email)
         .getDocuments()
         .timeout(Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException('search user time out.'));
+            onTimeout: () =>
+                throw TimeoutException('UserRepository: searchUser Timeout.'));
     return userDocuments.documents
         .map((doc) => UserEntity.fromMap(doc.data))
         .toList();
@@ -255,7 +260,8 @@ class UserRepository implements UserRepositoryImpl {
         .setData(<String, DocumentReference>{'ref': scheduleReference},
             merge:
                 true).timeout(Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException('add schedule time out.'));
+            onTimeout: () =>
+                throw TimeoutException('UserRepository: addSchedule Timeout.'));
   }
 
   @override
@@ -267,7 +273,7 @@ class UserRepository implements UserRepositoryImpl {
         .document(targetScheduleId)
         .delete()
         .timeout(Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('delete schedule time out.'));
+            onTimeout: () => throw TimeoutException(
+                'UserRepository: deleteSchedule Timeout.'));
   }
 }
