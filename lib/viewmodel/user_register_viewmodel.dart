@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -23,10 +24,13 @@ class UserRegisterViewModel extends BaseViewModel {
 
   Future<void> _signUp() async {
     try {
-      await fromCancelable(_userRepository.signUp(
-          nameTextEditingController.text,
-          emailTextEditingController.text,
-          passwordTextEditingController.text));
+      final user = (await fromCancelable(
+          _userRepository.createUserWithEmailAndPassword(
+              emailTextEditingController.text,
+              passwordTextEditingController.text))) as FirebaseUser;
+      await fromCancelable(
+          _userRepository.insertNewUser(user, nameTextEditingController.text),
+          onCancel: () => user.delete());
       status = Status.success;
     } on WeakPasswordException {
       status = AuthStatus.weakPasswordError;

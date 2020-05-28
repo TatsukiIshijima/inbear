@@ -73,27 +73,37 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> signUp(String name, String email, String password) async {
+  // ignore: missing_return
+  Future<FirebaseUser> createUserWithEmailAndPassword(
+      String email, String password) async {
     try {
-      final result = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .timeout(Duration(seconds: 3),
-              onTimeout: () => throw TimeoutException('create user time out.'));
-      final user = UserEntity(result.user.uid, name, email, '', DateTime.now());
-      await _db
-          .collection(_userCollection)
-          .document(result.user.uid)
-          .setData(user.toMap())
-          .timeout(Duration(seconds: 3), onTimeout: () {
-        // Firestoreに書き込む時点でユーザーが作成されているので、
-        // 再度新規登録しても問題ないようにユーザーを消しておく
-        result.user.delete();
-        throw TimeoutException('set user data time out.');
-      });
+      return (await _auth
+              .createUserWithEmailAndPassword(email: email, password: password)
+              .timeout(Duration(seconds: 5),
+                  onTimeout: () => throw TimeoutException(
+                      'UserRepository: createUserWithEmailAndPassword Timeout.')))
+          .user;
     } on PlatformException catch (error) {
-      debugPrint('signUp Error: ${error.code}, ${error.message}');
+      debugPrint(
+          'UserRepository: createUserWithEmailAndPassword Error: ${error.code}, ${error.message}');
       _rethrowAuthException(error.code);
     }
+  }
+
+  @override
+  Future<void> insertNewUser(FirebaseUser user, String name) async {
+    final userEntity =
+        UserEntity(user.uid, name, user.email, '', DateTime.now());
+    await _db
+        .collection(_userCollection)
+        .document(user.uid)
+        .setData(userEntity.toMap())
+        .timeout(Duration(seconds: 5), onTimeout: () {
+      // Firestoreに書き込む時点でユーザーが作成されているので、
+      // 再度新規登録しても問題ないようにユーザーを消しておく
+      user.delete();
+      throw TimeoutException('UserRepository: insertUser Timeout.');
+    });
   }
 
   @override
