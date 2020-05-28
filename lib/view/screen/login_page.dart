@@ -64,7 +64,7 @@ class LoginForm extends StatelessWidget {
               Logo(
                 fontSize: 80,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Selector<LoginViewModel, TextEditingController>(
@@ -81,7 +81,7 @@ class LoginForm extends StatelessWidget {
                       FocusScope.of(context).requestFocus(_passwordFocus),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               Selector<LoginViewModel, TextEditingController>(
@@ -98,7 +98,7 @@ class LoginForm extends StatelessWidget {
                   onFieldSubmitted: (text) => _passwordFocus.unfocus(),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               RoundButton(
@@ -111,7 +111,7 @@ class LoginForm extends StatelessWidget {
                   }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
               LabelButton(
@@ -121,7 +121,7 @@ class LoginForm extends StatelessWidget {
                   viewModel.resetAuthStatus();
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               LabelButton(

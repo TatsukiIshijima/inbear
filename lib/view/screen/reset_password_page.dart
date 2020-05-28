@@ -66,14 +66,14 @@ class ResetPasswordForm extends StatelessWidget {
             Logo(
               fontSize: 80,
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Text(
               resource.resetPasswordDescription,
               style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             InputField(
@@ -84,7 +84,7 @@ class ResetPasswordForm extends StatelessWidget {
               focusNode: _emailFocus,
               onFieldSubmitted: (text) => _emailFocus.unfocus(),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             RoundButton(
