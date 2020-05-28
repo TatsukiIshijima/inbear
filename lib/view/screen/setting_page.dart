@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/closed_question_dialog.dart';
 import 'package:inbear_app/view/widget/title_icon_list_item.dart';
 import 'package:inbear_app/viewmodel/setting_viewmodel.dart';
@@ -12,9 +13,10 @@ import '../../routes.dart';
 class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) =>
+    return BasePage(
+      viewModel:
           SettingViewModel(Provider.of<UserRepository>(context, listen: false)),
+      // HomeでScaffoldを使用しているのでその中身のみをchildとする
       child: SettingPageContent(),
     );
   }
@@ -22,7 +24,7 @@ class SettingPage extends StatelessWidget {
 
 class SettingPageContent extends StatelessWidget {
   void _showLogoutDialog(BuildContext context, AppLocalizations resource,
-      SettingViewModel viewModel) {
+      Future<dynamic> Function() future) {
     showDialog<ClosedQuestionDialog>(
         context: context,
         builder: (context) => ClosedQuestionDialog(
@@ -31,7 +33,7 @@ class SettingPageContent extends StatelessWidget {
               positiveButtonTitle: resource.defaultPositiveButtonTitle,
               negativeButtonTitle: resource.defaultNegativeButtonTitle,
               onPositiveButtonPressed: () async {
-                await viewModel.signOut();
+                await future();
                 Routes.goToLoginWhenLogout(context);
               },
             ));
@@ -57,11 +59,11 @@ class SettingPageContent extends StatelessWidget {
           TitleAndIconListItem(
             title: resource.logoutTitle,
             iconData: Icons.exit_to_app,
-            onTap: () => _showLogoutDialog(context, resource, viewModel),
+            onTap: () =>
+                _showLogoutDialog(context, resource, () => viewModel.signOut()),
           )
         ],
       ),
     );
-    ;
   }
 }
