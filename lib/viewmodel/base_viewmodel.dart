@@ -22,7 +22,7 @@ class BaseViewModel extends ChangeNotifier {
         onCancel();
       }
     });
-    return _cancelableOperation.value;
+    return await _cancelableOperation.value;
   }
 
   Future<void> executeFutureOperation(Future<dynamic> Function() future) async {
