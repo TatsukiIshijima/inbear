@@ -4,8 +4,8 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
@@ -15,26 +15,128 @@ import 'package:provider/provider.dart';
 class UserRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final resource = AppLocalizations.of(context);
-    return ChangeNotifierProvider(
-      create: (context) => UserRegisterViewModel(
+    return BasePage<UserRegisterViewModel>(
+      viewModel: UserRegisterViewModel(
           Provider.of<UserRepository>(context, listen: false)),
-      child: Scaffold(body: RegisterPageContent(resource)),
+      child: Scaffold(body: UserRegisterBody()),
     );
   }
 }
 
-class RegisterPageContent extends StatelessWidget {
-  final AppLocalizations resource;
+class UserRegisterBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Stack(
+        children: <Widget>[
+          Container(
+              alignment: Alignment.topRight,
+              margin: EdgeInsets.only(top: 24, right: 24),
+              child: CloseButton()),
+          Center(
+            child: SingleChildScrollView(
+              child: UserRegisterForm(),
+            ),
+          ),
+          AuthAlertDialog()
+        ],
+      ),
+    );
+  }
+}
 
-  RegisterPageContent(this.resource);
-
+class UserRegisterForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _nameFocus = FocusNode();
   final _emailFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
+  @override
+  Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
+    final viewModel =
+        Provider.of<UserRegisterViewModel>(context, listen: false);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Logo(
+              fontSize: 80,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Selector<UserRegisterViewModel, TextEditingController>(
+              selector: (context, viewModel) =>
+                  viewModel.nameTextEditingController,
+              builder: (context, textEditingController, child) => InputField(
+                labelText: resource.nameLabelText,
+                textInputType: TextInputType.text,
+                textEditingController: textEditingController,
+                validator: (text) => text.isEmpty ? resource.emptyError : null,
+                focusNode: _nameFocus,
+                onFieldSubmitted: (text) =>
+                    FocusScope.of(context).requestFocus(_emailFocus),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Selector<UserRegisterViewModel, TextEditingController>(
+              selector: (context, viewModel) =>
+                  viewModel.emailTextEditingController,
+              builder: (context, textEditingController, child) => InputField(
+                labelText: resource.emailLabelText,
+                textInputType: TextInputType.emailAddress,
+                textEditingController: textEditingController,
+                validator: (text) => text.isEmpty ? resource.emptyError : null,
+                focusNode: _emailFocus,
+                onFieldSubmitted: (text) =>
+                    FocusScope.of(context).requestFocus(_passwordFocus),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            Selector<UserRegisterViewModel, TextEditingController>(
+              selector: (context, viewModel) =>
+                  viewModel.passwordTextEditingController,
+              builder: (context, textEditingController, child) => InputField(
+                labelText: resource.passwordLabelText,
+                obscureText: true,
+                textInputType: TextInputType.visiblePassword,
+                textEditingController: textEditingController,
+                validator: (text) => text.isEmpty ? resource.emptyError : null,
+                focusNode: _passwordFocus,
+                onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            RoundButton(
+              minWidth: MediaQuery.of(context).size.width,
+              text: resource.registerButtonTitle,
+              backgroundColor: Colors.pink[200],
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  await viewModel.executeSignUp();
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AuthAlertDialog extends StatelessWidget {
   void _showRegisterError(BuildContext context, String message) {
+    final resource = AppLocalizations.of(context);
     WidgetsBinding.instance
         .addPostFrameCallback((timeStamp) => showDialog<SingleButtonDialog>(
             context: context,
@@ -46,153 +148,40 @@ class RegisterPageContent extends StatelessWidget {
                 )));
   }
 
-  Widget _authStatusWidget() => Selector<UserRegisterViewModel, String>(
-        selector: (context, viewModel) => viewModel.authStatus,
-        builder: (context, authStatus, child) {
-          switch (authStatus) {
-            case Status.loading:
-              return Container(
-                decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-                child: Center(
-                  child: Loading(),
-                ),
-              );
-            case Status.success:
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                // 一旦popで新規画面をクローズしてから
-                // ルートをホーム画面に設定して遷移させることで
-                // ホーム遷移後にバックボタン押下でアプリ終了とさせる
-                Navigator.pop(context);
-                Routes.goToHome(context);
-              });
-              break;
-            case AuthStatus.weakPasswordError:
-              _showRegisterError(context, resource.weakPasswordError);
-              break;
-            case AuthStatus.invalidEmailError:
-              _showRegisterError(context, resource.invalidEmailError);
-              break;
-            case AuthStatus.emailAlreadyUsedError:
-              _showRegisterError(context, resource.alreadyUsedEmailError);
-              break;
-            case AuthStatus.invalidCredentialError:
-              _showRegisterError(context, resource.invalidCredentialError);
-              break;
-            case AuthStatus.tooManyRequestsError:
-              _showRegisterError(context, resource.tooManyRequestsError);
-              break;
-            case Status.networkError:
-              _showRegisterError(context, resource.networkError);
-              break;
-            case Status.timeoutError:
-              _showRegisterError(context, resource.timeoutError);
-              break;
-          }
-          return Container();
-        },
-      );
-
   @override
   Widget build(BuildContext context) {
-    final viewModel =
-        Provider.of<UserRegisterViewModel>(context, listen: false);
-    return SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topRight,
-              margin: EdgeInsets.only(top: 24, right: 24),
-              child: SafeArea(
-                child: CloseButton(),
-              ),
-            ),
-            Form(
-              key: _formKey,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Logo(
-                      fontSize: 80,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Selector<UserRegisterViewModel, TextEditingController>(
-                      selector: (context, viewModel) =>
-                          viewModel.nameTextEditingController,
-                      builder: (context, textEditingController, child) =>
-                          InputField(
-                        labelText: resource.nameLabelText,
-                        textInputType: TextInputType.text,
-                        textEditingController: textEditingController,
-                        validator: (text) =>
-                            text.isEmpty ? resource.emptyError : null,
-                        focusNode: _nameFocus,
-                        onFieldSubmitted: (text) =>
-                            FocusScope.of(context).requestFocus(_emailFocus),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Selector<UserRegisterViewModel, TextEditingController>(
-                      selector: (context, viewModel) =>
-                          viewModel.emailTextEditingController,
-                      builder: (context, textEditingController, child) =>
-                          InputField(
-                        labelText: resource.emailLabelText,
-                        textInputType: TextInputType.emailAddress,
-                        textEditingController: textEditingController,
-                        validator: (text) =>
-                            text.isEmpty ? resource.emptyError : null,
-                        focusNode: _emailFocus,
-                        onFieldSubmitted: (text) =>
-                            FocusScope.of(context).requestFocus(_passwordFocus),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Selector<UserRegisterViewModel, TextEditingController>(
-                      selector: (context, viewModel) =>
-                          viewModel.passwordTextEditingController,
-                      builder: (context, textEditingController, child) =>
-                          InputField(
-                        labelText: resource.passwordLabelText,
-                        obscureText: true,
-                        textInputType: TextInputType.visiblePassword,
-                        textEditingController: textEditingController,
-                        validator: (text) =>
-                            text.isEmpty ? resource.emptyError : null,
-                        focusNode: _passwordFocus,
-                        onFieldSubmitted: (text) => _passwordFocus.unfocus(),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    RoundButton(
-                      minWidth: MediaQuery.of(context).size.width,
-                      text: resource.registerButtonTitle,
-                      backgroundColor: Colors.pink[200],
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          await viewModel.signUp();
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            _authStatusWidget(),
-          ],
-        ),
-      ),
+    final resource = AppLocalizations.of(context);
+    return Selector<UserRegisterViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, authStatus, child) {
+        switch (authStatus) {
+          case Status.success:
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // 一旦popで新規画面をクローズしてから
+              // ルートをホーム画面に設定して遷移させることで
+              // ホーム遷移後にバックボタン押下でアプリ終了とさせる
+              Navigator.pop(context);
+              Routes.goToHome(context);
+            });
+            break;
+          case AuthStatus.weakPasswordError:
+            _showRegisterError(context, resource.weakPasswordError);
+            break;
+          case AuthStatus.invalidEmailError:
+            _showRegisterError(context, resource.invalidEmailError);
+            break;
+          case AuthStatus.emailAlreadyUsedError:
+            _showRegisterError(context, resource.alreadyUsedEmailError);
+            break;
+          case AuthStatus.invalidCredentialError:
+            _showRegisterError(context, resource.invalidCredentialError);
+            break;
+          case AuthStatus.tooManyRequestsError:
+            _showRegisterError(context, resource.tooManyRequestsError);
+            break;
+        }
+        return Container();
+      },
     );
   }
 }

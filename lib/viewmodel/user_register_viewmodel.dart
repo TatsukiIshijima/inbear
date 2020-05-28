@@ -4,8 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-class UserRegisterViewModel extends ChangeNotifier {
+class UserRegisterViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
   final TextEditingController nameTextEditingController =
       TextEditingController();
@@ -14,33 +15,29 @@ class UserRegisterViewModel extends ChangeNotifier {
   final TextEditingController passwordTextEditingController =
       TextEditingController();
 
-  String authStatus = Status.none;
-
   UserRegisterViewModel(this._userRepository);
 
-  Future<void> signUp() async {
+  Future<void> executeSignUp() async {
+    await executeFutureOperation(() => _signUp());
+  }
+
+  Future<void> _signUp() async {
     try {
-      authStatus = Status.loading;
-      notifyListeners();
-      debugPrint(
-          '${nameTextEditingController.text}, ${emailTextEditingController.text} sign up...');
-      await _userRepository.signUp(nameTextEditingController.text,
-          emailTextEditingController.text, passwordTextEditingController.text);
-      authStatus = Status.success;
+      await fromCancelable(_userRepository.signUp(
+          nameTextEditingController.text,
+          emailTextEditingController.text,
+          passwordTextEditingController.text));
+      status = Status.success;
     } on WeakPasswordException {
-      authStatus = AuthStatus.weakPasswordError;
+      status = AuthStatus.weakPasswordError;
     } on InvalidEmailException {
-      authStatus = AuthStatus.invalidEmailError;
+      status = AuthStatus.invalidEmailError;
     } on EmailAlreadyInUseException {
-      authStatus = AuthStatus.emailAlreadyUsedError;
+      status = AuthStatus.emailAlreadyUsedError;
     } on InvalidCredentialException {
-      authStatus = AuthStatus.invalidCredentialError;
+      status = AuthStatus.invalidCredentialError;
     } on TooManyRequestException {
-      authStatus = AuthStatus.tooManyRequestsError;
-    } on NetworkRequestException {
-      authStatus = Status.networkError;
-    } on TimeoutException {
-      authStatus = Status.timeoutError;
+      status = AuthStatus.tooManyRequestsError;
     }
     notifyListeners();
   }
