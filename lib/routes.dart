@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/participant_edit_page.dart';
-import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 import 'package:inbear_app/view/screen/schedule_register_page.dart';
 import 'package:inbear_app/view/screen/schedule_select_page.dart';
+import 'package:inbear_app/view/screen/user_register_page.dart';
 
 class Routes {
   static const splashPagePath = '/';
@@ -20,7 +20,7 @@ class Routes {
     Navigator.push<MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (context) => RegisterPage(), fullscreenDialog: true));
+            builder: (context) => UserRegisterPage(), fullscreenDialog: true));
   }
 
   static void goToResetPasswordFromLogin(BuildContext context) {

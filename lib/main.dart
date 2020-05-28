@@ -17,10 +17,10 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
-import 'package:inbear_app/view/screen/register_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 import 'package:inbear_app/view/screen/schedule_register_page.dart';
 import 'package:inbear_app/view/screen/splash_page.dart';
+import 'package:inbear_app/view/screen/user_register_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -78,7 +78,7 @@ class InbearApp extends StatelessWidget {
         Routes.splashPagePath: (_) => SplashPage(),
         Routes.loginPagePath: (_) => LoginPage(),
         Routes.resetPasswordPagePath: (_) => ResetPasswordPage(),
-        Routes.registerPagePath: (_) => RegisterPage(),
+        Routes.registerPagePath: (_) => UserRegisterPage(),
         Routes.homePagePath: (_) => HomePage(),
         Routes.scheduleRegisterPagePath: (_) => ScheduleRegisterPage(),
       },

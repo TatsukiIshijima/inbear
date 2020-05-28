@@ -9,15 +9,15 @@ import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/logo.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
-import 'package:inbear_app/viewmodel/register_viewmodel.dart';
+import 'package:inbear_app/viewmodel/user_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class RegisterPage extends StatelessWidget {
+class UserRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     return ChangeNotifierProvider(
-      create: (context) => RegisterViewModel(
+      create: (context) => UserRegisterViewModel(
           Provider.of<UserRepository>(context, listen: false)),
       child: Scaffold(body: RegisterPageContent(resource)),
     );
@@ -46,7 +46,7 @@ class RegisterPageContent extends StatelessWidget {
                 )));
   }
 
-  Widget _authStatusWidget() => Selector<RegisterViewModel, String>(
+  Widget _authStatusWidget() => Selector<UserRegisterViewModel, String>(
         selector: (context, viewModel) => viewModel.authStatus,
         builder: (context, authStatus, child) {
           switch (authStatus) {
@@ -94,7 +94,8 @@ class RegisterPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<RegisterViewModel>(context, listen: false);
+    final viewModel =
+        Provider.of<UserRegisterViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
@@ -120,7 +121,7 @@ class RegisterPageContent extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-                    Selector<RegisterViewModel, TextEditingController>(
+                    Selector<UserRegisterViewModel, TextEditingController>(
                       selector: (context, viewModel) =>
                           viewModel.nameTextEditingController,
                       builder: (context, textEditingController, child) =>
@@ -138,7 +139,7 @@ class RegisterPageContent extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-                    Selector<RegisterViewModel, TextEditingController>(
+                    Selector<UserRegisterViewModel, TextEditingController>(
                       selector: (context, viewModel) =>
                           viewModel.emailTextEditingController,
                       builder: (context, textEditingController, child) =>
@@ -156,7 +157,7 @@ class RegisterPageContent extends StatelessWidget {
                     const SizedBox(
                       height: 30,
                     ),
-                    Selector<RegisterViewModel, TextEditingController>(
+                    Selector<UserRegisterViewModel, TextEditingController>(
                       selector: (context, viewModel) =>
                           viewModel.passwordTextEditingController,
                       builder: (context, textEditingController, child) =>

@@ -5,7 +5,7 @@ import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 
-class RegisterViewModel extends ChangeNotifier {
+class UserRegisterViewModel extends ChangeNotifier {
   final UserRepositoryImpl _userRepository;
   final TextEditingController nameTextEditingController =
       TextEditingController();
@@ -16,7 +16,7 @@ class RegisterViewModel extends ChangeNotifier {
 
   String authStatus = Status.none;
 
-  RegisterViewModel(this._userRepository);
+  UserRegisterViewModel(this._userRepository);
 
   Future<void> signUp() async {
     try {
