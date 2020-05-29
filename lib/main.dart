@@ -24,6 +24,11 @@ import 'package:inbear_app/view/screen/user_register_page.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  final googleApiKey = '';
+  if (googleApiKey.isEmpty) {
+    throw Exception('Google API Key is empty.');
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setPreferredOrientations(
@@ -34,7 +39,7 @@ void main() {
   final _firebaseStorage = FirebaseStorage.instance;
   final _addressSearchApi = AddressSearchApi();
   // TODO:APIKeyの切り替え
-  final _geoCodeApi = GeoCodeApi('');
+  final _geoCodeApi = GeoCodeApi(googleApiKey);
   final _imageDataSource = ImageDataSource(_firebaseStorage);
 
   runApp(

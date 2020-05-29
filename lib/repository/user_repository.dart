@@ -165,19 +165,22 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> addScheduleReference(String scheduleId) async {
-    var uid = await getUid();
+  Future<void> registerSchedule(
+      String scheduleId, ScheduleEntity scheduleEntity,
+      {bool isUpdate = false}) async {
+    final uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
     }
-    var scheduleReference =
-        _db.collection(_scheduleSubCollection).document(scheduleId);
     await _db
         .collection(_userCollection)
         .document(uid)
         .collection(_scheduleSubCollection)
         .document(scheduleId)
-        .setData(<String, DocumentReference>{'ref': scheduleReference});
+        .setData(scheduleEntity.toMap(), merge: isUpdate)
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'UserRepository: registerSchedule Timeout.'));
   }
 
   @override

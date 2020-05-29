@@ -1,15 +1,17 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/entity/address_entity.dart';
+import 'package:inbear_app/entity/geocode_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
+import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleRegisterStatus extends Status {
@@ -20,7 +22,7 @@ class ScheduleRegisterStatus extends Status {
   static const unableSearchAddressError = 'UNABLE_SEARCH_ADDRESS_ERROR';
 }
 
-class ScheduleRegisterViewModel extends ChangeNotifier {
+class ScheduleRegisterViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
   final AddressRepositoryImpl _addressRepositoryImpl;
@@ -36,16 +38,17 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
       TextEditingController();
   final TextEditingController addressTextEditingController =
       TextEditingController();
-  final DateFormat _formatter = new DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
+  final DateFormat _formatter = DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
   final Completer<GoogleMapController> _googleMapController = Completer();
 
   GeoPoint _addressGeoPoint;
   DateTime scheduledDateTime;
   bool isPostalCodeFormat = false;
-  String status = Status.none;
 
   @override
   void dispose() {
+    groomTextEditingController.dispose();
+    brideTextEditingController.dispose();
     postalCodeTextEditingController.dispose();
     addressTextEditingController.dispose();
     super.dispose();
@@ -60,27 +63,20 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     return '${_formatter.format(dateTime)} ~';
   }
 
-  Future<void> fetchAddress() async {
-    try {
-      status = Status.loading;
+  Future<void> executeFetchAddress() async =>
+      await executeFutureOperation(() => _fetchAddress());
+
+  Future<void> _fetchAddress() async {
+    final result = (await fromCancelable(_addressRepositoryImpl
+        .fetchAddress(postalCodeTextEditingController.text))) as AddressEntity;
+    if (result == null) {
+      status = ScheduleRegisterStatus.invalidPostalCodeError;
       notifyListeners();
-      var result = await _addressRepositoryImpl
-          .fetchAddress(postalCodeTextEditingController.text);
-      if (result == null) {
-        status = ScheduleRegisterStatus.invalidPostalCodeError;
-        notifyListeners();
-        return;
-      }
-      var address = '${result.prefecture}${result.city}${result.street}';
-      addressTextEditingController.text = address;
-      status = ScheduleRegisterStatus.fetchAddressSuccess;
-    } on TimeoutException {
-      status = Status.timeoutError;
-    } on HttpException {
-      status = Status.httpError;
-    } on SocketException {
-      status = Status.socketError;
+      return;
     }
+    final address = '${result.prefecture}${result.city}${result.street}';
+    addressTextEditingController.text = address;
+    status = ScheduleRegisterStatus.fetchAddressSuccess;
     notifyListeners();
   }
 
@@ -103,70 +99,62 @@ class ScheduleRegisterViewModel extends ChangeNotifier {
     _googleMapController.complete(mapController);
   }
 
-  Future<void> convertPostalCodeToLocation() async {
-    try {
-      if (addressTextEditingController.text.isEmpty) {
-        return;
-      }
-      status = Status.loading;
+  Future<void> executeConvertPostalCode() async =>
+      await executeFutureOperation(() => _convertPostalCodeToLocation());
+
+  Future<void> _convertPostalCodeToLocation() async {
+    if (addressTextEditingController.text.isEmpty) {
+      status = Status.none;
       notifyListeners();
-      var location = await _addressRepositoryImpl
-          .convertToLocation(addressTextEditingController.text);
-      if (location != null && _googleMapController != null) {
-        debugPrint('lat: ${location.latitude}, lng: ${location.longitude}');
-        _googleMapController.future.then((map) {
-          var latLng = LatLng(location.latitude, location.longitude);
-          _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
-          map.animateCamera(CameraUpdate.newLatLng(latLng));
-          status = ScheduleRegisterStatus.convertLocationSuccess;
-        });
-      } else {
-        status = ScheduleRegisterStatus.unableSearchAddressError;
-      }
-    } on TimeoutException {
-      status = Status.timeoutError;
-    } on HttpException {
-      status = Status.httpError;
-    } on SocketException {
-      status = Status.socketError;
+      return;
+    }
+    final location = (await fromCancelable(_addressRepositoryImpl
+            .convertToLocation(addressTextEditingController.text)))
+        as LocationEntity;
+    if (location != null && _googleMapController != null) {
+      final map = (await fromCancelable(_googleMapController.future))
+          as GoogleMapController;
+      final latLng = LatLng(location.latitude, location.longitude);
+      _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
+      await fromCancelable(map.animateCamera(CameraUpdate.newLatLng(latLng)));
+      status = ScheduleRegisterStatus.convertLocationSuccess;
+    } else {
+      status = ScheduleRegisterStatus.unableSearchAddressError;
     }
     notifyListeners();
   }
 
-  Future<void> registerSchedule() async {
-    try {
-      status = Status.loading;
+  Future<void> executeRegisterSchedule() async =>
+      await executeFutureOperation(() => _registerSchedule());
+
+  Future<void> _registerSchedule() async {
+    if (scheduledDateTime == null) {
+      status = ScheduleRegisterStatus.unSelectDateError;
       notifyListeners();
-      if (scheduledDateTime == null) {
-        status = ScheduleRegisterStatus.unSelectDateError;
-        notifyListeners();
-        return;
-      }
-      if (_addressGeoPoint == null) {
-        status = ScheduleRegisterStatus.unableSearchAddressError;
-        notifyListeners();
-        return;
-      }
-      var uid = await _userRepositoryImpl.getUid();
-      if (uid.isEmpty) {
-        throw UnLoginException();
-      }
-      var scheduleId = await _scheduleRepositoryImpl.registerSchedule(
-          ScheduleEntity(
-              groomTextEditingController.text,
-              brideTextEditingController.text,
-              scheduledDateTime,
-              addressTextEditingController.text,
-              _addressGeoPoint,
-              uid,
-              DateTime.now(),
-              DateTime.now()));
-      await _userRepositoryImpl.addScheduleReference(scheduleId);
-      await _userRepositoryImpl.selectSchedule(scheduleId);
-      status = Status.success;
-    } on UnLoginException {
-      status = Status.unLoginError;
+      return;
     }
+    if (_addressGeoPoint == null) {
+      status = ScheduleRegisterStatus.unableSearchAddressError;
+      notifyListeners();
+      return;
+    }
+    final user =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    final schedule = ScheduleEntity(
+        groomTextEditingController.text,
+        brideTextEditingController.text,
+        scheduledDateTime,
+        addressTextEditingController.text,
+        _addressGeoPoint,
+        user.uid,
+        DateTime.now(),
+        DateTime.now());
+    final scheduleId = (await fromCancelable(
+        _scheduleRepositoryImpl.registerSchedule(schedule, user))) as String;
+    await fromCancelable(
+        _userRepositoryImpl.registerSchedule(scheduleId, schedule));
+    await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
+    status = Status.success;
     notifyListeners();
   }
 }
