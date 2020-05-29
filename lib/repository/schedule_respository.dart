@@ -20,21 +20,19 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   final Map<String, ScheduleEntity> _scheduleCache = {};
 
   @override
-  Future<String> registerSchedule(ScheduleEntity schedule) async {
-    var user = await _auth.currentUser();
-    if (user == null) {
-      throw UnLoginException();
-    }
-    var document =
+  Future<String> registerSchedule(ScheduleEntity schedule, UserEntity user,
+      {bool isUpdate = false}) async {
+    final document =
         await _db.collection(_scheduleCollection).add(schedule.toMap());
-    const _userCollection = 'user';
-    var userReference = _db.collection(_userCollection).document(user.uid);
     await _db
         .collection(_scheduleCollection)
         .document(document.documentID)
         .collection(_participantSubCollection)
         .document(user.uid)
-        .setData(<String, DocumentReference>{'ref': userReference});
+        .setData(user.toMap(), merge: isUpdate)
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: registerSchedule Timeout.'));
     return document.documentID;
   }
 

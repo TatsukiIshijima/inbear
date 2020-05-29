@@ -14,7 +14,8 @@ abstract class UserRepositoryImpl {
   Future<String> getUid();
   Future<UserEntity> fetchUser();
   Future<void> registerSchedule(
-      String scheduleId, ScheduleEntity scheduleEntity);
+      String scheduleId, ScheduleEntity scheduleEntity,
+      {bool isUpdate = false});
   Future<void> selectSchedule(String scheduleId);
   Future<List<ScheduleSelectItemModel>> fetchEntrySchedule();
   Future<List<UserEntity>> searchUser(String email);

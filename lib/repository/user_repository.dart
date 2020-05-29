@@ -166,7 +166,8 @@ class UserRepository implements UserRepositoryImpl {
 
   @override
   Future<void> registerSchedule(
-      String scheduleId, ScheduleEntity scheduleEntity) async {
+      String scheduleId, ScheduleEntity scheduleEntity,
+      {bool isUpdate = false}) async {
     final uid = await getUid();
     if (uid.isEmpty) {
       throw UnLoginException();
@@ -176,7 +177,10 @@ class UserRepository implements UserRepositoryImpl {
         .document(uid)
         .collection(_scheduleSubCollection)
         .document(scheduleId)
-        .setData(scheduleEntity.toMap());
+        .setData(scheduleEntity.toMap(), merge: isUpdate)
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'UserRepository: registerSchedule Timeout.'));
   }
 
   @override
