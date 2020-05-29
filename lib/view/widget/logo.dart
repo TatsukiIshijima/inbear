@@ -15,7 +15,7 @@ class Logo extends StatelessWidget {
         TextSpan(
           text: 'in',
           style: GoogleFonts.portLligatSans(
-              textStyle: Theme.of(context).textTheme.display1,
+              textStyle: Theme.of(context).textTheme.headline4,
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
               color: Colors.pinkAccent),
@@ -23,7 +23,7 @@ class Logo extends StatelessWidget {
         TextSpan(
             text: 'bear',
             style: GoogleFonts.portLligatSans(
-                textStyle: Theme.of(context).textTheme.display1,
+                textStyle: Theme.of(context).textTheme.headline4,
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.pink[100]))
