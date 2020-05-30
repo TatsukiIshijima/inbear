@@ -53,7 +53,9 @@ class ParticipantListViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsStart() async {
     try {
-      _users.clear();
+      if (_participantsStreamController.isClosed) {
+        return;
+      }
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
       if (selectScheduleId.isEmpty) {
@@ -64,12 +66,11 @@ class ParticipantListViewModel extends BaseViewModel {
       if (participantDocuments.isEmpty) {
         throw ParticipantsEmptyException();
       }
-      final userEntities = await _scheduleRepositoryImpl
-          .convertToParticipantUsers(participantDocuments);
-      _users.addAll(userEntities);
-      if (_participantsStreamController.isClosed) {
-        return;
-      }
+      final participants = participantDocuments
+          .map((doc) => UserEntity.fromMap(doc.data))
+          .toList();
+      _users.clear();
+      _users.addAll(participants);
       participantsSink.add(_users);
       _lastSnapshot = participantDocuments.last;
     } on UnLoginException {
@@ -102,9 +103,10 @@ class ParticipantListViewModel extends BaseViewModel {
         _lastSnapshot = null;
         return;
       }
-      final userEntities = await _scheduleRepositoryImpl
-          .convertToParticipantUsers(participantDocuments);
-      _users.addAll(userEntities);
+      final participants = participantDocuments
+          .map((doc) => UserEntity.fromMap(doc.data))
+          .toList();
+      _users.addAll(participants);
       if (_participantsStreamController.isClosed) {
         return;
       }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -53,7 +54,9 @@ class ParticipantEditViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsStart() async {
     try {
-      _participants.clear();
+      if (_participantsStreamController.isClosed) {
+        return;
+      }
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
       if (selectScheduleId.isEmpty) {
@@ -66,16 +69,15 @@ class ParticipantEditViewModel extends BaseViewModel {
       }
       final selectScheduleEntity =
           await _scheduleRepositoryImpl.fetchSchedule(selectScheduleId);
-      final participantUserEntities = await _scheduleRepositoryImpl
-          .convertToParticipantUsers(participantDocuments);
-      final participantDeleteModels = participantUserEntities
+      final participants = participantDocuments
+          .map((doc) => UserEntity.fromMap(doc.data))
+          .toList();
+      final participantItemModels = participants
           .map((userEntity) =>
               ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
-      _participants.addAll(participantDeleteModels);
-      if (_participantsStreamController.isClosed) {
-        return;
-      }
+      _participants.clear();
+      _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
       _lastSnapshot = participantDocuments.last;
     } on UnLoginException {
@@ -96,6 +98,9 @@ class ParticipantEditViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsNext() async {
     try {
+      if (_participantsStreamController.isClosed) {
+        return;
+      }
       final selectScheduleId =
           (await _userRepositoryImpl.fetchUser()).selectScheduleId;
       if (selectScheduleId.isEmpty) {
@@ -112,16 +117,14 @@ class ParticipantEditViewModel extends BaseViewModel {
       }
       final selectScheduleEntity =
           await _scheduleRepositoryImpl.fetchSchedule(selectScheduleId);
-      final participantUserEntities = await _scheduleRepositoryImpl
-          .convertToParticipantUsers(participantDocuments);
-      final participantDeleteModels = participantUserEntities
+      final participants = participantDocuments
+          .map((doc) => UserEntity.fromMap(doc.data))
+          .toList();
+      final participantItemModels = participants
           .map((userEntity) =>
               ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
-      _participants.addAll(participantDeleteModels);
-      if (_participantsStreamController.isClosed) {
-        return;
-      }
+      _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
       _lastSnapshot = participantDocuments.last;
       debugPrint('追加読み込み, ${_participants.length}');
