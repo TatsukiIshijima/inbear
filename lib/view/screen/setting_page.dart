@@ -47,11 +47,6 @@ class SettingPageContent extends StatelessWidget {
       child: Column(
         children: <Widget>[
           TitleAndIconListItem(
-            title: resource.scheduleRegisterTitle,
-            iconData: Icons.today,
-            onTap: () => Routes.goToScheduleRegister(context),
-          ),
-          TitleAndIconListItem(
             title: resource.scheduleSelectTitle,
             iconData: Icons.compare_arrows,
             onTap: () => Routes.goToScheduleSelect(context),

@@ -228,7 +228,7 @@ class AppLocalizations {
       _notExistScheduleDataErrorMessageKey: 'スケジュールデータが存在しません。',
       _notExistEntryScheduleErrorMessageKey: '参加しているスケジュールがありません。',
       _noSelectScheduleErrorMessageKey:
-          '表示するスケジュールが選択されていません。\n「設定」からスケジュールを登録するか、\n「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
+          '表示するスケジュールが選択されていません。\nスケジュールの「+」ボタンから\nスケジュールを登録するか、\n設定の「表示するスケジュールを切り替え」で\n表示するスケジュールを選択して下さい。',
       _uploadImageErrorTitleKey: 'アップロードエラー',
       _uploadImageErrorMessageKey: '写真のアップロードに失敗しました。しばらくしてから、もう一度お試し下さい。',
       _permissionErrorTitleKey: '権限エラー',
