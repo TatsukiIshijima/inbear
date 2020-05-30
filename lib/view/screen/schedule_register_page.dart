@@ -15,6 +15,8 @@ import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import '../../routes.dart';
+
 class ScheduleRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -274,8 +276,7 @@ class RegisterAlertDialog extends StatelessWidget {
         switch (status) {
           case Status.success:
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              // TODO:スケジュールの切り替えも行うので、ホーム前まで画面を戻す
-              Navigator.pop(context);
+              Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
             });
             break;
           case ScheduleRegisterStatus.unSelectDateError:
