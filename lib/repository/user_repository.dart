@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
-import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 
 const invalidEmailError = 'ERROR_INVALID_EMAIL';
@@ -201,13 +200,9 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<List<ScheduleSelectItemModel>> fetchEntrySchedule() async {
+  Future<List<DocumentSnapshot>> fetchEntrySchedule() async {
     final user = await fetchUser();
-    if (user.uid.isEmpty) {
-      throw UnLoginException();
-    }
-    final scheduleItems = <ScheduleSelectItemModel>[];
-    final documents = (await _db
+    return (await _db
             .collection(_userCollection)
             .document(user.uid)
             .collection(_scheduleSubCollection)
@@ -216,23 +211,6 @@ class UserRepository implements UserRepositoryImpl {
                 onTimeout: () => throw TimeoutException(
                     'UserRepository: fetchEntrySchedule Timeout.')))
         .documents;
-    for (var doc in documents) {
-      // Reference型から直接データ参照できなかったため、
-      // 冗長にデータを引っ張ってくる
-      var docReference = doc.data['ref'] as DocumentReference;
-      var scheduleDoc = await docReference
-          .parent()
-          .document(docReference.documentID)
-          .get()
-          .timeout(Duration(seconds: 5),
-              onTimeout: () => throw TimeoutException(
-                  'UserRepository: fetchEntrySchedule Timeout.'));
-      var schedule = ScheduleEntity.fromMap(scheduleDoc.data);
-      var item =
-          ScheduleSelectItemModel.from(docReference.documentID, schedule, user);
-      scheduleItems.add(item);
-    }
-    return scheduleItems;
   }
 
   @override

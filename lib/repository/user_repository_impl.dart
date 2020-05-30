@@ -1,7 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
-import 'package:inbear_app/model/schedule_select_item_model.dart';
 
 abstract class UserRepositoryImpl {
   Future<void> signIn(String email, String password);
@@ -17,7 +17,7 @@ abstract class UserRepositoryImpl {
       String scheduleId, ScheduleEntity scheduleEntity,
       {bool isUpdate = false});
   Future<void> selectSchedule(String scheduleId);
-  Future<List<ScheduleSelectItemModel>> fetchEntrySchedule();
+  Future<List<DocumentSnapshot>> fetchEntrySchedule();
   Future<List<UserEntity>> searchUser(String email);
   Future<void> addScheduleInTargetUser(
       String targetUid, String targetScheduleId);
