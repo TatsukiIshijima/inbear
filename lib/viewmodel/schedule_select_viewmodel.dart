@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:inbear_app/custom_exceptions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
+import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
-
-class ScheduleSelectStatus extends Status {}
 
 class ScheduleSelectViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
@@ -15,47 +15,47 @@ class ScheduleSelectViewModel extends BaseViewModel {
     this._userRepositoryImpl,
   );
 
-  String status = Status.none;
   List<ScheduleSelectItemModel> scheduleItems = <ScheduleSelectItemModel>[];
 
   Future<void> fetchEntrySchedule() async {
-    await fromCancelable(_fetchEntrySchedule());
-  }
-
-  Future<void> selectSchedule(String scheduleId) async {
-    await fromCancelable(_selectSchedule(scheduleId));
+    await executeFutureOperation(() => _fetchEntrySchedule());
   }
 
   Future<void> _fetchEntrySchedule() async {
-    try {
-      status = Status.loading;
-      notifyListeners();
-      scheduleItems.clear();
-      var entrySchedules = await _userRepositoryImpl.fetchEntrySchedule();
-      scheduleItems.addAll(entrySchedules);
-      status = Status.success;
-    } on UnLoginException {
-      status = Status.unLoginError;
-    } on TimeoutException {
-      status = Status.timeoutError;
-    }
+    scheduleItems.clear();
+    final scheduleSelectItems = await _toScheduleSelectItemModels();
+    scheduleItems.addAll(scheduleSelectItems);
+    status = Status.success;
     notifyListeners();
   }
 
+  Future<List<ScheduleSelectItemModel>> _toScheduleSelectItemModels() async {
+    const documentIdKey = 'document_id';
+    const scheduleKey = 'schedule';
+    final user =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    final entryScheduleDocs =
+        (await fromCancelable(_userRepositoryImpl.fetchEntrySchedule()))
+            as List<DocumentSnapshot>;
+    final scheduleMaps = entryScheduleDocs
+        .map((doc) => {
+              documentIdKey: doc.documentID,
+              scheduleKey: ScheduleEntity.fromMap(doc.data)
+            })
+        .toList();
+    final scheduleSelectItems = scheduleMaps
+        .map((map) => ScheduleSelectItemModel.from(map[documentIdKey] as String,
+            map[scheduleKey] as ScheduleEntity, user))
+        .toList();
+    return scheduleSelectItems;
+  }
+
+  Future<void> selectSchedule(String scheduleId) async {
+    await executeFutureOperation(() => _selectSchedule(scheduleId));
+  }
+
   Future<void> _selectSchedule(String scheduleId) async {
-    try {
-      status = Status.loading;
-      notifyListeners();
-      await _userRepositoryImpl.selectSchedule(scheduleId);
-      scheduleItems.clear();
-      var entrySchedules = await _userRepositoryImpl.fetchEntrySchedule();
-      scheduleItems.addAll(entrySchedules);
-      status = Status.success;
-    } on UnLoginException {
-      status = Status.unLoginError;
-    } on TimeoutException {
-      status = Status.timeoutError;
-    }
-    notifyListeners();
+    await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
+    await _fetchEntrySchedule();
   }
 }
