@@ -13,7 +13,7 @@ import '../../routes.dart';
 class SettingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BasePage(
+    return BasePage<SettingViewModel>(
       viewModel:
           SettingViewModel(Provider.of<UserRepository>(context, listen: false)),
       // HomeでScaffoldを使用しているのでその中身のみをchildとする
