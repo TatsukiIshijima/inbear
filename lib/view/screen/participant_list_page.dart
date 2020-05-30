@@ -90,6 +90,7 @@ class EditParticipantButton extends StatelessWidget {
       builder: (context, isOwnerSchedule, child) {
         if (isOwnerSchedule) {
           return FloatingActionButton(
+            heroTag: 'EditSchedule',
             onPressed: () => Routes.goToParticipantEdit(context),
             child: const Icon(Icons.edit),
           );
