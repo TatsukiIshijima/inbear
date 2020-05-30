@@ -13,6 +13,8 @@ import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/schedule_viewmodel.dart';
 import 'package:provider/provider.dart';
 
+import '../../routes.dart';
+
 class SchedulePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,13 @@ class SchedulePage extends StatelessWidget {
       viewModel: ScheduleViewModel(
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false)),
-      child: SchedulePageBody(),
+      child: Scaffold(
+        body: SchedulePageBody(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => Routes.goToScheduleRegister(context),
+          child: const Icon(Icons.add),
+        ),
+      ),
     );
   }
 }
