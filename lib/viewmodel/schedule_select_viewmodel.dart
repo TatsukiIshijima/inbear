@@ -8,6 +8,10 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
+class ScheduleSelectStatus extends Status {
+  static const fetchEntryScheduleSuccess = 'fetchEntryScheduleSuccess';
+}
+
 class ScheduleSelectViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
 
@@ -25,7 +29,7 @@ class ScheduleSelectViewModel extends BaseViewModel {
     scheduleItems.clear();
     final scheduleSelectItems = await _toScheduleSelectItemModels();
     scheduleItems.addAll(scheduleSelectItems);
-    status = Status.success;
+    status = ScheduleSelectStatus.fetchEntryScheduleSuccess;
     notifyListeners();
   }
 
@@ -56,6 +60,7 @@ class ScheduleSelectViewModel extends BaseViewModel {
 
   Future<void> _selectSchedule(String scheduleId) async {
     await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
-    await _fetchEntrySchedule();
+    status = Status.success;
+    notifyListeners();
   }
 }
