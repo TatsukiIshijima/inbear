@@ -18,7 +18,7 @@ class ReloadButton extends StatelessWidget {
             resource.timeoutError,
             textAlign: TextAlign.center,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           RaisedButton(
