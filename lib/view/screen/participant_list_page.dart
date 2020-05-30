@@ -5,8 +5,8 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -14,15 +14,28 @@ import 'package:provider/provider.dart';
 class ParticipantListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ParticipantListViewModel(
+    return BasePage<ParticipantListViewModel>(
+      viewModel: ParticipantListViewModel(
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
-        body: ParticipantList(),
+        body: ParticipantListPageBody(),
         floatingActionButton: EditParticipantButton(),
       ),
     );
+  }
+}
+
+class ParticipantListPageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await viewModel.executeFetchParticipantsStart();
+      await viewModel.checkScheduleOwner();
+    });
+    return ParticipantList();
   }
 }
 
@@ -32,9 +45,8 @@ class ParticipantList extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<ParticipantListViewModel>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       viewModel.setScrollListener();
-      await viewModel.fetchParticipantsStart();
     });
     return StreamBuilder<List<UserEntity>>(
       initialData: null,
@@ -42,7 +54,7 @@ class ParticipantList extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return Center(child: Loading());
+            return Container();
           default:
             if (snapshot.hasError) {
               return CenteringErrorMessage(
@@ -73,11 +85,6 @@ class ParticipantList extends StatelessWidget {
 class EditParticipantButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel =
-        Provider.of<ParticipantListViewModel>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await viewModel.checkScheduleOwner();
-    });
     return Selector<ParticipantListViewModel, bool>(
       selector: (context, viewModel) => viewModel.isOwnerSchedule,
       builder: (context, isOwnerSchedule, child) {
