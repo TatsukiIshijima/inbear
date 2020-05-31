@@ -13,15 +13,14 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage<HomeViewModel>(
       viewModel: HomeViewModel(),
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: AppBarTitle(),
-          ),
-          body: HomePageBody(),
-          bottomNavigationBar: HomePageBottomNavigationBar(),
+      // FIXME:SafeAreaで囲むとAndroidでStatusBarが黒くなるので一時的にSafeArea解除、Stackが原因か！？
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: AppBarTitle(),
         ),
+        body: HomePageBody(),
+        bottomNavigationBar: HomePageBottomNavigationBar(),
       ),
     );
   }

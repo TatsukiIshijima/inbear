@@ -5,11 +5,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 import '../status.dart';
+
+class ParticipantListStatus extends Status {
+  static const fetchParticipantsSuccess = 'fetchParticipantsSuccess';
+  static const deleteParticipantSuccess = 'deleteParticipantSuccess';
+}
 
 class ParticipantListViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
@@ -18,13 +24,14 @@ class ParticipantListViewModel extends BaseViewModel {
   ParticipantListViewModel(
       this._userRepositoryImpl, this._scheduleRepositoryImpl);
 
-  final _participantsStreamController = StreamController<List<UserEntity>>();
-  final List<UserEntity> _participants = <UserEntity>[];
+  final _participantsStreamController =
+      StreamController<List<ParticipantItemModel>>();
+  final List<ParticipantItemModel> _participants = <ParticipantItemModel>[];
   final scrollController = ScrollController();
 
-  Stream<List<UserEntity>> get participantsStream =>
+  Stream<List<ParticipantItemModel>> get participantsStream =>
       _participantsStreamController.stream;
-  StreamSink<List<UserEntity>> get participantsSink =>
+  StreamSink<List<ParticipantItemModel>> get participantsSink =>
       _participantsStreamController.sink;
 
   bool isOwnerSchedule = false;
@@ -51,6 +58,7 @@ class ParticipantListViewModel extends BaseViewModel {
   }
 
   Future<void> executeFetchParticipantsStart() async {
+    _lastSnapshot = null;
     await executeFutureOperation(() => _fetchParticipantsStart());
   }
 
@@ -61,25 +69,19 @@ class ParticipantListViewModel extends BaseViewModel {
         notifyListeners();
         return;
       }
-      final user =
-          (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
-      if (user.selectScheduleId.isEmpty) {
-        throw NoSelectScheduleException();
-      }
-      final participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
-              .fetchParticipantsAtStart(user.selectScheduleId)))
-          as List<DocumentSnapshot>;
-      if (participantDocuments.isEmpty) {
-        throw ParticipantsEmptyException();
-      }
-      final participantList = participantDocuments
-          .map((doc) => UserEntity.fromMap(doc.data))
+      final selectScheduleId = await _getSelectScheduleId();
+      final selectScheduleEntity = (await fromCancelable(
+              _scheduleRepositoryImpl.fetchSchedule(selectScheduleId)))
+          as ScheduleEntity;
+      final participantList = await _getParticipantList(selectScheduleId);
+      final participantItemModels = participantList
+          .map((userEntity) =>
+              ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
       _participants.clear();
-      _participants.addAll(participantList);
+      _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
-      _lastSnapshot = participantDocuments.last;
-      status = Status.success;
+      status = ParticipantListStatus.fetchParticipantsSuccess;
     } on NoSelectScheduleException {
       participantsSink.addError(NoSelectScheduleException());
       status = Status.none;
@@ -101,32 +103,57 @@ class ParticipantListViewModel extends BaseViewModel {
         notifyListeners();
         return;
       }
-      final selectScheduleId =
-          (await _userRepositoryImpl.fetchUser()).selectScheduleId;
-      if (selectScheduleId.isEmpty) {
-        throw NoSelectScheduleException();
-      }
-      final participantDocuments = await _scheduleRepositoryImpl
-          .fetchParticipantsNext(selectScheduleId, _lastSnapshot);
-      if (participantDocuments.isEmpty) {
-        _lastSnapshot = null;
-        status = Status.none;
-        notifyListeners();
-        return;
-      }
-      final _participants = participantDocuments
-          .map((doc) => UserEntity.fromMap(doc.data))
+      final selectScheduleId = await _getSelectScheduleId();
+      final selectScheduleEntity = (await fromCancelable(
+              _scheduleRepositoryImpl.fetchSchedule(selectScheduleId)))
+          as ScheduleEntity;
+      final participantList = await _getParticipantList(selectScheduleId);
+      final participantItemModels = participantList
+          .map((userEntity) =>
+              ParticipantItemModel.from(userEntity, selectScheduleEntity))
           .toList();
-      _participants.addAll(_participants);
+      _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
-      _lastSnapshot = participantDocuments.last;
-      status = Status.success;
-      debugPrint('追加読み込み, ${_participants.length}');
+      status = ParticipantListStatus.fetchParticipantsSuccess;
+      debugPrint('追加読み込み, ${participantList.length}');
     } on NoSelectScheduleException {
       participantsSink.addError(NoSelectScheduleException());
       status = Status.none;
+    } on ParticipantsEmptyException {
+      // 追加読み込むするデータが空の場合なので、ストリームにエラーは流さない
+      _lastSnapshot = null;
+      status = Status.none;
     }
     notifyListeners();
+  }
+
+  Future<String> _getSelectScheduleId() async {
+    final user =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    if (user.selectScheduleId.isEmpty) {
+      throw NoSelectScheduleException();
+    }
+    return user.selectScheduleId;
+  }
+
+  Future<List<UserEntity>> _getParticipantList(String selectScheduleId) async {
+    List<DocumentSnapshot> participantDocuments;
+    if (_lastSnapshot == null) {
+      participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
+              .fetchParticipantsAtStart(selectScheduleId)))
+          as List<DocumentSnapshot>;
+    } else {
+      participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
+              .fetchParticipantsNext(selectScheduleId, _lastSnapshot)))
+          as List<DocumentSnapshot>;
+    }
+    if (participantDocuments == null || participantDocuments.isEmpty) {
+      throw ParticipantsEmptyException();
+    }
+    _lastSnapshot = participantDocuments.last;
+    return participantDocuments
+        .map((doc) => UserEntity.fromMap(doc.data))
+        .toList();
   }
 
   Future<void> checkScheduleOwner() async {
@@ -149,6 +176,22 @@ class ParticipantListViewModel extends BaseViewModel {
     } on TimeoutException {
       isOwnerSchedule = false;
     }
+    notifyListeners();
+  }
+
+  Future<void> executeDeleteParticipant(String targetUid) async {
+    await executeFutureOperation(() => _deleteParticipant(targetUid));
+  }
+
+  Future<void> _deleteParticipant(String targetUid) async {
+    final userSelf =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    await fromCancelable(_scheduleRepositoryImpl.deleteParticipant(
+        userSelf.selectScheduleId, targetUid));
+    await fromCancelable(_userRepositoryImpl.deleteScheduleInUser(
+        targetUid, userSelf.selectScheduleId));
+    await fromCancelable(_userRepositoryImpl.clearSelectSchedule(targetUid));
+    status = ParticipantListStatus.deleteParticipantSuccess;
     notifyListeners();
   }
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
+import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
+import 'package:inbear_app/view/widget/closed_question_dialog.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class ParticipantListPage extends StatelessWidget {
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
         body: ParticipantListPageBody(),
-        floatingActionButton: EditParticipantButton(),
+        floatingActionButton: AddParticipantButton(),
       ),
     );
   }
@@ -35,11 +36,30 @@ class ParticipantListPageBody extends StatelessWidget {
       await viewModel.executeFetchParticipantsStart();
       await viewModel.checkScheduleOwner();
     });
-    return ParticipantList();
+    return Stack(
+      children: <Widget>[ParticipantList(), DeleteResult()],
+    );
   }
 }
 
 class ParticipantList extends StatelessWidget {
+  void _showConfirmDialog(
+      BuildContext context, Future<void> Function() deleteFunc) {
+    final resource = AppLocalizations.of(context);
+    showDialog<ClosedQuestionDialog>(
+        context: context,
+        builder: (context) => ClosedQuestionDialog(
+              title: resource.deleteParticipantTitle,
+              message: resource.deleteParticipantMessage,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              negativeButtonTitle: resource.defaultNegativeButtonTitle,
+              onPositiveButtonPressed: () async {
+                Navigator.pop(context);
+                await deleteFunc();
+              },
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
@@ -48,7 +68,7 @@ class ParticipantList extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       viewModel.setScrollListener();
     });
-    return StreamBuilder<List<UserEntity>>(
+    return StreamBuilder<List<ParticipantItemModel>>(
       initialData: null,
       stream: viewModel.participantsStream,
       builder: (context, snapshot) {
@@ -68,13 +88,31 @@ class ParticipantList extends StatelessWidget {
               return CenteringErrorMessage(resource,
                   message: resource.participantsEmptyErrorMessage);
             } else {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  controller: viewModel.scrollController,
-                  itemBuilder: (context, index) => ParticipantItem(
-                        userName: snapshot.data[index].name,
-                        email: snapshot.data[index].email,
-                      ));
+              return Selector<ParticipantListViewModel, bool>(
+                selector: (context, viewModel) => viewModel.isOwnerSchedule,
+                builder: (context, isOwnerSchedule, child) => ListView.builder(
+                    itemCount: snapshot.data.length,
+                    controller: viewModel.scrollController,
+                    itemBuilder: (context, index) {
+                      if (isOwnerSchedule) {
+                        // オーナーであれば、ユーザーの削除可能
+                        // ただし、自分自身は削除できないようにする
+                        return ParticipantItem(
+                          snapshot.data[index].name,
+                          snapshot.data[index].email,
+                          showDeleteButton: !snapshot.data[index].isOwner,
+                          deleteButtonClick: () =>
+                              _showConfirmDialog(context, () async {
+                            await viewModel.executeDeleteParticipant(
+                                snapshot.data[index].uid);
+                          }),
+                        );
+                      } else {
+                        return ParticipantItem(snapshot.data[index].name,
+                            snapshot.data[index].email);
+                      }
+                    }),
+              );
             }
         }
       },
@@ -82,17 +120,50 @@ class ParticipantList extends StatelessWidget {
   }
 }
 
-class EditParticipantButton extends StatelessWidget {
+class DeleteResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
+    return Selector<ParticipantListViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case ParticipantListStatus.deleteParticipantSuccess:
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async =>
+                await viewModel.executeFetchParticipantsStart());
+            break;
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class AddParticipantButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
     return Selector<ParticipantListViewModel, bool>(
       selector: (context, viewModel) => viewModel.isOwnerSchedule,
       builder: (context, isOwnerSchedule, child) {
         if (isOwnerSchedule) {
           return FloatingActionButton(
-            heroTag: 'EditSchedule',
-            onPressed: () => Routes.goToParticipantEdit(context),
-            child: const Icon(Icons.edit),
+            heroTag: 'AddParticipant',
+            onPressed: () async {
+              final updateFlag = await showSearch<bool>(
+                  context: context,
+                  delegate: UserSearchDelegate(
+                      searchFieldLabel: 'メールアドレス',
+                      keyboardType: TextInputType.emailAddress));
+              // Navigator.pop で result に bool を入れて前の画面に戻したときに
+              // result に値が入っているので、それで前の画面から戻ってきているか検知
+              if (updateFlag != null && updateFlag) {
+                await viewModel.executeFetchParticipantsStart();
+              }
+            },
+            child: const Icon(Icons.person_add),
           );
         } else {
           return Container();

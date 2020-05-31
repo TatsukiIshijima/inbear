@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
-import 'package:inbear_app/view/screen/participant_edit_page.dart';
 import 'package:inbear_app/view/screen/prepare_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 import 'package:inbear_app/view/screen/schedule_register_page.dart';
@@ -64,11 +63,6 @@ class Routes {
   static void goToScheduleSelect(BuildContext context) {
     Navigator.push<MaterialPageRoute>(
         context, MaterialPageRoute(builder: (context) => ScheduleSelectPage()));
-  }
-
-  static void goToParticipantEdit(BuildContext context) {
-    Navigator.push<MaterialPageRoute>(context,
-        MaterialPageRoute(builder: (context) => ParticipantEditPage()));
   }
 
   // スケジュールの切り替えはアプリ全体に影響があるので、ホーム画面更新のため、

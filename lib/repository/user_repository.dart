@@ -228,25 +228,30 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> addScheduleInTargetUser(
+  Future<void> addScheduleInUser(
       String targetUid, String targetScheduleId) async {
     const scheduleCollection = 'schedule';
-    final scheduleReference =
-        _db.collection(scheduleCollection).document(targetScheduleId);
+    final schedule = await _db
+        .collection(scheduleCollection)
+        .document(targetScheduleId)
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('UserRepository: addSchedule Timeout.'));
     await _db
         .collection(_userCollection)
         .document(targetUid)
         .collection(_scheduleSubCollection)
         .document(targetScheduleId)
-        .setData(<String, DocumentReference>{'ref': scheduleReference},
-            merge:
-                true).timeout(Duration(seconds: 5),
+        .setData(schedule.data, merge: true)
+        .timeout(Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('UserRepository: addSchedule Timeout.'));
   }
 
   @override
-  Future<void> deleteSchedule(String targetUid, String targetScheduleId) async {
+  Future<void> deleteScheduleInUser(
+      String targetUid, String targetScheduleId) async {
     await _db
         .collection(_userCollection)
         .document(targetUid)
@@ -256,5 +261,15 @@ class UserRepository implements UserRepositoryImpl {
         .timeout(Duration(seconds: 5),
             onTimeout: () => throw TimeoutException(
                 'UserRepository: deleteSchedule Timeout.'));
+  }
+
+  @override
+  Future<void> clearSelectSchedule(String targetUid) async {
+    await _db
+        .collection(_userCollection)
+        .document(targetUid)
+        .updateData(<String, String>{'select_schedule_id': ''}).timeout(
+            Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(''));
   }
 }

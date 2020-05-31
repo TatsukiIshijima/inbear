@@ -9,10 +9,8 @@ class ParticipantItem extends StatelessWidget {
   final VoidCallback addButtonClick;
   final VoidCallback deleteButtonClick;
 
-  ParticipantItem(
-      {@required this.userName,
-      @required this.email,
-      this.showAddButton = false,
+  ParticipantItem(this.userName, this.email,
+      {this.showAddButton = false,
       this.showDeleteButton = false,
       this.addButtonClick,
       this.deleteButtonClick});

@@ -72,6 +72,10 @@ class AppLocalizations {
   // 参加者一覧画面
   static const _participantsEmptyErrorMessageKey =
       'participants_empty_error_message';
+  static const _deleteParticipantConfirmTitleKey =
+      'delete_participant_confirm_title';
+  static const _deleteParticipantConfirmMessageKey =
+      'delete_participant_confirm_message';
 
   // 参加者追加画面
   static const _addParticipantSuggestMessageKey =
@@ -192,6 +196,9 @@ class AppLocalizations {
 
       // 参加者一覧画面
       _participantsEmptyErrorMessageKey: '参加者がおりません。',
+      _deleteParticipantConfirmTitleKey: '確認',
+      _deleteParticipantConfirmMessageKey:
+          '選択したユーザーをこのスケジュールから削除します。\nよろしいですか？',
 
       // 参加者追加画面
       _addParticipantSuggestMessageKey: 'メールアドレスからユーザーを検索しましょう。',
@@ -306,6 +313,10 @@ class AppLocalizations {
 
   String get participantsEmptyErrorMessage =>
       _getText(_participantsEmptyErrorMessageKey);
+  String get deleteParticipantTitle =>
+      _getText(_deleteParticipantConfirmTitleKey);
+  String get deleteParticipantMessage =>
+      _getText(_deleteParticipantConfirmMessageKey);
 
   String get addParticipantSuggestMessage =>
       _getText(_addParticipantSuggestMessageKey);
