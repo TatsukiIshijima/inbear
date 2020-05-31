@@ -20,7 +20,7 @@ class ParticipantListPage extends StatelessWidget {
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
         body: ParticipantListPageBody(),
-        floatingActionButton: EditParticipantButton(),
+        floatingActionButton: AddParticipantButton(),
       ),
     );
   }
@@ -98,7 +98,7 @@ class ParticipantList extends StatelessWidget {
   }
 }
 
-class EditParticipantButton extends StatelessWidget {
+class AddParticipantButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<ParticipantListViewModel, bool>(
@@ -106,9 +106,9 @@ class EditParticipantButton extends StatelessWidget {
       builder: (context, isOwnerSchedule, child) {
         if (isOwnerSchedule) {
           return FloatingActionButton(
-            heroTag: 'EditSchedule',
+            heroTag: 'AddParticipant',
             onPressed: () => Routes.goToParticipantEdit(context),
-            child: const Icon(Icons.edit),
+            child: const Icon(Icons.person_add),
           );
         } else {
           return Container();

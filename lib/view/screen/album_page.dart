@@ -51,8 +51,9 @@ class AlbumPageContent extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'AddPhoto',
         onPressed: () async => await viewModel.uploadSelectImages(),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_photo_alternate),
       ),
     );
   }

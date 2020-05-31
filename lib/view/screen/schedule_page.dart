@@ -25,7 +25,7 @@ class SchedulePage extends StatelessWidget {
       child: Scaffold(
         body: SchedulePageBody(),
         floatingActionButton: FloatingActionButton(
-          heroTag: 'Schedule',
+          heroTag: 'AddSchedule',
           onPressed: () => Routes.goToScheduleRegister(context),
           child: const Icon(Icons.add),
         ),
