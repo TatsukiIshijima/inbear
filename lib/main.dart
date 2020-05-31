@@ -98,12 +98,6 @@ class InbearApp extends StatelessWidget {
           primaryColorDark: Color(0xffbf5f82),
           secondaryHeaderColor: Color(0xffbf5f82),
           accentColor: Color(0xfff06292),
-          textTheme: TextTheme(
-              // 参考:https://material.io/design/typography/the-type-system.html#type-scale
-              bodyText2: TextStyle(color: Colors.grey),
-              headline5: TextStyle(color: Colors.black87),
-              headline6: TextStyle(color: Colors.white),
-              overline: TextStyle(color: Colors.grey[300])),
           cursorColor: Color(0xfff06292)),
       initialRoute: Routes.splashPagePath,
     );
