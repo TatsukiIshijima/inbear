@@ -45,13 +45,14 @@ class ParticipantListPageBody extends StatelessWidget {
 class ParticipantList extends StatelessWidget {
   void _showConfirmDialog(
       BuildContext context, Future<void> Function() deleteFunc) {
+    final resource = AppLocalizations.of(context);
     showDialog<ClosedQuestionDialog>(
         context: context,
         builder: (context) => ClosedQuestionDialog(
-              title: '確認',
-              message: '選択したユーザーをこのスケジュールから削除します。\nよろしいですか？',
-              positiveButtonTitle: 'OK',
-              negativeButtonTitle: 'キャンセル',
+              title: resource.deleteParticipantTitle,
+              message: resource.deleteParticipantMessage,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              negativeButtonTitle: resource.defaultNegativeButtonTitle,
               onPositiveButtonPressed: () async {
                 Navigator.pop(context);
                 await deleteFunc();
