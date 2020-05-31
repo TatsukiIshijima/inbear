@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
@@ -48,7 +48,7 @@ class ParticipantList extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       viewModel.setScrollListener();
     });
-    return StreamBuilder<List<UserEntity>>(
+    return StreamBuilder<List<ParticipantItemModel>>(
       initialData: null,
       stream: viewModel.participantsStream,
       builder: (context, snapshot) {
@@ -68,13 +68,29 @@ class ParticipantList extends StatelessWidget {
               return CenteringErrorMessage(resource,
                   message: resource.participantsEmptyErrorMessage);
             } else {
-              return ListView.builder(
-                  itemCount: snapshot.data.length,
-                  controller: viewModel.scrollController,
-                  itemBuilder: (context, index) => ParticipantItem(
-                        userName: snapshot.data[index].name,
-                        email: snapshot.data[index].email,
-                      ));
+              return Selector<ParticipantListViewModel, bool>(
+                selector: (context, viewModel) => viewModel.isOwnerSchedule,
+                builder: (context, isOwnerSchedule, child) => ListView.builder(
+                    itemCount: snapshot.data.length,
+                    controller: viewModel.scrollController,
+                    itemBuilder: (context, index) {
+                      if (isOwnerSchedule) {
+                        // オーナーであれば、ユーザーの削除可能
+                        // ただし、自分自身は削除できないようにする
+                        return ParticipantItem(
+                          snapshot.data[index].name,
+                          snapshot.data[index].email,
+                          showDeleteButton: !snapshot.data[index].isOwner,
+                          deleteButtonClick: () {
+                            // TODO:ユーザー削除
+                          },
+                        );
+                      } else {
+                        return ParticipantItem(snapshot.data[index].name,
+                            snapshot.data[index].email);
+                      }
+                    }),
+              );
             }
         }
       },
