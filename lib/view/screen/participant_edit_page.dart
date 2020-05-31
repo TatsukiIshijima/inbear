@@ -106,8 +106,8 @@ class ParticipantEditList extends StatelessWidget {
                   itemCount: snapshot.data.length,
                   controller: viewModel.scrollController,
                   itemBuilder: (context, index) => ParticipantItem(
-                        userName: snapshot.data[index].name,
-                        email: snapshot.data[index].email,
+                        snapshot.data[index].name,
+                        snapshot.data[index].email,
                         showDeleteButton: !snapshot.data[index].isOwner,
                         deleteButtonClick: () =>
                             _showConfirmDialog(context, () async {

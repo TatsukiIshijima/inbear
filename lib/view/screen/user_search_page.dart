@@ -81,8 +81,8 @@ class ParticipantYetUserList extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) => ParticipantItem(
-                        userName: snapshot.data[index].name,
-                        email: snapshot.data[index].email,
+                        snapshot.data[index].name,
+                        snapshot.data[index].email,
                         showAddButton: true,
                         addButtonClick: () async => await viewModel
                             .addParticipant(snapshot.data[index].uid),
