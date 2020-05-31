@@ -137,7 +137,7 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
             .getDocuments()
             .timeout(Duration(seconds: 5),
                 onTimeout: () => throw TimeoutException(
-                    'ScheduleRepository fetchParticipantsNext Timeout.')))
+                    'ScheduleRepository: fetchParticipantsNext Timeout.')))
         .documents;
   }
 
@@ -150,25 +150,33 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .document(uid)
         .get()
         .timeout(Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('is participant user time out.'));
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: isParticipantUser Timeout.'));
     return participantDocument.exists;
   }
 
   @override
-  Future<void> addParticipant(String selectScheduleId, String uid) async {
+  Future<void> addParticipant(String selectScheduleId, String targetUid) async {
     const _userCollection = 'user';
-    final userReference = _db.collection(_userCollection).document(uid);
+    // participantコレクション配下に書き込む UserData で SelectScheduleID は使用しないので、
+    // スケジュール切り替えがあったとしても値を書き換えない participants コレクション配下の UserData の更新はしない
+    // UserData の master は user コレクション
+    final user = await _db
+        .collection(_userCollection)
+        .document(targetUid)
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: addParticipant Timeout.'));
     await _db
         .collection(_scheduleCollection)
         .document(selectScheduleId)
         .collection(_participantSubCollection)
-        .document(uid)
-        .setData(<String, DocumentReference>{'ref': userReference},
-            merge:
-                true).timeout(Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('add participant time out.'));
+        .document(targetUid)
+        .setData(user.data, merge: true)
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: addParticipant Timeout.'));
   }
 
   @override

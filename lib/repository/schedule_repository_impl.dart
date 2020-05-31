@@ -16,6 +16,6 @@ abstract class ScheduleRepositoryImpl {
   Future<List<DocumentSnapshot>> fetchParticipantsNext(
       String selectScheduleId, DocumentSnapshot startSnapshot);
   Future<bool> isParticipantUser(String selectScheduleId, String uid);
-  Future<void> addParticipant(String selectScheduleId, String uid);
+  Future<void> addParticipant(String selectScheduleId, String targetUid);
   Future<void> deleteParticipant(String selectScheduleId, String uid);
 }

@@ -228,19 +228,23 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<void> addScheduleInTargetUser(
+  Future<void> addScheduleInUser(
       String targetUid, String targetScheduleId) async {
     const scheduleCollection = 'schedule';
-    final scheduleReference =
-        _db.collection(scheduleCollection).document(targetScheduleId);
+    final schedule = await _db
+        .collection(scheduleCollection)
+        .document(targetScheduleId)
+        .get()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () =>
+                throw TimeoutException('UserRepository: addSchedule Timeout.'));
     await _db
         .collection(_userCollection)
         .document(targetUid)
         .collection(_scheduleSubCollection)
         .document(targetScheduleId)
-        .setData(<String, DocumentReference>{'ref': scheduleReference},
-            merge:
-                true).timeout(Duration(seconds: 5),
+        .setData(schedule.data, merge: true)
+        .timeout(Duration(seconds: 5),
             onTimeout: () =>
                 throw TimeoutException('UserRepository: addSchedule Timeout.'));
   }
