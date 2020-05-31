@@ -10,7 +10,8 @@ class ImageRepository implements ImageRepositoryImpl {
   );
 
   @override
-  Future<Map<String, String>> uploadImage(Asset asset) async {
-    return await _imageDataSourceImpl.uploadImage(asset);
+  Future<Map<String, String>> uploadImage(
+      String documentId, Asset asset) async {
+    return await _imageDataSourceImpl.uploadImage(documentId, asset);
   }
 }
