@@ -89,7 +89,8 @@ class AlbumViewModel extends BaseViewModel {
       }
       final imageEntities = <ImageEntity>[];
       for (final image in pickUpImages) {
-        final uploadUrls = await _imageRepositoryImpl.uploadImage(image);
+        final uploadUrls = await _imageRepositoryImpl.uploadImage(
+            user.selectScheduleId, image);
         final imageEntity = ImageEntity(uploadUrls[_imageUrlKey],
             uploadUrls[_thumbnailUrlKey], user.uid, DateTime.now());
         imageEntities.add(imageEntity);
