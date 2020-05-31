@@ -4,8 +4,8 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
+import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
@@ -101,13 +101,27 @@ class ParticipantList extends StatelessWidget {
 class AddParticipantButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
     return Selector<ParticipantListViewModel, bool>(
       selector: (context, viewModel) => viewModel.isOwnerSchedule,
       builder: (context, isOwnerSchedule, child) {
         if (isOwnerSchedule) {
           return FloatingActionButton(
             heroTag: 'AddParticipant',
-            onPressed: () => Routes.goToParticipantEdit(context),
+            onPressed: () async {
+              final updateFlag = await showSearch<bool>(
+                  context: context,
+                  delegate: UserSearchDelegate(
+                      searchFieldLabel: 'メールアドレス',
+                      keyboardType: TextInputType.emailAddress));
+              // Navigator.pop で result に bool を入れて前の画面に戻したときに
+              // result に値が入っているので、それで前の画面から戻ってきているか検知
+              if (updateFlag != null && updateFlag) {
+                debugPrint('BackFromUserSearch');
+                await viewModel.executeFetchParticipantsStart();
+              }
+            },
             child: const Icon(Icons.person_add),
           );
         } else {
