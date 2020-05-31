@@ -180,15 +180,16 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   }
 
   @override
-  Future<void> deleteParticipant(String selectScheduleId, String uid) async {
+  Future<void> deleteParticipant(
+      String selectScheduleId, String targetUid) async {
     await _db
         .collection(_scheduleCollection)
         .document(selectScheduleId)
         .collection(_participantSubCollection)
-        .document(uid)
+        .document(targetUid)
         .delete()
         .timeout(Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('delete participant time out.'));
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: deleteParticipant Timeout.'));
   }
 }

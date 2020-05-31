@@ -20,5 +20,5 @@ abstract class UserRepositoryImpl {
   Future<List<DocumentSnapshot>> fetchEntrySchedule();
   Future<List<UserEntity>> searchUser(String email);
   Future<void> addScheduleInUser(String targetUid, String targetScheduleId);
-  Future<void> deleteSchedule(String targetUid, String targetScheduleId);
+  Future<void> deleteScheduleInUser(String targetUid, String targetScheduleId);
 }

@@ -150,7 +150,7 @@ class ParticipantEditViewModel extends BaseViewModel {
     final userSelf = await _userRepositoryImpl.fetchUser();
     await _scheduleRepositoryImpl.deleteParticipant(
         userSelf.selectScheduleId, targetUid);
-    await _userRepositoryImpl.deleteSchedule(
+    await _userRepositoryImpl.deleteScheduleInUser(
         targetUid, userSelf.selectScheduleId);
   }
 }
