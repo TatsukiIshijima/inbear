@@ -9,7 +9,10 @@ import '../custom_exceptions.dart';
 import '../status.dart';
 
 class UserSearchStatus extends Status {
+  // ParticipantListPageのViewModelが破棄されないため、Status.successを呼ぶと
+  // 二重で処理が実行されてしまうため、成功のステータスは分けておく
   static const searchSuccess = 'SearchSuccess';
+  static const addSuccess = 'AddSuccess';
 }
 
 class UserSearchViewModel extends BaseViewModel {
@@ -82,7 +85,7 @@ class UserSearchViewModel extends BaseViewModel {
         userSelf.selectScheduleId, targetUid));
     await fromCancelable(_userRepositoryImpl.addScheduleInUser(
         targetUid, userSelf.selectScheduleId));
-    status = Status.success;
+    status = UserSearchStatus.addSuccess;
     notifyListeners();
   }
 

@@ -12,6 +12,11 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 import '../status.dart';
 
+class ParticipantListStatus extends Status {
+  static const fetchParticipantsSuccess = 'fetchParticipantsSuccess';
+  static const deleteParticipantSuccess = 'deleteParticipantSuccess';
+}
+
 class ParticipantListViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepositoryImpl;
   final ScheduleRepositoryImpl _scheduleRepositoryImpl;
@@ -30,7 +35,7 @@ class ParticipantListViewModel extends BaseViewModel {
       _participantsStreamController.sink;
 
   bool isOwnerSchedule = false;
-  DocumentSnapshot lastSnapshot;
+  DocumentSnapshot _lastSnapshot;
   bool _isLoading = false;
 
   @override
@@ -53,6 +58,7 @@ class ParticipantListViewModel extends BaseViewModel {
   }
 
   Future<void> executeFetchParticipantsStart() async {
+    _lastSnapshot = null;
     await executeFutureOperation(() => _fetchParticipantsStart());
   }
 
@@ -75,7 +81,7 @@ class ParticipantListViewModel extends BaseViewModel {
       _participants.clear();
       _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
-      status = Status.success;
+      status = ParticipantListStatus.fetchParticipantsSuccess;
     } on NoSelectScheduleException {
       participantsSink.addError(NoSelectScheduleException());
       status = Status.none;
@@ -92,7 +98,7 @@ class ParticipantListViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsNext() async {
     try {
-      if (_participantsStreamController.isClosed || lastSnapshot == null) {
+      if (_participantsStreamController.isClosed || _lastSnapshot == null) {
         status = Status.none;
         notifyListeners();
         return;
@@ -108,14 +114,14 @@ class ParticipantListViewModel extends BaseViewModel {
           .toList();
       _participants.addAll(participantItemModels);
       participantsSink.add(_participants);
-      status = Status.success;
+      status = ParticipantListStatus.fetchParticipantsSuccess;
       debugPrint('追加読み込み, ${participantList.length}');
     } on NoSelectScheduleException {
       participantsSink.addError(NoSelectScheduleException());
       status = Status.none;
     } on ParticipantsEmptyException {
       // 追加読み込むするデータが空の場合なので、ストリームにエラーは流さない
-      lastSnapshot = null;
+      _lastSnapshot = null;
       status = Status.none;
     }
     notifyListeners();
@@ -132,19 +138,19 @@ class ParticipantListViewModel extends BaseViewModel {
 
   Future<List<UserEntity>> _getParticipantList(String selectScheduleId) async {
     List<DocumentSnapshot> participantDocuments;
-    if (lastSnapshot == null) {
+    if (_lastSnapshot == null) {
       participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
               .fetchParticipantsAtStart(selectScheduleId)))
           as List<DocumentSnapshot>;
     } else {
       participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
-              .fetchParticipantsNext(selectScheduleId, lastSnapshot)))
+              .fetchParticipantsNext(selectScheduleId, _lastSnapshot)))
           as List<DocumentSnapshot>;
     }
     if (participantDocuments == null || participantDocuments.isEmpty) {
       throw ParticipantsEmptyException();
     }
-    lastSnapshot = participantDocuments.last;
+    _lastSnapshot = participantDocuments.last;
     return participantDocuments
         .map((doc) => UserEntity.fromMap(doc.data))
         .toList();
@@ -170,6 +176,22 @@ class ParticipantListViewModel extends BaseViewModel {
     } on TimeoutException {
       isOwnerSchedule = false;
     }
+    notifyListeners();
+  }
+
+  Future<void> executeDeleteParticipant(String targetUid) async {
+    await executeFutureOperation(() => _deleteParticipant(targetUid));
+  }
+
+  Future<void> _deleteParticipant(String targetUid) async {
+    final userSelf =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    await fromCancelable(_scheduleRepositoryImpl.deleteParticipant(
+        userSelf.selectScheduleId, targetUid));
+    await fromCancelable(_userRepositoryImpl.deleteScheduleInUser(
+        targetUid, userSelf.selectScheduleId));
+    await fromCancelable(_userRepositoryImpl.clearSelectSchedule(targetUid));
+    status = ParticipantListStatus.deleteParticipantSuccess;
     notifyListeners();
   }
 }

@@ -10,8 +10,6 @@ import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/user_search_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../status.dart';
-
 class UserSearchPage extends StatelessWidget {
   final String query;
 
@@ -24,9 +22,7 @@ class UserSearchPage extends StatelessWidget {
         viewModel: UserSearchViewModel(
             Provider.of<UserRepository>(context, listen: false),
             Provider.of<ScheduleRepository>(context, listen: false)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
             if (query.isEmpty)
               Center(
@@ -101,7 +97,7 @@ class SearchResult extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.success:
+          case UserSearchStatus.addSuccess:
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
               viewModel.searchResultClear();
             });

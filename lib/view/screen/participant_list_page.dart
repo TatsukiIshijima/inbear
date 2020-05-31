@@ -7,6 +7,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
+import 'package:inbear_app/view/widget/closed_question_dialog.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -35,11 +36,29 @@ class ParticipantListPageBody extends StatelessWidget {
       await viewModel.executeFetchParticipantsStart();
       await viewModel.checkScheduleOwner();
     });
-    return ParticipantList();
+    return Stack(
+      children: <Widget>[ParticipantList(), DeleteResult()],
+    );
   }
 }
 
 class ParticipantList extends StatelessWidget {
+  void _showConfirmDialog(
+      BuildContext context, Future<void> Function() deleteFunc) {
+    showDialog<ClosedQuestionDialog>(
+        context: context,
+        builder: (context) => ClosedQuestionDialog(
+              title: '確認',
+              message: '選択したユーザーをこのスケジュールから削除します。\nよろしいですか？',
+              positiveButtonTitle: 'OK',
+              negativeButtonTitle: 'キャンセル',
+              onPositiveButtonPressed: () async {
+                Navigator.pop(context);
+                await deleteFunc();
+              },
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
@@ -81,9 +100,11 @@ class ParticipantList extends StatelessWidget {
                           snapshot.data[index].name,
                           snapshot.data[index].email,
                           showDeleteButton: !snapshot.data[index].isOwner,
-                          deleteButtonClick: () {
-                            // TODO:ユーザー削除
-                          },
+                          deleteButtonClick: () =>
+                              _showConfirmDialog(context, () async {
+                            await viewModel.executeDeleteParticipant(
+                                snapshot.data[index].uid);
+                          }),
                         );
                       } else {
                         return ParticipantItem(snapshot.data[index].name,
@@ -93,6 +114,26 @@ class ParticipantList extends StatelessWidget {
               );
             }
         }
+      },
+    );
+  }
+}
+
+class DeleteResult extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
+    return Selector<ParticipantListViewModel, String>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case ParticipantListStatus.deleteParticipantSuccess:
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async =>
+                await viewModel.executeFetchParticipantsStart());
+            break;
+        }
+        return Container();
       },
     );
   }
@@ -118,9 +159,6 @@ class AddParticipantButton extends StatelessWidget {
               // Navigator.pop で result に bool を入れて前の画面に戻したときに
               // result に値が入っているので、それで前の画面から戻ってきているか検知
               if (updateFlag != null && updateFlag) {
-                // 画面立ち上げの時点で lastSnapshot は存在するので、次に処理が呼ばれる時は
-                // lastSnapshot の続きから取得するので、リセットの意味で lastSnapshot を null へ
-                viewModel.lastSnapshot = null;
                 await viewModel.executeFetchParticipantsStart();
               }
             },
