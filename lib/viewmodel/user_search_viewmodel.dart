@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -10,7 +9,7 @@ import '../custom_exceptions.dart';
 import '../status.dart';
 
 class UserSearchStatus extends Status {
-  static const userDataNotExistError = 'USER_DATA_NOT_EXIST_ERROR';
+  static const searchSuccess = 'SearchSuccess';
 }
 
 class UserSearchViewModel extends BaseViewModel {
@@ -27,8 +26,6 @@ class UserSearchViewModel extends BaseViewModel {
   StreamSink<List<UserEntity>> get searchUsersSink =>
       _searchUsersStreamController.sink;
 
-  String status = Status.none;
-
   @override
   void dispose() {
     _searchUsersStreamController.close();
@@ -36,65 +33,61 @@ class UserSearchViewModel extends BaseViewModel {
     super.dispose();
   }
 
-  Future<void> searchUser(String email) async {
-    await fromCancelable(_searchUser(email));
+  Future<void> executeSearchUser(String email) async {
+    await executeFutureOperation(() => _searchUser(email));
   }
 
   Future<void> _searchUser(String email) async {
-    try {
-      final searchResult = await _userRepositoryImpl.searchUser(email);
-      if (searchResult.isEmpty) {
-        throw SearchUsersEmptyException();
-      }
-      final userSelf = await _userRepositoryImpl.fetchUser();
-      // 既に参加済みの人は検索結果から除く
-      final notParticipantUsers = <UserEntity>[];
-      for (final userEntity in searchResult) {
-        final isParticipant = await _scheduleRepositoryImpl.isParticipantUser(
-            userSelf.selectScheduleId, userEntity.uid);
-        if (!isParticipant) {
-          notParticipantUsers.add(userEntity);
-        }
-      }
-      if (_searchUsersStreamController.isClosed) {
-        debugPrint('searchUser : searchUsersStreamController is closed.');
-        return;
-      }
-      _searchUsers.clear();
-      _searchUsers.addAll(notParticipantUsers);
-      searchUsersSink.add(_searchUsers);
-    } on UnLoginException {
-      searchUsersSink.addError(UnLoginException());
-    } on UserDocumentNotExistException {
-      searchUsersSink.addError(UserDocumentNotExistException());
-    } on SearchUsersEmptyException {
-      searchUsersSink.addError(SearchUsersEmptyException());
-    } on TimeoutException {
-      searchUsersSink.addError(TimeoutException('search user time out.'));
+    if (_searchUsersStreamController.isClosed) {
+      status = Status.none;
+      notifyListeners();
+      return;
     }
+    final searchResult =
+        (await fromCancelable(_userRepositoryImpl.searchUser(email)))
+            as List<UserEntity>;
+    if (searchResult.isEmpty) {
+      searchUsersSink.addError(SearchUsersEmptyException());
+      status = Status.none;
+      notifyListeners();
+      return;
+    }
+    final userSelf =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    // 既に参加済みの人は検索結果から除く
+    final notParticipantUsers = <UserEntity>[];
+    for (final userEntity in searchResult) {
+      final isParticipant = (await fromCancelable(_scheduleRepositoryImpl
+              .isParticipantUser(userSelf.selectScheduleId, userEntity.uid)))
+          as bool;
+      if (!isParticipant) {
+        notParticipantUsers.add(userEntity);
+      }
+    }
+    _searchUsers.clear();
+    _searchUsers.addAll(notParticipantUsers);
+    searchUsersSink.add(_searchUsers);
+    status = UserSearchStatus.searchSuccess;
+    notifyListeners();
   }
 
-  Future<void> addParticipant(String targetUid) async {
-    await fromCancelable(_addParticipant(targetUid));
+  Future<void> executeAddParticipant(String targetUid) async {
+    await executeFutureOperation(() => _addParticipant(targetUid));
   }
 
   Future<void> _addParticipant(String targetUid) async {
-    try {
-      status = Status.loading;
-      notifyListeners();
-      final userSelf = await _userRepositoryImpl.fetchUser();
-      await _scheduleRepositoryImpl.addParticipant(
-          userSelf.selectScheduleId, targetUid);
-      await _userRepositoryImpl.addScheduleInTargetUser(
-          targetUid, userSelf.selectScheduleId);
-      status = Status.success;
-    } on UnLoginException {
-      status = Status.unLoginError;
-    } on UserDocumentNotExistException {
-      status = UserSearchStatus.userDataNotExistError;
-    } on TimeoutException {
-      status = Status.timeoutError;
-    }
+    final userSelf =
+        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+    await fromCancelable(_scheduleRepositoryImpl.addParticipant(
+        userSelf.selectScheduleId, targetUid));
+    await fromCancelable(_userRepositoryImpl.addScheduleInUser(
+        targetUid, userSelf.selectScheduleId));
+    status = Status.success;
     notifyListeners();
+  }
+
+  void searchResultClear() {
+    _searchUsers.clear();
+    searchUsersSink.add(_searchUsers);
   }
 }

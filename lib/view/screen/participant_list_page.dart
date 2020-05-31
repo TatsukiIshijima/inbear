@@ -118,7 +118,9 @@ class AddParticipantButton extends StatelessWidget {
               // Navigator.pop で result に bool を入れて前の画面に戻したときに
               // result に値が入っているので、それで前の画面から戻ってきているか検知
               if (updateFlag != null && updateFlag) {
-                debugPrint('BackFromUserSearch');
+                // 画面立ち上げの時点で lastSnapshot は存在するので、次に処理が呼ばれる時は
+                // lastSnapshot の続きから取得するので、リセットの意味で lastSnapshot を null へ
+                viewModel.lastSnapshot = null;
                 await viewModel.executeFetchParticipantsStart();
               }
             },

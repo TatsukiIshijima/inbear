@@ -4,10 +4,9 @@ import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
-import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/user_search_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -21,11 +20,13 @@ class UserSearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return ChangeNotifierProvider(
-        create: (context) => UserSearchViewModel(
+    return BasePage(
+        viewModel: UserSearchViewModel(
             Provider.of<UserRepository>(context, listen: false),
             Provider.of<ScheduleRepository>(context, listen: false)),
-        child: Stack(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             if (query.isEmpty)
               Center(
@@ -34,7 +35,7 @@ class UserSearchPage extends StatelessWidget {
                 textAlign: TextAlign.center,
               )),
             if (query.isNotEmpty) ParticipantYetUserList(query, resource),
-            OverlapLoading(resource)
+            SearchResult()
           ],
         ));
   }
@@ -50,7 +51,7 @@ class ParticipantYetUserList extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserSearchViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await viewModel.searchUser(query);
+      await viewModel.executeSearchUser(query);
     });
     return StreamBuilder<List<UserEntity>>(
       initialData: null,
@@ -58,9 +59,7 @@ class ParticipantYetUserList extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return Center(
-              child: Loading(),
-            );
+            return Container();
           default:
             if (snapshot.hasError) {
               return CenteringErrorMessage(
@@ -85,7 +84,7 @@ class ParticipantYetUserList extends StatelessWidget {
                         snapshot.data[index].email,
                         showAddButton: true,
                         addButtonClick: () async => await viewModel
-                            .addParticipant(snapshot.data[index].uid),
+                            .executeAddParticipant(snapshot.data[index].uid),
                       ));
             }
         }
@@ -94,53 +93,18 @@ class ParticipantYetUserList extends StatelessWidget {
   }
 }
 
-class OverlapLoading extends StatelessWidget {
-  final AppLocalizations resource;
-
-  OverlapLoading(this.resource);
-
-  void _showErrorDialog(BuildContext context, String title, String message) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog<SingleButtonDialog>(
-          context: context,
-          builder: (context) => SingleButtonDialog(
-                title: title,
-                message: message,
-                positiveButtonTitle: resource.defaultPositiveButtonTitle,
-                onPressed: () => Navigator.pop(context),
-              ));
-    });
-  }
-
+class SearchResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<UserSearchViewModel>(context, listen: false);
     return Selector<UserSearchViewModel, String>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.loading:
-            return Container(
-              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-              child: Center(
-                child: Loading(),
-              ),
-            );
           case Status.success:
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              Navigator.pop(context, true);
+              viewModel.searchResultClear();
             });
-            break;
-          case Status.unLoginError:
-            _showErrorDialog(context, resource.addParticipantErrorTitle,
-                resource.unloginError);
-            break;
-          case UserSearchStatus.userDataNotExistError:
-            _showErrorDialog(context, resource.addParticipantErrorTitle,
-                resource.notExistUserDataError);
-            break;
-          case Status.timeoutError:
-            _showErrorDialog(context, resource.addParticipantErrorTitle,
-                resource.timeoutError);
             break;
         }
         return Container();
@@ -180,7 +144,8 @@ class UserSearchDelegate extends SearchDelegate<bool> {
           Icons.arrow_back,
           color: Colors.white,
         ),
-        onPressed: () => close(context, false),
+        // バックボタンで戻ったときに遷移先で更新させるために引数に true を指定
+        onPressed: () => close(context, true),
       );
 
   @override

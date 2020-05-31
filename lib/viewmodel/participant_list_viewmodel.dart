@@ -30,7 +30,7 @@ class ParticipantListViewModel extends BaseViewModel {
       _participantsStreamController.sink;
 
   bool isOwnerSchedule = false;
-  DocumentSnapshot _lastSnapshot;
+  DocumentSnapshot lastSnapshot;
   bool _isLoading = false;
 
   @override
@@ -92,7 +92,7 @@ class ParticipantListViewModel extends BaseViewModel {
 
   Future<void> _fetchParticipantsNext() async {
     try {
-      if (_participantsStreamController.isClosed || _lastSnapshot == null) {
+      if (_participantsStreamController.isClosed || lastSnapshot == null) {
         status = Status.none;
         notifyListeners();
         return;
@@ -115,7 +115,7 @@ class ParticipantListViewModel extends BaseViewModel {
       status = Status.none;
     } on ParticipantsEmptyException {
       // 追加読み込むするデータが空の場合なので、ストリームにエラーは流さない
-      _lastSnapshot = null;
+      lastSnapshot = null;
       status = Status.none;
     }
     notifyListeners();
@@ -132,19 +132,19 @@ class ParticipantListViewModel extends BaseViewModel {
 
   Future<List<UserEntity>> _getParticipantList(String selectScheduleId) async {
     List<DocumentSnapshot> participantDocuments;
-    if (_lastSnapshot == null) {
+    if (lastSnapshot == null) {
       participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
               .fetchParticipantsAtStart(selectScheduleId)))
           as List<DocumentSnapshot>;
     } else {
       participantDocuments = (await fromCancelable(_scheduleRepositoryImpl
-              .fetchParticipantsNext(selectScheduleId, _lastSnapshot)))
+              .fetchParticipantsNext(selectScheduleId, lastSnapshot)))
           as List<DocumentSnapshot>;
     }
     if (participantDocuments == null || participantDocuments.isEmpty) {
       throw ParticipantsEmptyException();
     }
-    _lastSnapshot = participantDocuments.last;
+    lastSnapshot = participantDocuments.last;
     return participantDocuments
         .map((doc) => UserEntity.fromMap(doc.data))
         .toList();
