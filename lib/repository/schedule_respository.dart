@@ -49,8 +49,8 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .document(selectScheduleId)
         .get()
         .timeout(Duration(seconds: 5),
-            onTimeout: () =>
-                throw TimeoutException('fetch schedule document time out.'));
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: fetchSchedule Timeout.'));
     if (!scheduleDocument.exists) {
       throw ScheduleDocumentNotExistException();
     }
@@ -61,18 +61,17 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   }
 
   @override
-  Future<void> postImages(
-      String selectScheduleId, List<ImageEntity> images) async {
-    final batch = _db.batch();
-    for (var image in images) {
-      final imageReference = _db
-          .collection(_scheduleCollection)
-          .document(selectScheduleId)
-          .collection(_imageSubCollection)
-          .document();
-      batch.setData(imageReference, image.toMap());
-    }
-    await batch.commit();
+  Future<void> postImage(
+      String selectScheduleId, ImageEntity imageEntity) async {
+    await _db
+        .collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_imageSubCollection)
+        .document()
+        .setData(imageEntity.toMap())
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: postImage Timeout.'));
   }
 
   @override
