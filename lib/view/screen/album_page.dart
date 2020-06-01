@@ -7,6 +7,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/image_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/loading.dart';
@@ -103,7 +104,9 @@ class AlbumGridView extends StatelessWidget {
                       crossAxisSpacing: 4,
                     ),
                     itemBuilder: (context, index) {
-                      return PhotoItem(snapshot.data[index].thumbnailUrl);
+                      return PhotoItem(snapshot.data[index].thumbnailUrl, () {
+                        Routes.goToPhotoPreview(context);
+                      });
                     });
               }
           }

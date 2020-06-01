@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class PhotoItem extends StatelessWidget {
   final String url;
+  final Function() function;
 
-  PhotoItem(this.url);
+  PhotoItem(this.url, this.function);
 
   static const _imageWidth = 300.0;
   static const _imageHeight = 300.0;
@@ -26,11 +27,14 @@ class PhotoItem extends StatelessWidget {
               child: Icon(Icons.image),
             );
           case LoadState.completed:
-            return ExtendedRawImage(
-              image: state.extendedImageInfo?.image,
-              width: _imageWidth,
-              height: _imageHeight,
-              fit: BoxFit.cover,
+            return GestureDetector(
+              child: ExtendedRawImage(
+                image: state.extendedImageInfo?.image,
+                width: _imageWidth,
+                height: _imageHeight,
+                fit: BoxFit.cover,
+              ),
+              onTap: () => function(),
             );
           case LoadState.failed:
             return Center(child: Icon(Icons.error));
