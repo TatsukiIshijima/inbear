@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
-import 'package:inbear_app/repository/ImageRepository.dart';
+import 'package:inbear_app/repository/image_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
@@ -47,7 +47,7 @@ class AlbumPageContent extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'AddPhoto',
-        onPressed: () async => await viewModel.uploadSelectImages(),
+        onPressed: () async => await viewModel.executeUploadSelectImages(),
         child: const Icon(Icons.add_photo_alternate),
       ),
     );

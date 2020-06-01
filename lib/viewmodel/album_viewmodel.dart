@@ -32,7 +32,7 @@ class AlbumViewModel extends BaseViewModel {
   AlbumViewModel(this._userRepositoryImpl, this._scheduleRepositoryImpl,
       this._imageRepositoryImpl);
 
-  static const _imageUrlKey = 'original_url';
+  static const _originalUrlKey = 'original_url';
   static const _thumbnailUrlKey = 'thumbnail_url';
 
   final _imagesStreamController = StreamController<List<ImageEntity>>();
@@ -67,10 +67,10 @@ class AlbumViewModel extends BaseViewModel {
   }
 
   Future<void> executeUploadSelectImages() async {
-    await executeFutureOperation(() => uploadSelectImages());
+    await executeFutureOperation(() => _uploadSelectImages());
   }
 
-  Future<void> uploadSelectImages() async {
+  Future<void> _uploadSelectImages() async {
     try {
       final user =
           await fromCancelable(_userRepositoryImpl.fetchUser()) as UserEntity;
@@ -91,17 +91,20 @@ class AlbumViewModel extends BaseViewModel {
         notifyListeners();
         return;
       }
-      final imageEntities = <ImageEntity>[];
+      // FIXME:バッチより処理がどうしても遅くなる
       for (final image in pickUpImages) {
         final uploadUrls = await fromCancelable(
                 _imageRepositoryImpl.uploadImage(user.selectScheduleId, image))
             as Map<String, String>;
-        final imageEntity = ImageEntity(uploadUrls[_imageUrlKey],
+        final imageEntity = ImageEntity(uploadUrls[_originalUrlKey],
             uploadUrls[_thumbnailUrlKey], user.uid, DateTime.now());
-        imageEntities.add(imageEntity);
+        await fromCancelable(
+            _scheduleRepositoryImpl.postImage(
+                user.selectScheduleId, imageEntity), onCancel: () {
+          _imageRepositoryImpl.deleteImage(uploadUrls[_originalUrlKey]);
+          _imageRepositoryImpl.deleteImage(uploadUrls[_thumbnailUrlKey]);
+        });
       }
-      await fromCancelable(_scheduleRepositoryImpl.postImages(
-          user.selectScheduleId, imageEntities));
       status = AlbumStatus.uploadImageSuccess;
     } on NoSelectScheduleException {
       status = AlbumStatus.noSelectScheduleError;
