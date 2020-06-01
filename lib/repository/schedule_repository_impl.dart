@@ -7,7 +7,7 @@ abstract class ScheduleRepositoryImpl {
   Future<String> registerSchedule(ScheduleEntity schedule, UserEntity user,
       {bool isUpdate = false});
   Future<ScheduleEntity> fetchSchedule(String selectScheduleId);
-  Future<void> postImages(String selectScheduleId, List<ImageEntity> images);
+  Future<void> postImage(String selectScheduleId, ImageEntity imageEntity);
   Future<List<DocumentSnapshot>> fetchImagesAtStart(String selectScheduleId);
   Future<List<DocumentSnapshot>> fetchImagesNext(
       String selectScheduleId, DocumentSnapshot startSnapshot);
