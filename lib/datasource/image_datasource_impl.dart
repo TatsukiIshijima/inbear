@@ -4,4 +4,6 @@ abstract class ImageDataSourceImpl {
   Future<Map<String, String>> uploadImage(String documentId, Asset asset);
 
   Future<void> downloadImage();
+
+  Future<void> deleteImage(String imageUrl);
 }

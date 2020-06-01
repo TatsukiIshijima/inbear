@@ -56,4 +56,10 @@ class ImageDataSource implements ImageDataSourceImpl {
       throw UploadImageException();
     }
   }
+
+  @override
+  Future<void> deleteImage(String imageUrl) async {
+    final storageRef = await _storage.getReferenceFromUrl(imageUrl);
+    await storageRef.delete();
+  }
 }

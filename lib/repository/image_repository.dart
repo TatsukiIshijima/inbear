@@ -14,4 +14,9 @@ class ImageRepository implements ImageRepositoryImpl {
       String documentId, Asset asset) async {
     return await _imageDataSourceImpl.uploadImage(documentId, asset);
   }
+
+  @override
+  Future<void> deleteImage(String imageUrl) async {
+    await _imageDataSourceImpl.deleteImage(imageUrl);
+  }
 }
