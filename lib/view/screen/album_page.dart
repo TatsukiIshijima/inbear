@@ -2,52 +2,47 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/ImageRepository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/view/screen/base_page.dart';
+import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
+import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../status.dart';
-
 class AlbumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final resource = AppLocalizations.of(context);
-    return ChangeNotifierProvider(
-      create: (context) => AlbumViewModel(
+    return BasePage(
+      viewModel: AlbumViewModel(
         Provider.of<UserRepository>(context, listen: false),
         Provider.of<ScheduleRepository>(context, listen: false),
         Provider.of<ImageRepository>(context, listen: false),
       ),
-      child: AlbumPageContent(resource),
+      child: AlbumPageContent(),
     );
   }
 }
 
 class AlbumPageContent extends StatelessWidget {
-  final AppLocalizations resource;
-
-  AlbumPageContent(this.resource);
-
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       viewModel.setScrollListener();
-      await viewModel.fetchImageAtStart();
+      await viewModel.executeFetchImageAtStart();
     });
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          AlbumGridView(resource, viewModel),
-          OverlapLoading(resource, viewModel),
+          AlbumGridView(),
+          UploadResult(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,62 +55,47 @@ class AlbumPageContent extends StatelessWidget {
 }
 
 class AlbumGridView extends StatelessWidget {
-  final AppLocalizations resource;
-  final AlbumViewModel albumViewModel;
-
-  AlbumGridView(this.resource, this.albumViewModel);
-
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
-  Widget _errorText(String errorMessage) {
-    return Text(
-      errorMessage,
-      textAlign: TextAlign.center,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
+    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     return RefreshIndicator(
       key: _refreshIndicatorKey,
-      onRefresh: () async => albumViewModel.fetchImageAtStart(),
+      onRefresh: () async => viewModel.executeFetchImageAtStart(),
       child: StreamBuilder<List<ImageEntity>>(
         initialData: null,
-        stream: albumViewModel.imagesStream,
+        stream: viewModel.imagesStream,
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Center(child: Loading());
             default:
               if (snapshot.hasError) {
-                if (snapshot.error is UnLoginException) {
-                  return Center(child: _errorText(resource.unloginError));
-                } else if (snapshot.error is UserDocumentNotExistException) {
-                  return Center(
-                      child: _errorText(resource.notExistUserDataError));
-                } else if (snapshot.error is NoSelectScheduleException) {
-                  return Center(
-                      child: _errorText(resource.noSelectScheduleError));
-                } else if (snapshot.error is NotRegisterAnyImagesException) {
-                  return Center(
-                    child: _errorText(resource.albumNotRegisterMessage),
-                  );
-                } else if (snapshot.error is TimeoutException) {
-                  return Center(
-                    child: _errorText(resource.timeoutError),
+                if (snapshot.error is TimeoutException) {
+                  return ReloadButton(
+                    onPressed: () async =>
+                        await viewModel.executeFetchImageAtStart(),
                   );
                 } else {
-                  return Center(child: _errorText(resource.generalError));
+                  return CenteringErrorMessage(
+                    resource,
+                    exception: snapshot.error,
+                  );
                 }
               } else if (!snapshot.hasData) {
-                return Center(
-                    child: _errorText(resource.albumNotRegisterMessage));
+                return CenteringErrorMessage(resource,
+                    message: resource.albumNotRegisterMessage);
+              } else if (snapshot.data.isEmpty) {
+                return CenteringErrorMessage(resource,
+                    message: resource.albumNotRegisterMessage);
               } else {
                 return GridView.builder(
                     padding: const EdgeInsets.all(4),
                     itemCount: snapshot.data.length,
-                    controller: albumViewModel.scrollController,
+                    controller: viewModel.scrollController,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
@@ -133,13 +113,9 @@ class AlbumGridView extends StatelessWidget {
   }
 }
 
-class OverlapLoading extends StatelessWidget {
-  final AppLocalizations resource;
-  final AlbumViewModel albumViewModel;
-
-  OverlapLoading(this.resource, this.albumViewModel);
-
+class UploadResult extends StatelessWidget {
   void _showErrorDialog(BuildContext context, String title, String message) {
+    final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showDialog<SingleButtonDialog>(
           context: context,
@@ -154,24 +130,16 @@ class OverlapLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
+    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     return Selector<AlbumViewModel, String>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
+        debugPrint('Album Status: $status');
         switch (status) {
-          case Status.loading:
-            return Container(
-              decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
-              child: Center(
-                child: Loading(),
-              ),
-            );
-          case Status.unLoginError:
-            _showErrorDialog(
-                context, resource.uploadImageErrorTitle, resource.unloginError);
-            break;
-          case AlbumStatus.userDataNotExistError:
-            _showErrorDialog(context, resource.uploadImageErrorTitle,
-                resource.notExistUserDataError);
+          case AlbumStatus.uploadImageSuccess:
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) async =>
+                await viewModel.executeFetchImageAtStart());
             break;
           case AlbumStatus.noSelectScheduleError:
             _showErrorDialog(context, resource.uploadImageErrorTitle,
