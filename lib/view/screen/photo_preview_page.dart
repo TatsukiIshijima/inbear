@@ -1,7 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PhotoPreviewPage extends StatelessWidget {
+  final DocumentSnapshot documentSnapshot;
+
+  PhotoPreviewPage(this.documentSnapshot);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +15,7 @@ class PhotoPreviewPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Center(
-        child: Text('写真プレビュー'),
+        child: Text('${documentSnapshot.documentID}'),
       ),
     );
   }

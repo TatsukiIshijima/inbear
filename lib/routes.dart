@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
@@ -76,8 +77,11 @@ class Routes {
         (_) => false);
   }
 
-  static void goToPhotoPreview(BuildContext context) {
+  static void goToPhotoPreview(
+      BuildContext context, DocumentSnapshot imageDocument) {
     Navigator.push<MaterialPageRoute>(
-        context, MaterialPageRoute(builder: (context) => PhotoPreviewPage()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => PhotoPreviewPage(imageDocument)));
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
@@ -66,7 +67,9 @@ class AlbumGridView extends StatelessWidget {
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: () async => viewModel.executeFetchImageAtStart(),
-      child: StreamBuilder<List<ImageEntity>>(
+      // プレビュー画面でPageViewを使用する場合、documentId が使えた方が
+      // 都合が良いので、あえて documentSnapshot 形式で流している
+      child: StreamBuilder<List<DocumentSnapshot>>(
         initialData: null,
         stream: viewModel.imagesStream,
         builder: (context, snapshot) {
@@ -104,8 +107,10 @@ class AlbumGridView extends StatelessWidget {
                       crossAxisSpacing: 4,
                     ),
                     itemBuilder: (context, index) {
-                      return PhotoItem(snapshot.data[index].thumbnailUrl, () {
-                        Routes.goToPhotoPreview(context);
+                      final imageEntity =
+                          ImageEntity.fromMap(snapshot.data[index].data);
+                      return PhotoItem(imageEntity.thumbnailUrl, () {
+                        Routes.goToPhotoPreview(context, snapshot.data[index]);
                       });
                     });
               }
