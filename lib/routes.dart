@@ -77,11 +77,12 @@ class Routes {
         (_) => false);
   }
 
-  static void goToPhotoPreview(
-      BuildContext context, DocumentSnapshot imageDocument) {
+  static void goToPhotoPreview(BuildContext context,
+      List<DocumentSnapshot> imageDocuments, int currentIndex) {
     Navigator.push<MaterialPageRoute>(
         context,
         MaterialPageRoute(
-            builder: (context) => PhotoPreviewPage(imageDocument)));
+            builder: (context) =>
+                PhotoPreviewPage(imageDocuments, currentIndex)));
   }
 }

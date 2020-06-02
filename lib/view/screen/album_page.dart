@@ -110,7 +110,7 @@ class AlbumGridView extends StatelessWidget {
                       final imageEntity =
                           ImageEntity.fromMap(snapshot.data[index].data);
                       return PhotoItem(imageEntity.thumbnailUrl, () {
-                        Routes.goToPhotoPreview(context, snapshot.data[index]);
+                        Routes.goToPhotoPreview(context, snapshot.data, index);
                       });
                     });
               }
