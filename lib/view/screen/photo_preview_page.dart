@@ -3,6 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
+import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/viewmodel/photo_preview_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,8 @@ class PhotoPreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      viewModel: PhotoPreviewViewModel(),
+      viewModel: PhotoPreviewViewModel(
+          Provider.of<UserRepository>(context, listen: false)),
       child: PhotoPreviewPageContent(documentSnapshots, currentIndex),
     );
   }
@@ -36,6 +38,30 @@ class PhotoPreviewPageContent extends StatelessWidget {
         appBar: AppBar(
           title: Text('写真'),
           centerTitle: true,
+          actions: <Widget>[
+            Selector<PhotoPreviewViewModel, int>(
+              selector: (context, viewModel) => viewModel.currentIndex,
+              builder: (context, currentIndex, child) {
+                return FutureBuilder<bool>(
+                  initialData: false,
+                  future: viewModel.checkPoster(ImageEntity.fromMap(
+                      documentSnapshots[currentIndex].data)),
+                  builder: (context, snapshot) {
+                    if (snapshot.data) {
+                      return IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          // TODO:削除処理
+                        },
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                );
+              },
+            )
+          ],
         ),
         body: Selector<PhotoPreviewViewModel, int>(
           selector: (context, viewModel) => viewModel.currentIndex,
