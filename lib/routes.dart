@@ -77,9 +77,9 @@ class Routes {
         (_) => false);
   }
 
-  static void goToPhotoPreview(BuildContext context,
-      List<DocumentSnapshot> imageDocuments, int currentIndex) {
-    Navigator.push<MaterialPageRoute>(
+  static Future<bool> goToPhotoPreview(BuildContext context,
+      List<DocumentSnapshot> imageDocuments, int currentIndex) async {
+    return await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>

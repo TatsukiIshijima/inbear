@@ -109,8 +109,12 @@ class AlbumGridView extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final imageEntity =
                           ImageEntity.fromMap(snapshot.data[index].data);
-                      return PhotoItem(imageEntity.thumbnailUrl, () {
-                        Routes.goToPhotoPreview(context, snapshot.data, index);
+                      return PhotoItem(imageEntity.thumbnailUrl, () async {
+                        final result = await Routes.goToPhotoPreview(
+                            context, snapshot.data, index);
+                        if (result != null && result) {
+                          await viewModel.executeFetchImageAtStart();
+                        }
                       });
                     });
               }
