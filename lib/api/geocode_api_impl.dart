@@ -1,3 +1,3 @@
-class GeocodeApiImpl {
-  Future<String> convertAddressToGeoCode(String address) {}
+abstract class GeocodeApiImpl {
+  Future<String> convertAddressToGeoCode(String address);
 }
