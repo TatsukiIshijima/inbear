@@ -9,7 +9,7 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
-import 'package:inbear_app/view/widget/closed_question_dialog.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/viewmodel/photo_preview_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -41,17 +41,15 @@ class PhotoPreviewPageContent extends StatelessWidget {
       BuildContext context, Future<void> Function() function) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showDialog<ClosedQuestionDialog>(
+      showDialog<DefaultDialog>(
           context: context,
-          builder: (context) => ClosedQuestionDialog(
-                title: resource.photoPreviewDeleteConfirmTitle,
-                message: resource.photoPreviewDeleteConfirmMessage,
+          builder: (context) => DefaultDialog(
+                resource.photoPreviewDeleteConfirmTitle,
+                resource.photoPreviewDeleteConfirmMessage,
                 positiveButtonTitle: resource.defaultPositiveButtonTitle,
                 negativeButtonTitle: resource.defaultNegativeButtonTitle,
-                onPositiveButtonPressed: () async {
-                  Navigator.pop(context);
-                  await function();
-                },
+                onPositiveButtonPressed: () async => await function(),
+                onNegativeButtonPressed: () {},
               ));
     });
   }

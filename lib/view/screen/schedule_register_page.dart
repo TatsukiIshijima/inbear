@@ -8,10 +8,10 @@ import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
-import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -256,13 +256,13 @@ class RegisterAlertDialog extends StatelessWidget {
   void _showRegisterError(BuildContext context, String title, String message) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showDialog<SingleButtonDialog>(
+      showDialog<DefaultDialog>(
           context: context,
-          builder: (context) => SingleButtonDialog(
-                title: title,
-                message: message,
+          builder: (context) => DefaultDialog(
+                title,
+                message,
                 positiveButtonTitle: resource.defaultPositiveButtonTitle,
-                onPressed: () => Navigator.pop(context),
+                onPositiveButtonPressed: () {},
               ));
     });
   }

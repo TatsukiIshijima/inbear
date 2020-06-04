@@ -11,10 +11,10 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
-import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -129,13 +129,13 @@ class UploadResult extends StatelessWidget {
   void _showErrorDialog(BuildContext context, String title, String message) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showDialog<SingleButtonDialog>(
+      showDialog<DefaultDialog>(
           context: context,
-          builder: (context) => SingleButtonDialog(
-                title: title,
-                message: message,
+          builder: (context) => DefaultDialog(
+                title,
+                message,
                 positiveButtonTitle: resource.defaultPositiveButtonTitle,
-                onPressed: () => Navigator.pop(context),
+                onPositiveButtonPressed: () {},
               ));
     });
   }
