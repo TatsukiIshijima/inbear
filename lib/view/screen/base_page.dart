@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/loading.dart';
-import 'package:inbear_app/view/widget/single_button_dialog.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -32,13 +32,13 @@ class OverlayLoading<T extends BaseViewModel> extends StatelessWidget {
   ) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      showDialog<SingleButtonDialog>(
+      showDialog<DefaultDialog>(
           context: context,
-          builder: (context) => SingleButtonDialog(
-                title: resource.generalErrorTitle,
-                message: message,
+          builder: (context) => DefaultDialog(
+                resource.generalErrorTitle,
+                message,
                 positiveButtonTitle: resource.defaultPositiveButtonTitle,
-                onPressed: () => Navigator.pop(context),
+                onPositiveButtonPressed: () {},
               ));
     });
   }
