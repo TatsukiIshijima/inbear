@@ -35,12 +35,14 @@ class AlbumViewModel extends BaseViewModel {
   static const _originalUrlKey = 'original_url';
   static const _thumbnailUrlKey = 'thumbnail_url';
 
-  final _imagesStreamController = StreamController<List<ImageEntity>>();
-  final List<ImageEntity> _images = <ImageEntity>[];
+  final _imagesStreamController = StreamController<List<DocumentSnapshot>>();
+  final List<DocumentSnapshot> _images = <DocumentSnapshot>[];
   final scrollController = ScrollController();
 
-  Stream<List<ImageEntity>> get imagesStream => _imagesStreamController.stream;
-  StreamSink<List<ImageEntity>> get imagesSink => _imagesStreamController.sink;
+  Stream<List<DocumentSnapshot>> get imagesStream =>
+      _imagesStreamController.stream;
+  StreamSink<List<DocumentSnapshot>> get imagesSink =>
+      _imagesStreamController.sink;
 
   DocumentSnapshot _lastSnapshot;
   bool _isLoading = false;
@@ -143,10 +145,8 @@ class AlbumViewModel extends BaseViewModel {
       if (imageDocuments.isEmpty) {
         throw NotRegisterAnyImagesException();
       }
-      final imageEntities =
-          imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
       _images.clear();
-      _images.addAll(imageEntities);
+      _images.addAll(imageDocuments);
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
       status = AlbumStatus.fetchImagesSuccess;
@@ -188,9 +188,7 @@ class AlbumViewModel extends BaseViewModel {
         notifyListeners();
         return;
       }
-      final imageEntities =
-          imageDocuments.map((doc) => ImageEntity.fromMap(doc.data)).toList();
-      _images.addAll(imageEntities);
+      _images.addAll(imageDocuments);
       imagesSink.add(_images);
       _lastSnapshot = imageDocuments.last;
       status = AlbumStatus.fetchImagesSuccess;

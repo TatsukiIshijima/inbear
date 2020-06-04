@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
@@ -7,6 +8,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/image_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/loading.dart';
@@ -65,7 +67,9 @@ class AlbumGridView extends StatelessWidget {
     return RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: () async => viewModel.executeFetchImageAtStart(),
-      child: StreamBuilder<List<ImageEntity>>(
+      // プレビュー画面でPageViewを使用する場合、documentId が使えた方が
+      // 都合が良いので、あえて documentSnapshot 形式で流している
+      child: StreamBuilder<List<DocumentSnapshot>>(
         initialData: null,
         stream: viewModel.imagesStream,
         builder: (context, snapshot) {
@@ -103,7 +107,15 @@ class AlbumGridView extends StatelessWidget {
                       crossAxisSpacing: 4,
                     ),
                     itemBuilder: (context, index) {
-                      return PhotoItem(snapshot.data[index].thumbnailUrl);
+                      final imageEntity =
+                          ImageEntity.fromMap(snapshot.data[index].data);
+                      return PhotoItem(imageEntity.thumbnailUrl, () async {
+                        final result = await Routes.goToPhotoPreview(
+                            context, snapshot.data, index);
+                        if (result != null && result) {
+                          await viewModel.executeFetchImageAtStart();
+                        }
+                      });
                     });
               }
           }

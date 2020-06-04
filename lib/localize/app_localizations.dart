@@ -40,6 +40,13 @@ class AppLocalizations {
   // 画像一覧画面
   static const _albumNotRegisterKey = 'album_not_register';
 
+  // 画像プレビュー画面
+  static const _photoPreviewTitleKey = 'photo_preview_title';
+  static const _photoPreviewDeleteConfirmTitleKey =
+      'photo_preview_delete_confirm_title';
+  static const _photoPreviewDeleteConfirmMessageKey =
+      'photo_preview_delete_confirm_message';
+
   // スケジュール確認画面
   static const _scheduleGroomTextKey = 'schedule_groom_text';
   static const _scheduleBrideTextKey = 'schedule_bride_text';
@@ -172,6 +179,11 @@ class AppLocalizations {
       // 画像一覧画面
       _albumNotRegisterKey: '画像が登録されていません。\n「+」ボタンより画像を追加してみましょう。',
 
+      // 画像プレビュー画面
+      _photoPreviewTitleKey: '写真',
+      _photoPreviewDeleteConfirmTitleKey: '確認',
+      _photoPreviewDeleteConfirmMessageKey: 'この写真を削除します。よろしいですか？',
+
       // スケジュール確認画面
       _scheduleGroomTextKey: '新郎',
       _scheduleBrideTextKey: '新婦',
@@ -283,6 +295,12 @@ class AppLocalizations {
   String get settingTitle => _getText(_settingTitleKey);
 
   String get albumNotRegisterMessage => _getText(_albumNotRegisterKey);
+
+  String get photoPreviewTitle => _getText(_photoPreviewTitleKey);
+  String get photoPreviewDeleteConfirmTitle =>
+      _getText(_photoPreviewDeleteConfirmTitleKey);
+  String get photoPreviewDeleteConfirmMessage =>
+      _getText(_photoPreviewDeleteConfirmMessageKey);
 
   String get scheduleGroomText => _getText(_scheduleGroomTextKey);
   String get scheduleBrideText => _getText(_scheduleBrideTextKey);

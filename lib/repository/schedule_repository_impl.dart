@@ -8,6 +8,7 @@ abstract class ScheduleRepositoryImpl {
       {bool isUpdate = false});
   Future<ScheduleEntity> fetchSchedule(String selectScheduleId);
   Future<void> postImage(String selectScheduleId, ImageEntity imageEntity);
+  Future<void> deleteImage(String selectScheduleId, String imageDocumentId);
   Future<List<DocumentSnapshot>> fetchImagesAtStart(String selectScheduleId);
   Future<List<DocumentSnapshot>> fetchImagesNext(
       String selectScheduleId, DocumentSnapshot startSnapshot);

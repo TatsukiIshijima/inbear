@@ -75,6 +75,20 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
   }
 
   @override
+  Future<void> deleteImage(
+      String selectScheduleId, String imageDocumentId) async {
+    await _db
+        .collection(_scheduleCollection)
+        .document(selectScheduleId)
+        .collection(_imageSubCollection)
+        .document(imageDocumentId)
+        .delete()
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: deleteImage Timeout.'));
+  }
+
+  @override
   Future<List<DocumentSnapshot>> fetchImagesAtStart(
       String selectScheduleId) async {
     return (await _db
