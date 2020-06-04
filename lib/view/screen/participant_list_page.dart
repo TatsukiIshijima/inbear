@@ -7,7 +7,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
-import 'package:inbear_app/view/widget/closed_question_dialog.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -46,17 +46,15 @@ class ParticipantList extends StatelessWidget {
   void _showConfirmDialog(
       BuildContext context, Future<void> Function() deleteFunc) {
     final resource = AppLocalizations.of(context);
-    showDialog<ClosedQuestionDialog>(
+    showDialog<DefaultDialog>(
         context: context,
-        builder: (context) => ClosedQuestionDialog(
-              title: resource.deleteParticipantTitle,
-              message: resource.deleteParticipantMessage,
+        builder: (context) => DefaultDialog(
+              resource.deleteParticipantTitle,
+              resource.deleteParticipantMessage,
               positiveButtonTitle: resource.defaultPositiveButtonTitle,
               negativeButtonTitle: resource.defaultNegativeButtonTitle,
-              onPositiveButtonPressed: () async {
-                Navigator.pop(context);
-                await deleteFunc();
-              },
+              onPositiveButtonPressed: () async => await deleteFunc(),
+              onNegativeButtonPressed: () {},
             ));
   }
 

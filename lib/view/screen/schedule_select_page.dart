@@ -6,7 +6,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
-import 'package:inbear_app/view/widget/closed_question_dialog.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/schedule_select_item.dart';
 import 'package:inbear_app/viewmodel/schedule_select_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -60,17 +60,16 @@ class ScheduleSelectPageBody extends StatelessWidget {
 class ScheduleList extends StatelessWidget {
   void _showConfirmDialog(BuildContext context, AppLocalizations resource,
       Future<dynamic> Function() future) {
-    showDialog<ClosedQuestionDialog>(
+    showDialog<DefaultDialog>(
         context: context,
-        builder: (context) => ClosedQuestionDialog(
-            title: resource.scheduleSelectConfirmTitle,
-            message: resource.scheduleSelectConfirmMessage,
-            positiveButtonTitle: resource.defaultPositiveButtonTitle,
-            negativeButtonTitle: resource.defaultNegativeButtonTitle,
-            onPositiveButtonPressed: () async {
-              Navigator.pop(context);
-              await future();
-            }));
+        builder: (context) => DefaultDialog(
+              resource.scheduleSelectConfirmTitle,
+              resource.scheduleSelectConfirmMessage,
+              positiveButtonTitle: resource.defaultPositiveButtonTitle,
+              negativeButtonTitle: resource.defaultNegativeButtonTitle,
+              onPositiveButtonPressed: () async => await future(),
+              onNegativeButtonPressed: () {},
+            ));
   }
 
   @override
