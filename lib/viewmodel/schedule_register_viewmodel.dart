@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:inbear_app/entity/address_entity.dart';
-import 'package:inbear_app/entity/geocode_entity.dart';
+import 'package:inbear_app/api/response/address_response.dart';
+import 'package:inbear_app/api/response/geocode_response.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
@@ -67,8 +67,8 @@ class ScheduleRegisterViewModel extends BaseViewModel {
       await executeFutureOperation(() => _fetchAddress());
 
   Future<void> _fetchAddress() async {
-    final result = (await fromCancelable(_addressRepositoryImpl
-        .fetchAddress(postalCodeTextEditingController.text))) as AddressEntity;
+    final result = (await fromCancelable(_addressRepositoryImpl.fetchAddress(
+        postalCodeTextEditingController.text))) as AddressResponse;
     if (result == null) {
       status = ScheduleRegisterStatus.invalidPostalCodeError;
       notifyListeners();

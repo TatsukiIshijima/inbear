@@ -1,19 +1,19 @@
 // Geocodeing API
 // https://developers.google.com/maps/documentation/geocoding/intro#GeocodingRequests
-class GeoCodeEntity {
+class GeoCodeResponse {
   final List<GeometryEntity> geometries;
 
-  GeoCodeEntity(this.geometries);
+  GeoCodeResponse(this.geometries);
 
   static const _resultsKey = 'results';
 
-  factory GeoCodeEntity.fromJson(Map<String, dynamic> json) {
+  factory GeoCodeResponse.fromJson(Map<String, dynamic> json) {
     final results = json[_resultsKey] as List<Object>;
     final geometryList = results
         .map(
             (result) => GeometryEntity.fromJson(result as Map<String, dynamic>))
         .toList();
-    return GeoCodeEntity(geometryList);
+    return GeoCodeResponse(geometryList);
   }
 }
 

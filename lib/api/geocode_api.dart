@@ -8,11 +8,11 @@ class GeoCodeApi extends Api implements GeocodeApiImpl {
 
   @override
   Future<String> convertAddressToGeoCode(String address) async {
-    var uri = 'https://maps.googleapis.com/maps/api/geocode/json'
+    final uri = 'https://maps.googleapis.com/maps/api/geocode/json'
         '?address=$address'
         '&language=ja'
         '&region=jp'
-        '&key=${this.apiKey}';
+        '&key=$this.apiKey';
     return await get(uri);
   }
 }
