@@ -291,6 +291,18 @@ class RegisterAlertDialog extends StatelessWidget {
             _showRegisterError(context, resource.generalErrorTitle,
                 resource.unableSearchAddressError);
             break;
+          case ScheduleRegisterStatus.overDailyLimitError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.overDailyLimitError);
+            break;
+          case ScheduleRegisterStatus.requestDeniedError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.requestDeniedError);
+            break;
+          case ScheduleRegisterStatus.invalidRequestError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.invalidRequestError);
+            break;
         }
         return Container();
       },

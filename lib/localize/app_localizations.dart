@@ -119,6 +119,9 @@ class AppLocalizations {
       'invalid_postal_code_error_message';
   static const _unableSearchAddressErrorMessageKey =
       'unable_search_address_error_message';
+  static const _overDailyLimitErrorKey = 'over_daily_limit_error_message';
+  static const _requestDeniedErrorKey = 'request_denied_error_message';
+  static const _invalidRequestErrorKey = 'invalid_request_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
   static const _notExistUserDataErrorMessageKey =
       'not_exist_user_data_error_message';
@@ -245,6 +248,9 @@ class AppLocalizations {
       _invalidPostalCodeErrorMessageKey: '無効な郵便番号です。',
       _unableSearchAddressErrorMessageKey:
           '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
+      _overDailyLimitErrorKey: '検索回数が上限に達しています。',
+      _requestDeniedErrorKey: 'リクエストが拒否されました。',
+      _invalidRequestErrorKey: '無効なリクエストです。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
       _notExistUserDataErrorMessageKey: 'ユーザーデータが存在しません。',
       _notExistScheduleDataErrorMessageKey: 'スケジュールデータが存在しません。',
@@ -373,6 +379,9 @@ class AppLocalizations {
       _getText(_invalidPostalCodeErrorMessageKey);
   String get unableSearchAddressError =>
       _getText(_unableSearchAddressErrorMessageKey);
+  String get overDailyLimitError => _getText(_overDailyLimitErrorKey);
+  String get requestDeniedError => _getText(_requestDeniedErrorKey);
+  String get invalidRequestError => _getText(_invalidRequestErrorKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
   String get notExistUserDataError =>
       _getText(_notExistUserDataErrorMessageKey);
