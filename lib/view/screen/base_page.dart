@@ -69,6 +69,18 @@ class OverlayLoading<T extends BaseViewModel> extends StatelessWidget {
           case Status.timeoutError:
             _showErrorDialog(context, resource.timeoutError);
             break;
+          case Status.badRequestError:
+            _showErrorDialog(context, resource.badRequestError);
+            break;
+          case Status.notFoundError:
+            _showErrorDialog(context, resource.notFoundError);
+            break;
+          case Status.methodNotAllowError:
+            _showErrorDialog(context, resource.methodNotAllowError);
+            break;
+          case Status.tooManyRequestsError:
+            _showErrorDialog(context, resource.tooManyRequestsError);
+            break;
           case Status.httpError:
             _showErrorDialog(context, resource.httpError);
             break;

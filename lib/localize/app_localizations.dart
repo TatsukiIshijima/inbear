@@ -136,6 +136,9 @@ class AppLocalizations {
   static const _photoPermissionPermanentlyDeniedErrorMessageKey =
       'photo_permission_permanently_denied_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
+  static const _badRequestErrorMessageKey = 'bad_request_error';
+  static const _notFoundErrorMessageKey = 'not_found_error';
+  static const _methodNotAllowErrorMessageKey = 'method_not_allow_message';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
   static const _networkErrorMessageKey = 'network_error';
@@ -256,6 +259,9 @@ class AppLocalizations {
       _photoPermissionPermanentlyDeniedErrorMessageKey:
           'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
       _timeoutErrorMessageKey: 'タイムアウトしました。\nしばらくしてから、もう一度お試し下さい。',
+      _badRequestErrorMessageKey: '通信に失敗しました。\nエラーコード:401',
+      _notFoundErrorMessageKey: '通信に失敗しました。\nエラーコード:404',
+      _methodNotAllowErrorMessageKey: '通信に失敗しました。\nエラーコード:405',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _networkErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -384,6 +390,9 @@ class AppLocalizations {
   String get photoPermissionPermanentlyDeniedError =>
       _getText(_photoPermissionPermanentlyDeniedErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
+  String get badRequestError => _getText(_badRequestErrorMessageKey);
+  String get notFoundError => _getText(_notFoundErrorMessageKey);
+  String get methodNotAllowError => _getText(_methodNotAllowErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
   String get networkError => _getText(_networkErrorMessageKey);
