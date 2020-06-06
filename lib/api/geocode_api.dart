@@ -12,7 +12,7 @@ class GeoCodeApi extends Api implements GeocodeApiImpl {
         '?address=$address'
         '&language=ja'
         '&region=jp'
-        '&key=$this.apiKey';
+        '&key=$apiKey';
     return await get(uri);
   }
 }
