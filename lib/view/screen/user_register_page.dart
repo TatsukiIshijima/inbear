@@ -69,49 +69,46 @@ class UserRegisterForm extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Selector<UserRegisterViewModel, TextEditingController>(
-              selector: (context, viewModel) =>
-                  viewModel.nameTextEditingController,
-              builder: (context, textEditingController, child) => InputField(
-                resource.nameLabelText,
-                textEditingController,
-                textInputType: TextInputType.text,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: _nameFocus,
-                onFieldSubmitted: (text) =>
-                    FocusScope.of(context).requestFocus(_emailFocus),
-              ),
+            InputField(
+              resource.nameLabelText,
+              viewModel.nameTextEditingController,
+              maxLength: 24,
+              textInputType: TextInputType.text,
+              validator: (text) => text.isEmpty ? resource.emptyError : null,
+              focusNode: _nameFocus,
+              onFieldSubmitted: (text) =>
+                  FocusScope.of(context).requestFocus(_emailFocus),
             ),
             const SizedBox(
               height: 30,
             ),
-            Selector<UserRegisterViewModel, TextEditingController>(
-              selector: (context, viewModel) =>
-                  viewModel.emailTextEditingController,
-              builder: (context, textEditingController, child) => InputField(
-                resource.emailLabelText,
-                textEditingController,
-                textInputType: TextInputType.emailAddress,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: _emailFocus,
-                onFieldSubmitted: (text) =>
-                    FocusScope.of(context).requestFocus(_passwordFocus),
-              ),
+            InputField(
+              resource.emailLabelText,
+              viewModel.emailTextEditingController,
+              maxLength: 32,
+              textInputType: TextInputType.emailAddress,
+              validator: (text) => text.isEmpty ? resource.emptyError : null,
+              focusNode: _emailFocus,
+              onFieldSubmitted: (text) =>
+                  FocusScope.of(context).requestFocus(_passwordFocus),
             ),
             const SizedBox(
               height: 30,
             ),
-            Selector<UserRegisterViewModel, TextEditingController>(
-              selector: (context, viewModel) =>
-                  viewModel.passwordTextEditingController,
-              builder: (context, textEditingController, child) => InputField(
+            Selector<UserRegisterViewModel, bool>(
+              selector: (context, viewModel) => viewModel.isVisiblePassword,
+              builder: (context, isVisible, child) => InputField(
                 resource.passwordLabelText,
-                textEditingController,
-                obscureText: true,
+                viewModel.passwordTextEditingController,
+                maxLength: 32,
+                obscureText: !isVisible,
                 textInputType: TextInputType.visiblePassword,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _passwordFocus,
                 onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                isPasswordInput: true,
+                isVisiblePassword: isVisible,
+                onChangeVisible: () => viewModel.changeVisible(),
               ),
             ),
             const SizedBox(

@@ -16,6 +16,8 @@ class UserRegisterViewModel extends BaseViewModel {
   final TextEditingController passwordTextEditingController =
       TextEditingController();
 
+  bool isVisiblePassword = false;
+
   UserRegisterViewModel(this._userRepository);
 
   Future<void> executeSignUp() async {
@@ -43,6 +45,11 @@ class UserRegisterViewModel extends BaseViewModel {
     } on TooManyRequestException {
       status = AuthStatus.tooManyRequestsError;
     }
+    notifyListeners();
+  }
+
+  void changeVisible() {
+    isVisiblePassword = !isVisiblePassword;
     notifyListeners();
   }
 
