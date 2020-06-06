@@ -1,7 +1,7 @@
-import 'package:inbear_app/entity/address_entity.dart';
-import 'package:inbear_app/entity/geocode_entity.dart';
+import 'package:inbear_app/api/response/address_response.dart';
+import 'package:inbear_app/api/response/geocode_response.dart';
 
-class AddressRepositoryImpl {
-  Future<AddressEntity> fetchAddress(String zipCode) {}
-  Future<LocationEntity> convertToLocation(String address) {}
+abstract class AddressRepositoryImpl {
+  Future<AddressResponse> fetchAddress(String zipCode);
+  Future<LocationEntity> convertToLocation(String address);
 }

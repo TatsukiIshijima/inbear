@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:inbear_app/entity/address_entity.dart';
-import 'package:inbear_app/entity/geocode_entity.dart';
+import 'package:inbear_app/api/response/address_response.dart';
+import 'package:inbear_app/api/response/geocode_response.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/exception/api/api_exception.dart';
 import 'package:inbear_app/repository/address_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -20,6 +21,9 @@ class ScheduleRegisterStatus extends Status {
   static const unSelectDateError = 'UN_SELECT_DATE_ERROR';
   static const invalidPostalCodeError = 'INVALID_POSTAL_CODE_ERROR';
   static const unableSearchAddressError = 'UNABLE_SEARCH_ADDRESS_ERROR';
+  static const overDailyLimitError = 'OVER_DAILY_LIMIT_ERROR';
+  static const requestDeniedError = 'REQUEST_DENIED_ERROR';
+  static const invalidRequestError = 'INVALID_REQUEST_ERROR';
 }
 
 class ScheduleRegisterViewModel extends BaseViewModel {
@@ -67,8 +71,8 @@ class ScheduleRegisterViewModel extends BaseViewModel {
       await executeFutureOperation(() => _fetchAddress());
 
   Future<void> _fetchAddress() async {
-    final result = (await fromCancelable(_addressRepositoryImpl
-        .fetchAddress(postalCodeTextEditingController.text))) as AddressEntity;
+    final result = (await fromCancelable(_addressRepositoryImpl.fetchAddress(
+        postalCodeTextEditingController.text))) as AddressResponse;
     if (result == null) {
       status = ScheduleRegisterStatus.invalidPostalCodeError;
       notifyListeners();
@@ -103,23 +107,40 @@ class ScheduleRegisterViewModel extends BaseViewModel {
       await executeFutureOperation(() => _convertPostalCodeToLocation());
 
   Future<void> _convertPostalCodeToLocation() async {
-    if (addressTextEditingController.text.isEmpty) {
-      status = Status.none;
-      notifyListeners();
-      return;
-    }
-    final location = (await fromCancelable(_addressRepositoryImpl
-            .convertToLocation(addressTextEditingController.text)))
-        as LocationEntity;
-    if (location != null && _googleMapController != null) {
-      final map = (await fromCancelable(_googleMapController.future))
-          as GoogleMapController;
-      final latLng = LatLng(location.latitude, location.longitude);
-      _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
-      await fromCancelable(map.animateCamera(CameraUpdate.newLatLng(latLng)));
-      status = ScheduleRegisterStatus.convertLocationSuccess;
-    } else {
-      status = ScheduleRegisterStatus.unableSearchAddressError;
+    try {
+      if (addressTextEditingController.text.isEmpty) {
+        status = Status.none;
+        notifyListeners();
+        return;
+      }
+      final location = (await fromCancelable(_addressRepositoryImpl
+              .convertToLocation(addressTextEditingController.text)))
+          as LocationEntity;
+      if (location != null && _googleMapController != null) {
+        final map = (await fromCancelable(_googleMapController.future))
+            as GoogleMapController;
+        final latLng = LatLng(location.latitude, location.longitude);
+        _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
+        await fromCancelable(map.animateCamera(CameraUpdate.newLatLng(latLng)));
+        status = ScheduleRegisterStatus.convertLocationSuccess;
+      } else {
+        status = ScheduleRegisterStatus.unableSearchAddressError;
+      }
+    } on GeocodeApiException catch (error) {
+      switch (error.code) {
+        case 405:
+          status = ScheduleRegisterStatus.unableSearchAddressError;
+          break;
+        case 411:
+          status = ScheduleRegisterStatus.overDailyLimitError;
+          break;
+        case 401:
+          status = ScheduleRegisterStatus.requestDeniedError;
+          break;
+        case 400:
+          status = ScheduleRegisterStatus.invalidRequestError;
+          break;
+      }
     }
     notifyListeners();
   }

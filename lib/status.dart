@@ -9,6 +9,11 @@ class Status {
       'SCHEDULE_DOCUMENT_NOT_EXIST_ERROR';
   static const String timeoutError = 'TIME_OUT_ERROR';
   static const String httpError = 'HTTP_ERROR';
+  static const String badRequestError = 'BAD_REQUEST_ERROR';
+  static const String notFoundError = 'NOT_FOUND_ERROR';
+  static const String methodNotAllowError = 'METHOD_NOT_ALLOW_ERROR';
+  static const String tooManyRequestsError = 'TOO_MANY_REQUESTS_ERROR';
+  static const String internalServerError = 'INTERNAL_SERVER_ERROR';
   static const String socketError = 'SOCKET_ERROR';
   static const String networkError = 'NETWORK_ERROR';
   static const String generalError = 'GENERAL_ERROR';

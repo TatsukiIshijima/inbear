@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/exception/api/api_exception.dart';
 
 import '../status.dart';
 
@@ -40,6 +41,29 @@ class BaseViewModel extends ChangeNotifier {
       status = Status.scheduleDocumentNotExistError;
     } on TimeoutException {
       status = Status.timeoutError;
+    } on ApiException catch (error) {
+      switch (error.code) {
+        case 400:
+          status = Status.badRequestError;
+          break;
+        case 404:
+          status = Status.notFoundError;
+          break;
+        case 405:
+          status = Status.methodNotAllowError;
+          break;
+        case 408:
+          status = Status.timeoutError;
+          break;
+        case 429:
+          status = Status.tooManyRequestsError;
+          break;
+        default:
+          status = Status.httpError;
+          break;
+      }
+    } on InternalServerException {
+      status = Status.internalServerError;
     } on HttpException {
       status = Status.httpError;
     } on SocketException {

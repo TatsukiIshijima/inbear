@@ -66,6 +66,7 @@ class RegisterScheduleForm extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<ScheduleRegisterViewModel>(context, listen: false);
+    viewModel.setPostalCodeInputEvent();
     return Container(
       margin: EdgeInsets.all(24),
       child: Form(
@@ -290,6 +291,18 @@ class RegisterAlertDialog extends StatelessWidget {
           case ScheduleRegisterStatus.unableSearchAddressError:
             _showRegisterError(context, resource.generalErrorTitle,
                 resource.unableSearchAddressError);
+            break;
+          case ScheduleRegisterStatus.overDailyLimitError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.overDailyLimitError);
+            break;
+          case ScheduleRegisterStatus.requestDeniedError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.requestDeniedError);
+            break;
+          case ScheduleRegisterStatus.invalidRequestError:
+            _showRegisterError(context, resource.generalErrorTitle,
+                resource.invalidRequestError);
             break;
         }
         return Container();

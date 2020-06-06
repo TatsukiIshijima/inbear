@@ -119,6 +119,9 @@ class AppLocalizations {
       'invalid_postal_code_error_message';
   static const _unableSearchAddressErrorMessageKey =
       'unable_search_address_error_message';
+  static const _overDailyLimitErrorKey = 'over_daily_limit_error_message';
+  static const _requestDeniedErrorKey = 'request_denied_error_message';
+  static const _invalidRequestErrorKey = 'invalid_request_error_message';
   static const _notExistDataErrorMessageKey = 'not_exist_data_error_message';
   static const _notExistUserDataErrorMessageKey =
       'not_exist_user_data_error_message';
@@ -136,6 +139,9 @@ class AppLocalizations {
   static const _photoPermissionPermanentlyDeniedErrorMessageKey =
       'photo_permission_permanently_denied_error_message';
   static const _timeoutErrorMessageKey = 'timeout_error';
+  static const _badRequestErrorMessageKey = 'bad_request_error';
+  static const _notFoundErrorMessageKey = 'not_found_error';
+  static const _methodNotAllowErrorMessageKey = 'method_not_allow_message';
   static const _httpErrorMessageKey = 'http_error';
   static const _socketErrorMessageKey = 'socket_error';
   static const _networkErrorMessageKey = 'network_error';
@@ -242,6 +248,9 @@ class AppLocalizations {
       _invalidPostalCodeErrorMessageKey: '無効な郵便番号です。',
       _unableSearchAddressErrorMessageKey:
           '住所から検索した位置情報が取得できません。\n正しい住所を入力の上、もう一度お試し下さい。',
+      _overDailyLimitErrorKey: '検索回数が上限に達しています。',
+      _requestDeniedErrorKey: 'リクエストが拒否されました。',
+      _invalidRequestErrorKey: '無効なリクエストです。',
       _notExistDataErrorMessageKey: 'データが存在しません。',
       _notExistUserDataErrorMessageKey: 'ユーザーデータが存在しません。',
       _notExistScheduleDataErrorMessageKey: 'スケジュールデータが存在しません。',
@@ -256,6 +265,9 @@ class AppLocalizations {
       _photoPermissionPermanentlyDeniedErrorMessageKey:
           'アプリから写真へのアクセスができません。スマートフォンの設定から本アプリの写真のアクセスを許可して下さい。',
       _timeoutErrorMessageKey: 'タイムアウトしました。\nしばらくしてから、もう一度お試し下さい。',
+      _badRequestErrorMessageKey: '通信に失敗しました。\nエラーコード:401',
+      _notFoundErrorMessageKey: '通信に失敗しました。\nエラーコード:404',
+      _methodNotAllowErrorMessageKey: '通信に失敗しました。\nエラーコード:405',
       _httpErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _socketErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
       _networkErrorMessageKey: '通信に失敗しました。接続状態をご確認の上、もう一度お試し下さい。',
@@ -367,6 +379,9 @@ class AppLocalizations {
       _getText(_invalidPostalCodeErrorMessageKey);
   String get unableSearchAddressError =>
       _getText(_unableSearchAddressErrorMessageKey);
+  String get overDailyLimitError => _getText(_overDailyLimitErrorKey);
+  String get requestDeniedError => _getText(_requestDeniedErrorKey);
+  String get invalidRequestError => _getText(_invalidRequestErrorKey);
   String get notExistDataError => _getText(_notExistDataErrorMessageKey);
   String get notExistUserDataError =>
       _getText(_notExistUserDataErrorMessageKey);
@@ -384,6 +399,9 @@ class AppLocalizations {
   String get photoPermissionPermanentlyDeniedError =>
       _getText(_photoPermissionPermanentlyDeniedErrorMessageKey);
   String get timeoutError => _getText(_timeoutErrorMessageKey);
+  String get badRequestError => _getText(_badRequestErrorMessageKey);
+  String get notFoundError => _getText(_notFoundErrorMessageKey);
+  String get methodNotAllowError => _getText(_methodNotAllowErrorMessageKey);
   String get httpError => _getText(_httpErrorMessageKey);
   String get socketError => _getText(_socketErrorMessageKey);
   String get networkError => _getText(_networkErrorMessageKey);
