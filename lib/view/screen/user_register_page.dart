@@ -152,7 +152,7 @@ class AuthAlertDialog extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
-          case Status.success:
+          case UserRegisterStatus.registerSuccess:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               // 一旦popで新規画面をクローズしてから
               // ルートをホーム画面に設定して遷移させることで
