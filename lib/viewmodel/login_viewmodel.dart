@@ -13,6 +13,8 @@ class LoginViewModel extends BaseViewModel {
   final TextEditingController passwordTextEditingController =
       TextEditingController();
 
+  bool isVisiblePassword = false;
+
   LoginViewModel(
     this._userRepository,
   );
@@ -57,5 +59,10 @@ class LoginViewModel extends BaseViewModel {
   // 勝手にアラートが表示されたりなどが起こる
   void resetAuthStatus() {
     status = Status.none;
+  }
+
+  void changeVisible() {
+    isVisiblePassword = !isVisiblePassword;
+    notifyListeners();
   }
 }

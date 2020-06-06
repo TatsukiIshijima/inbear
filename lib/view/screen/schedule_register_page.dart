@@ -82,9 +82,10 @@ class RegisterScheduleForm extends StatelessWidget {
               height: 12,
             ),
             InputField(
-              labelText: resource.scheduleGroomNameLabelText,
+              resource.scheduleGroomNameLabelText,
+              viewModel.groomTextEditingController,
+              maxLength: 24,
               textInputType: TextInputType.text,
-              textEditingController: viewModel.groomTextEditingController,
               validator: (text) => text.isEmpty ? resource.emptyError : null,
               focusNode: _groomNameFocus,
               onFieldSubmitted: (text) => _brideNameFocus.requestFocus(),
@@ -93,9 +94,10 @@ class RegisterScheduleForm extends StatelessWidget {
               height: 24,
             ),
             InputField(
-              labelText: resource.scheduleBrideNameLabelText,
+              resource.scheduleBrideNameLabelText,
+              viewModel.brideTextEditingController,
+              maxLength: 24,
               textInputType: TextInputType.text,
-              textEditingController: viewModel.brideTextEditingController,
               validator: (text) => text.isEmpty ? resource.emptyError : null,
               focusNode: _brideNameFocus,
               onFieldSubmitted: (text) {},
@@ -156,10 +158,10 @@ class RegisterScheduleForm extends StatelessWidget {
                 Expanded(
                   flex: 8,
                   child: InputField(
-                    labelText: resource.schedulePostalCodeLabelText,
+                    resource.schedulePostalCodeLabelText,
+                    viewModel.postalCodeTextEditingController,
+                    maxLength: 7,
                     textInputType: TextInputType.number,
-                    textEditingController:
-                        viewModel.postalCodeTextEditingController,
                     validator: (text) => null,
                     focusNode: _postalCodeFocus,
                   ),
@@ -209,9 +211,10 @@ class RegisterScheduleForm extends StatelessWidget {
               selector: (context, viewModel) =>
                   viewModel.addressTextEditingController,
               builder: (context, textEditingController, child) => InputField(
-                labelText: resource.scheduleAddressLabelText,
+                resource.scheduleAddressLabelText,
+                textEditingController,
+                maxLength: 100,
                 textInputType: TextInputType.text,
-                textEditingController: textEditingController,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _addressFocus,
                 onFieldSubmitted: (text) async =>

@@ -67,35 +67,34 @@ class LoginForm extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              Selector<LoginViewModel, TextEditingController>(
-                selector: (context, viewModel) =>
-                    viewModel.emailTextEditingController,
-                builder: (context, textEditingController, child) => InputField(
-                  labelText: resource.emailLabelText,
-                  textInputType: TextInputType.emailAddress,
-                  textEditingController: textEditingController,
-                  validator: (text) =>
-                      text.isEmpty ? resource.emptyError : null,
-                  focusNode: _emailFocus,
-                  onFieldSubmitted: (text) =>
-                      FocusScope.of(context).requestFocus(_passwordFocus),
-                ),
+              InputField(
+                resource.emailLabelText,
+                viewModel.emailTextEditingController,
+                maxLength: 32,
+                textInputType: TextInputType.emailAddress,
+                validator: (text) => text.isEmpty ? resource.emptyError : null,
+                focusNode: _emailFocus,
+                onFieldSubmitted: (text) =>
+                    FocusScope.of(context).requestFocus(_passwordFocus),
               ),
               const SizedBox(
                 height: 30,
               ),
-              Selector<LoginViewModel, TextEditingController>(
-                selector: (context, viewModel) =>
-                    viewModel.passwordTextEditingController,
-                builder: (context, textEditingController, child) => InputField(
-                  labelText: resource.passwordLabelText,
-                  obscureText: true,
+              Selector<LoginViewModel, bool>(
+                selector: (context, viewModel) => viewModel.isVisiblePassword,
+                builder: (context, isVisible, child) => InputField(
+                  resource.passwordLabelText,
+                  viewModel.passwordTextEditingController,
+                  maxLength: 32,
+                  obscureText: !isVisible,
                   textInputType: TextInputType.visiblePassword,
-                  textEditingController: textEditingController,
                   validator: (text) =>
                       text.isEmpty ? resource.emptyError : null,
                   focusNode: _passwordFocus,
                   onFieldSubmitted: (text) => _passwordFocus.unfocus(),
+                  isPasswordInput: true,
+                  isVisiblePassword: isVisible,
+                  onChangeVisible: () => viewModel.changeVisible(),
                 ),
               ),
               const SizedBox(
