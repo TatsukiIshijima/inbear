@@ -6,7 +6,6 @@ class Status {
 
   static const none = Status('NONE');
   static const loading = Status('LOADING');
-  static const success = Status('SUCCESS');
   static const unLoginError = Status('UNLOGIN_ERROR');
   static const userDocumentNotExistError =
       Status('USER_DOCUMENT_NOT_EXIST_ERROR');

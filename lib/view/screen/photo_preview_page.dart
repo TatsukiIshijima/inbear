@@ -139,7 +139,7 @@ class DeleteImageResult extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.success:
+          case PhotoPreviewStatus.deleteImageSuccess:
             WidgetsBinding.instance.addPostFrameCallback(
                 (timeStamp) => Navigator.pop(context, true));
             break;

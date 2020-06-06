@@ -9,6 +9,12 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 import '../status.dart';
 
+class PhotoPreviewStatus extends Status {
+  PhotoPreviewStatus(String value) : super(value);
+
+  static const deleteImageSuccess = Status('DELETE_IMAGE_SUCCESS');
+}
+
 class PhotoPreviewViewModel extends BaseViewModel {
   final UserRepositoryImpl userRepositoryImpl;
   final ScheduleRepositoryImpl scheduleRepositoryImpl;
@@ -49,7 +55,7 @@ class PhotoPreviewViewModel extends BaseViewModel {
         user.selectScheduleId, imageDocumentSnapshot.documentID));
     await imageRepositoryImpl.deleteImage(image.originalUrl);
     await imageRepositoryImpl.deleteImage(image.thumbnailUrl);
-    status = Status.success;
+    status = PhotoPreviewStatus.deleteImageSuccess;
   }
 
   @override
