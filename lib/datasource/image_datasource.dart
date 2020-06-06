@@ -1,6 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:inbear_app/datasource/image_datasource_impl.dart';
-import 'package:inbear_app/exception/common_exception.dart';
+import 'package:inbear_app/exception/storage/firebase_storage_exception.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,17 +44,23 @@ class ImageDataSource implements ImageDataSourceImpl {
     final thumbnailUploadTask =
         thumbnailReference.putData(thumbnailData, metadata);
     final originalUploadTaskSnapshot = await originalUploadTask.onComplete;
-    final thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
-    if (originalUploadTaskSnapshot.error == null &&
-        thumbnailUploadTaskSnapshot.error == null) {
-      final originalUrl =
+    var originalUrl = '';
+    if (originalUploadTaskSnapshot.error == null) {
+      originalUrl =
           await originalUploadTaskSnapshot.ref.getDownloadURL() as String;
-      final thumbnailUrl =
-          await thumbnailUploadTaskSnapshot.ref.getDownloadURL() as String;
-      return {_originalUrlKey: originalUrl, _thumbnailUrlKey: thumbnailUrl};
     } else {
-      throw UploadImageException();
+      throw UploadImageException(originalUploadTaskSnapshot.error);
     }
+    var thumbnailUrl = '';
+    final thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
+    if (thumbnailUploadTaskSnapshot.error == null) {
+      thumbnailUrl =
+          await thumbnailUploadTaskSnapshot.ref.getDownloadURL() as String;
+    } else {
+      await deleteImage(originalUrl);
+      throw UploadImageException(thumbnailUploadTaskSnapshot.error);
+    }
+    return {_originalUrlKey: originalUrl, _thumbnailUrlKey: thumbnailUrl};
   }
 
   @override
