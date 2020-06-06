@@ -94,6 +94,7 @@ class AppLocalizations {
   // 設定画面
   static const _logoutTitleKey = 'logout_title';
   static const _logoutMessageKey = 'logout_message';
+  static const _licenseTitleKey = 'license_title';
 
   // 警告
   static const _warningEmptyMessageKey = 'wraning_empty_message';
@@ -227,6 +228,7 @@ class AppLocalizations {
       // 設定画面
       _logoutTitleKey: 'ログアウト',
       _logoutMessageKey: 'ログアウトしますか？',
+      _licenseTitleKey: 'ライセンス',
 
       // 警告
       _warningEmptyMessageKey: '未入力です。',
@@ -356,6 +358,7 @@ class AppLocalizations {
 
   String get logoutTitle => _getText(_logoutTitleKey);
   String get logoutMessage => _getText(_logoutMessageKey);
+  String get licenseTitle => _getText(_licenseTitleKey);
 
   String get warningEmptyMessage => _getText(_warningEmptyMessageKey);
 
