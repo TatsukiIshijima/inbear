@@ -7,6 +7,12 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
+class ResetPasswordStatus extends Status {
+  ResetPasswordStatus(String value) : super(value);
+
+  static const resetPasswordSuccess = Status('RESET_PASSWORD_SUCCESS');
+}
+
 class ResetPasswordViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
 
@@ -23,7 +29,7 @@ class ResetPasswordViewModel extends BaseViewModel {
     try {
       await fromCancelable(_userRepository
           .sendPasswordResetEmail(emailTextEditingController.text));
-      status = Status.success;
+      status = ResetPasswordStatus.resetPasswordSuccess;
     } on InvalidEmailException {
       status = AuthStatus.invalidEmailError;
     } on UserNotFoundException {

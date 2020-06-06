@@ -127,7 +127,7 @@ class ResetPasswordAlertDialog extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
-          case Status.success:
+          case ResetPasswordStatus.resetPasswordSuccess:
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.resetPasswordSuccessMessage);
             break;
