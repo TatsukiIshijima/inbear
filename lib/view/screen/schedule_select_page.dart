@@ -40,13 +40,13 @@ class ScheduleSelectPageBody extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await viewModel.fetchEntrySchedule();
     });
-    return Selector<ScheduleSelectViewModel, String>(
+    return Selector<ScheduleSelectViewModel, Status>(
         selector: (context, viewModel) => viewModel.status,
         builder: (context, status, child) {
           switch (status) {
             case ScheduleSelectStatus.fetchEntryScheduleSuccess:
               return ScheduleList();
-            case Status.success:
+            case ScheduleSelectStatus.selectScheduleSuccess:
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
               });

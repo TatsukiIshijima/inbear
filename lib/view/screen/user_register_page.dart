@@ -148,11 +148,11 @@ class AuthAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<UserRegisterViewModel, String>(
+    return Selector<UserRegisterViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
-          case Status.success:
+          case UserRegisterStatus.registerSuccess:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               // 一旦popで新規画面をクローズしてから
               // ルートをホーム画面に設定して遷移させることで
@@ -173,7 +173,7 @@ class AuthAlertDialog extends StatelessWidget {
           case AuthStatus.invalidCredentialError:
             _showRegisterError(context, resource.invalidCredentialError);
             break;
-          case AuthStatus.tooManyRequestsError:
+          case Status.tooManyRequestsError:
             _showRegisterError(context, resource.tooManyRequestsError);
             break;
         }

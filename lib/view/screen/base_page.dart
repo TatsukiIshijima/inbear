@@ -46,9 +46,10 @@ class OverlayLoading<T extends BaseViewModel> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<T, String>(
+    return Selector<T, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
+        debugPrint('Status: $status');
         switch (status) {
           case Status.loading:
             return Container(

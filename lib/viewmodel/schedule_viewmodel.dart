@@ -9,8 +9,12 @@ import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:intl/intl.dart';
 
-class ScheduleGetStatus extends Status {
-  static const String noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
+class ScheduleStatus extends Status {
+  ScheduleStatus(String value) : super(value);
+
+  static const fetchSelectScheduleSuccess =
+      Status('FETCH_SELECT_SCHEDULE_SUCCESS');
+  static const noSelectScheduleError = Status('NO_SELECT_SCHEDULE_ERROR');
 }
 
 class ScheduleViewModel extends BaseViewModel {
@@ -33,9 +37,9 @@ class ScheduleViewModel extends BaseViewModel {
       schedule = (await fromCancelable(
               _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId)))
           as ScheduleEntity;
-      status = Status.success;
+      status = ScheduleStatus.fetchSelectScheduleSuccess;
     } on NoSelectScheduleException {
-      status = ScheduleGetStatus.noSelectScheduleError;
+      status = ScheduleStatus.noSelectScheduleError;
     }
     notifyListeners();
   }

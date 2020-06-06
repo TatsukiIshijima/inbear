@@ -4,6 +4,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
@@ -123,7 +124,7 @@ class DeleteResult extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel =
         Provider.of<ParticipantListViewModel>(context, listen: false);
-    return Selector<ParticipantListViewModel, String>(
+    return Selector<ParticipantListViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {

@@ -41,7 +41,7 @@ class SchedulePageBody extends StatelessWidget {
     final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback(
         (_) async => await viewModel.executeFetchSelectSchedule());
-    return Selector<ScheduleViewModel, String>(
+    return Selector<ScheduleViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
@@ -54,7 +54,7 @@ class SchedulePageBody extends StatelessWidget {
           case Status.scheduleDocumentNotExistError:
             return CenteringErrorMessage(resource,
                 message: resource.notExistScheduleDataError);
-          case ScheduleGetStatus.noSelectScheduleError:
+          case ScheduleStatus.noSelectScheduleError:
             return CenteringErrorMessage(resource,
                 message: resource.noSelectScheduleError);
           case Status.timeoutError:
@@ -62,7 +62,7 @@ class SchedulePageBody extends StatelessWidget {
               onPressed: () async =>
                   await viewModel.executeFetchSelectSchedule(),
             );
-          case Status.success:
+          case ScheduleStatus.fetchSelectScheduleSuccess:
             return ScheduleDetail();
           default:
             return Container();

@@ -8,6 +8,12 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
+class UserRegisterStatus extends Status {
+  UserRegisterStatus(String value) : super(value);
+
+  static const registerSuccess = Status('REGISTER_SUCCESS');
+}
+
 class UserRegisterViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
   final TextEditingController nameTextEditingController =
@@ -34,7 +40,7 @@ class UserRegisterViewModel extends BaseViewModel {
       await fromCancelable(
           _userRepository.insertNewUser(user, nameTextEditingController.text),
           onCancel: () => user.delete());
-      status = Status.success;
+      status = UserRegisterStatus.registerSuccess;
     } on WeakPasswordException {
       status = AuthStatus.weakPasswordError;
     } on InvalidEmailException {
@@ -44,7 +50,7 @@ class UserRegisterViewModel extends BaseViewModel {
     } on InvalidCredentialException {
       status = AuthStatus.invalidCredentialError;
     } on TooManyRequestException {
-      status = AuthStatus.tooManyRequestsError;
+      status = Status.tooManyRequestsError;
     }
     notifyListeners();
   }

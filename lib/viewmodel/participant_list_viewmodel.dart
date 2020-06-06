@@ -14,8 +14,10 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import '../status.dart';
 
 class ParticipantListStatus extends Status {
-  static const fetchParticipantsSuccess = 'fetchParticipantsSuccess';
-  static const deleteParticipantSuccess = 'deleteParticipantSuccess';
+  ParticipantListStatus(String value) : super(value);
+
+  static const fetchParticipantsSuccess = Status('fetchParticipantsSuccess');
+  static const deleteParticipantSuccess = Status('deleteParticipantSuccess');
 }
 
 class ParticipantListViewModel extends BaseViewModel {

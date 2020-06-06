@@ -16,13 +16,15 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import '../status.dart';
 
 class AlbumStatus extends Status {
-  static const noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
-  static const permissionDeniedError = 'PERMISSION_DENIED_ERROR';
+  AlbumStatus(String value) : super(value);
+
+  static const noSelectScheduleError = Status('NO_SELECT_SCHEDULE_ERROR');
+  static const permissionDeniedError = Status('PERMISSION_DENIED_ERROR');
   static const permissionPermanentlyDeniedError =
-      'PERMISSION_PERMANENTLY_DENIED_ERROR';
-  static const imageUploadError = 'IMAGE_UPLOAD_ERROR';
-  static const uploadImageSuccess = 'UPLOAD_IMAGE_SUCCESS';
-  static const fetchImagesSuccess = 'FETCH_IMAGES_SUCCESS';
+      Status('PERMISSION_PERMANENTLY_DENIED_ERROR');
+  static const imageUploadError = Status('IMAGE_UPLOAD_ERROR');
+  static const uploadImageSuccess = Status('UPLOAD_IMAGE_SUCCESS');
+  static const fetchImagesSuccess = Status('FETCH_IMAGES_SUCCESS');
 }
 
 class AlbumViewModel extends BaseViewModel {

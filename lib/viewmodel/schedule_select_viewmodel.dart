@@ -9,7 +9,11 @@ import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 class ScheduleSelectStatus extends Status {
-  static const fetchEntryScheduleSuccess = 'fetchEntryScheduleSuccess';
+  ScheduleSelectStatus(String value) : super(value);
+
+  static const fetchEntryScheduleSuccess =
+      Status('FETCH_ENTRY_SCHEDULE_SUCCESS');
+  static const selectScheduleSuccess = Status('SELECT_SCHEDULE_SUCCESS');
 }
 
 class ScheduleSelectViewModel extends BaseViewModel {
@@ -60,7 +64,7 @@ class ScheduleSelectViewModel extends BaseViewModel {
 
   Future<void> _selectSchedule(String scheduleId) async {
     await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
-    status = Status.success;
+    status = ScheduleSelectStatus.selectScheduleSuccess;
     notifyListeners();
   }
 }

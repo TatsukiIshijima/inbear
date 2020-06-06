@@ -274,11 +274,11 @@ class RegisterAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<ScheduleRegisterViewModel, String>(
+    return Selector<ScheduleRegisterViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.success:
+          case ScheduleRegisterStatus.registerScheduleSuccess:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
             });

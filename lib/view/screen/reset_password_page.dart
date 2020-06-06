@@ -123,11 +123,11 @@ class ResetPasswordAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<ResetPasswordViewModel, String>(
+    return Selector<ResetPasswordViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
-          case Status.success:
+          case ResetPasswordStatus.resetPasswordSuccess:
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.resetPasswordSuccessMessage);
             break;
@@ -143,7 +143,7 @@ class ResetPasswordAlertDialog extends StatelessWidget {
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.userDisabledError);
             break;
-          case AuthStatus.tooManyRequestsError:
+          case Status.tooManyRequestsError:
             _showResetPasswordDialog(context, resource.resetPasswordTitle,
                 resource.tooManyRequestsError);
             break;
