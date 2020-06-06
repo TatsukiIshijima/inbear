@@ -53,6 +53,11 @@ class SettingPageContent extends StatelessWidget {
             onTap: () => Routes.goToScheduleSelect(context),
           ),
           TitleAndIconListItem(
+            title: resource.licenseTitle,
+            iconData: Icons.library_books,
+            onTap: () => showLicensePage(context: context),
+          ),
+          TitleAndIconListItem(
             title: resource.logoutTitle,
             iconData: Icons.exit_to_app,
             onTap: () =>
