@@ -157,7 +157,7 @@ class AuthAlertDialog extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.success:
+          case LoginStatus.loginSuccess:
             // ビルド前にメソッドが呼ばれるとエラーになるので
             // addPostFrameCallback で任意処理を実行
             // https://www.didierboelens.com/2019/04/addpostframecallback/

@@ -7,6 +7,12 @@ import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
+class LoginStatus extends Status {
+  LoginStatus(String value) : super(value);
+
+  static const loginSuccess = Status('LOGIN_SUCCESS');
+}
+
 class LoginViewModel extends BaseViewModel {
   final UserRepositoryImpl _userRepository;
   final TextEditingController emailTextEditingController =
@@ -35,7 +41,7 @@ class LoginViewModel extends BaseViewModel {
     try {
       await fromCancelable(_userRepository.signIn(
           emailTextEditingController.text, passwordTextEditingController.text));
-      status = Status.success;
+      status = LoginStatus.loginSuccess;
     } on InvalidEmailException {
       status = AuthStatus.invalidEmailError;
     } on WrongPasswordException {
