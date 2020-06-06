@@ -66,6 +66,7 @@ class RegisterScheduleForm extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<ScheduleRegisterViewModel>(context, listen: false);
+    viewModel.setPostalCodeInputEvent();
     return Container(
       margin: EdgeInsets.all(24),
       child: Form(
