@@ -84,6 +84,7 @@ class RegisterScheduleForm extends StatelessWidget {
             InputField(
               resource.scheduleGroomNameLabelText,
               viewModel.groomTextEditingController,
+              maxLength: 24,
               textInputType: TextInputType.text,
               validator: (text) => text.isEmpty ? resource.emptyError : null,
               focusNode: _groomNameFocus,
@@ -95,6 +96,7 @@ class RegisterScheduleForm extends StatelessWidget {
             InputField(
               resource.scheduleBrideNameLabelText,
               viewModel.brideTextEditingController,
+              maxLength: 24,
               textInputType: TextInputType.text,
               validator: (text) => text.isEmpty ? resource.emptyError : null,
               focusNode: _brideNameFocus,
@@ -158,6 +160,7 @@ class RegisterScheduleForm extends StatelessWidget {
                   child: InputField(
                     resource.schedulePostalCodeLabelText,
                     viewModel.postalCodeTextEditingController,
+                    maxLength: 7,
                     textInputType: TextInputType.number,
                     validator: (text) => null,
                     focusNode: _postalCodeFocus,
@@ -210,6 +213,7 @@ class RegisterScheduleForm extends StatelessWidget {
               builder: (context, textEditingController, child) => InputField(
                 resource.scheduleAddressLabelText,
                 textEditingController,
+                maxLength: 100,
                 textInputType: TextInputType.text,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _addressFocus,
