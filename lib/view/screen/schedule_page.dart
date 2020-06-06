@@ -54,7 +54,7 @@ class SchedulePageBody extends StatelessWidget {
           case Status.scheduleDocumentNotExistError:
             return CenteringErrorMessage(resource,
                 message: resource.notExistScheduleDataError);
-          case ScheduleGetStatus.noSelectScheduleError:
+          case ScheduleStatus.noSelectScheduleError:
             return CenteringErrorMessage(resource,
                 message: resource.noSelectScheduleError);
           case Status.timeoutError:
@@ -62,7 +62,7 @@ class SchedulePageBody extends StatelessWidget {
               onPressed: () async =>
                   await viewModel.executeFetchSelectSchedule(),
             );
-          case Status.success:
+          case ScheduleStatus.fetchSelectScheduleSuccess:
             return ScheduleDetail();
           default:
             return Container();

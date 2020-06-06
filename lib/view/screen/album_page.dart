@@ -148,7 +148,6 @@ class UploadResult extends StatelessWidget {
     return Selector<AlbumViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
-        debugPrint('Album Status: $status');
         switch (status) {
           case AlbumStatus.uploadImageSuccess:
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) async =>
