@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/exception/database/firestore_exception.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-import '../exception/common_exception.dart';
 import '../status.dart';
 
 class UserSearchStatus extends Status {
