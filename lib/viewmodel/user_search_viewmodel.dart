@@ -5,7 +5,7 @@ import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
-import '../custom_exceptions.dart';
+import '../exception/common_exception.dart';
 import '../status.dart';
 
 class UserSearchStatus extends Status {

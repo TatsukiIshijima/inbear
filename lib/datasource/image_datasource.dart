@@ -1,6 +1,6 @@
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/datasource/image_datasource_impl.dart';
+import 'package:inbear_app/exception/common_exception.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:uuid/uuid.dart';
 

@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/exception/auth/auth_exception.dart';
+import 'package:inbear_app/exception/common_exception.dart';
 import 'package:inbear_app/model/participant_item_model.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
