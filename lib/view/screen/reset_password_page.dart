@@ -77,9 +77,9 @@ class ResetPasswordForm extends StatelessWidget {
               height: 20,
             ),
             InputField(
-              labelText: resource.emailLabelText,
+              resource.emailLabelText,
+              viewModel.emailTextEditingController,
               textInputType: TextInputType.emailAddress,
-              textEditingController: viewModel.emailTextEditingController,
               validator: (text) => text.isEmpty ? resource.emptyError : null,
               focusNode: _emailFocus,
               onFieldSubmitted: (text) => _emailFocus.unfocus(),

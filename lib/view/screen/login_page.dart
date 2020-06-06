@@ -71,9 +71,9 @@ class LoginForm extends StatelessWidget {
                 selector: (context, viewModel) =>
                     viewModel.emailTextEditingController,
                 builder: (context, textEditingController, child) => InputField(
-                  labelText: resource.emailLabelText,
+                  resource.emailLabelText,
+                  textEditingController,
                   textInputType: TextInputType.emailAddress,
-                  textEditingController: textEditingController,
                   validator: (text) =>
                       text.isEmpty ? resource.emptyError : null,
                   focusNode: _emailFocus,
@@ -88,10 +88,10 @@ class LoginForm extends StatelessWidget {
                 selector: (context, viewModel) =>
                     viewModel.passwordTextEditingController,
                 builder: (context, textEditingController, child) => InputField(
-                  labelText: resource.passwordLabelText,
-                  obscureText: true,
+                  resource.passwordLabelText,
+                  textEditingController,
                   textInputType: TextInputType.visiblePassword,
-                  textEditingController: textEditingController,
+                  obscureText: true,
                   validator: (text) =>
                       text.isEmpty ? resource.emptyError : null,
                   focusNode: _passwordFocus,

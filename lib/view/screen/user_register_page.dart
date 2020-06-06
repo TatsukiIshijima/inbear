@@ -73,9 +73,9 @@ class UserRegisterForm extends StatelessWidget {
               selector: (context, viewModel) =>
                   viewModel.nameTextEditingController,
               builder: (context, textEditingController, child) => InputField(
-                labelText: resource.nameLabelText,
+                resource.nameLabelText,
+                textEditingController,
                 textInputType: TextInputType.text,
-                textEditingController: textEditingController,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _nameFocus,
                 onFieldSubmitted: (text) =>
@@ -89,9 +89,9 @@ class UserRegisterForm extends StatelessWidget {
               selector: (context, viewModel) =>
                   viewModel.emailTextEditingController,
               builder: (context, textEditingController, child) => InputField(
-                labelText: resource.emailLabelText,
+                resource.emailLabelText,
+                textEditingController,
                 textInputType: TextInputType.emailAddress,
-                textEditingController: textEditingController,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _emailFocus,
                 onFieldSubmitted: (text) =>
@@ -105,10 +105,10 @@ class UserRegisterForm extends StatelessWidget {
               selector: (context, viewModel) =>
                   viewModel.passwordTextEditingController,
               builder: (context, textEditingController, child) => InputField(
-                labelText: resource.passwordLabelText,
+                resource.passwordLabelText,
+                textEditingController,
                 obscureText: true,
                 textInputType: TextInputType.visiblePassword,
-                textEditingController: textEditingController,
                 validator: (text) => text.isEmpty ? resource.emptyError : null,
                 focusNode: _passwordFocus,
                 onFieldSubmitted: (text) => _passwordFocus.unfocus(),
