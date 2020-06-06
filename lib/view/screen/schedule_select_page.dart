@@ -46,7 +46,7 @@ class ScheduleSelectPageBody extends StatelessWidget {
           switch (status) {
             case ScheduleSelectStatus.fetchEntryScheduleSuccess:
               return ScheduleList();
-            case Status.success:
+            case ScheduleSelectStatus.selectScheduleSuccess:
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                 Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
               });
