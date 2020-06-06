@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/exception/common_exception.dart';
+import 'package:inbear_app/exception/storage/firebase_storage_exception.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';

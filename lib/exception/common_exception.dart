@@ -10,8 +10,6 @@ class ScheduleDocumentNotExistException extends DocumentNotExistException {}
 
 class NoSelectScheduleException implements Exception {}
 
-class UploadImageException implements Exception {}
-
 class NotRegisterAnyImagesException implements Exception {}
 
 class ParticipantsEmptyException implements Exception {}
