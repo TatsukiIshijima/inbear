@@ -5,6 +5,7 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/exception/api/api_exception.dart';
+import 'package:inbear_app/exception/auth/auth_exception.dart';
 
 import '../status.dart';
 

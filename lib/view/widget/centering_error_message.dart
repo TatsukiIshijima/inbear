@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/exception/auth/auth_exception.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 
 class CenteringErrorMessage extends StatelessWidget {
