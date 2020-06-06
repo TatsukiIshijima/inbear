@@ -10,7 +10,9 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleGetStatus extends Status {
-  static const String noSelectScheduleError = 'NO_SELECT_SCHEDULE_ERROR';
+  ScheduleGetStatus(String value) : super(value);
+
+  static const noSelectScheduleError = Status('NO_SELECT_SCHEDULE_ERROR');
 }
 
 class ScheduleViewModel extends BaseViewModel {

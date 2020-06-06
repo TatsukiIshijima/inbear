@@ -16,14 +16,16 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class ScheduleRegisterStatus extends Status {
-  static const fetchAddressSuccess = 'FETCH_ADDRESS_SUCCESS';
-  static const convertLocationSuccess = 'CONVERT_LOCATION_SUCCESS';
-  static const unSelectDateError = 'UN_SELECT_DATE_ERROR';
-  static const invalidPostalCodeError = 'INVALID_POSTAL_CODE_ERROR';
-  static const unableSearchAddressError = 'UNABLE_SEARCH_ADDRESS_ERROR';
-  static const overDailyLimitError = 'OVER_DAILY_LIMIT_ERROR';
-  static const requestDeniedError = 'REQUEST_DENIED_ERROR';
-  static const invalidRequestError = 'INVALID_REQUEST_ERROR';
+  ScheduleRegisterStatus(String value) : super(value);
+
+  static const fetchAddressSuccess = Status('FETCH_ADDRESS_SUCCESS');
+  static const convertLocationSuccess = Status('CONVERT_LOCATION_SUCCESS');
+  static const unSelectDateError = Status('UN_SELECT_DATE_ERROR');
+  static const invalidPostalCodeError = Status('INVALID_POSTAL_CODE_ERROR');
+  static const unableSearchAddressError = Status('UNABLE_SEARCH_ADDRESS_ERROR');
+  static const overDailyLimitError = Status('OVER_DAILY_LIMIT_ERROR');
+  static const requestDeniedError = Status('REQUEST_DENIED_ERROR');
+  static const invalidRequestError = Status('INVALID_REQUEST_ERROR');
 }
 
 class ScheduleRegisterViewModel extends BaseViewModel {

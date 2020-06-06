@@ -44,7 +44,7 @@ class UserRegisterViewModel extends BaseViewModel {
     } on InvalidCredentialException {
       status = AuthStatus.invalidCredentialError;
     } on TooManyRequestException {
-      status = AuthStatus.tooManyRequestsError;
+      status = Status.tooManyRequestsError;
     }
     notifyListeners();
   }

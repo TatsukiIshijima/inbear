@@ -9,6 +9,7 @@ import 'package:inbear_app/repository/image_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/routes.dart';
+import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
@@ -144,7 +145,7 @@ class UploadResult extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
-    return Selector<AlbumViewModel, String>(
+    return Selector<AlbumViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         debugPrint('Album Status: $status');

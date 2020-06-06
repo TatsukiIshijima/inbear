@@ -41,7 +41,7 @@ class SchedulePageBody extends StatelessWidget {
     final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback(
         (_) async => await viewModel.executeFetchSelectSchedule());
-    return Selector<ScheduleViewModel, String>(
+    return Selector<ScheduleViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {

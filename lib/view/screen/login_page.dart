@@ -153,7 +153,7 @@ class AuthAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<LoginViewModel, String>(
+    return Selector<LoginViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
@@ -176,7 +176,7 @@ class AuthAlertDialog extends StatelessWidget {
           case AuthStatus.userDisabledError:
             _showLoginError(context, resource.userDisabledError);
             break;
-          case AuthStatus.tooManyRequestsError:
+          case Status.tooManyRequestsError:
             _showLoginError(context, resource.tooManyRequestsError);
             break;
         }

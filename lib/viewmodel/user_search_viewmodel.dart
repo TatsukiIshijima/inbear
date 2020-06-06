@@ -9,10 +9,12 @@ import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 import '../status.dart';
 
 class UserSearchStatus extends Status {
+  UserSearchStatus(String value) : super(value);
+
   // ParticipantListPageのViewModelが破棄されないため、Status.successを呼ぶと
   // 二重で処理が実行されてしまうため、成功のステータスは分けておく
-  static const searchSuccess = 'SearchSuccess';
-  static const addSuccess = 'AddSuccess';
+  static const searchSuccess = Status('SearchSuccess');
+  static const addSuccess = Status('AddSuccess');
 }
 
 class UserSearchViewModel extends BaseViewModel {

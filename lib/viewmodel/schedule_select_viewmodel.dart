@@ -9,7 +9,9 @@ import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 class ScheduleSelectStatus extends Status {
-  static const fetchEntryScheduleSuccess = 'fetchEntryScheduleSuccess';
+  ScheduleSelectStatus(String value) : super(value);
+
+  static const fetchEntryScheduleSuccess = Status('fetchEntryScheduleSuccess');
 }
 
 class ScheduleSelectViewModel extends BaseViewModel {

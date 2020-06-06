@@ -4,6 +4,7 @@ import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
@@ -93,7 +94,7 @@ class SearchResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<UserSearchViewModel>(context, listen: false);
-    return Selector<UserSearchViewModel, String>(
+    return Selector<UserSearchViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {

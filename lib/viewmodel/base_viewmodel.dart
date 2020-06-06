@@ -13,7 +13,7 @@ import '../status.dart';
 class BaseViewModel extends ChangeNotifier {
   CancelableOperation _cancelableOperation;
 
-  String status = Status.none;
+  Status status = Status.none;
 
   Future<dynamic> fromCancelable(Future<dynamic> future,
       {FutureOr Function() onCancel}) async {

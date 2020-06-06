@@ -148,7 +148,7 @@ class AuthAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<UserRegisterViewModel, String>(
+    return Selector<UserRegisterViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, authStatus, child) {
         switch (authStatus) {
@@ -173,7 +173,7 @@ class AuthAlertDialog extends StatelessWidget {
           case AuthStatus.invalidCredentialError:
             _showRegisterError(context, resource.invalidCredentialError);
             break;
-          case AuthStatus.tooManyRequestsError:
+          case Status.tooManyRequestsError:
             _showRegisterError(context, resource.tooManyRequestsError);
             break;
         }

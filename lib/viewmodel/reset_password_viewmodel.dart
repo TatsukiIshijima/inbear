@@ -31,7 +31,7 @@ class ResetPasswordViewModel extends BaseViewModel {
     } on UserDisabledException {
       status = AuthStatus.userDisabledError;
     } on TooManyRequestException {
-      status = AuthStatus.tooManyRequestsError;
+      status = Status.tooManyRequestsError;
     }
     notifyListeners();
   }

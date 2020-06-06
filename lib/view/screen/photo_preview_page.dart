@@ -135,7 +135,7 @@ class PhotoImage extends StatelessWidget {
 class DeleteImageResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Selector<PhotoPreviewViewModel, String>(
+    return Selector<PhotoPreviewViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
