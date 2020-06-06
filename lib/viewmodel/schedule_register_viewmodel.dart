@@ -20,6 +20,7 @@ class ScheduleRegisterStatus extends Status {
 
   static const fetchAddressSuccess = Status('FETCH_ADDRESS_SUCCESS');
   static const convertLocationSuccess = Status('CONVERT_LOCATION_SUCCESS');
+  static const registerScheduleSuccess = Status('REGISTER_SCHEDULE_SUCCESS');
   static const unSelectDateError = Status('UN_SELECT_DATE_ERROR');
   static const invalidPostalCodeError = Status('INVALID_POSTAL_CODE_ERROR');
   static const unableSearchAddressError = Status('UNABLE_SEARCH_ADDRESS_ERROR');
@@ -177,7 +178,7 @@ class ScheduleRegisterViewModel extends BaseViewModel {
     await fromCancelable(
         _userRepositoryImpl.registerSchedule(scheduleId, schedule));
     await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
-    status = Status.success;
+    status = ScheduleRegisterStatus.registerScheduleSuccess;
     notifyListeners();
   }
 }

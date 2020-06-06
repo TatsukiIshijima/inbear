@@ -278,7 +278,7 @@ class RegisterAlertDialog extends StatelessWidget {
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case Status.success:
+          case ScheduleRegisterStatus.registerScheduleSuccess:
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
             });
