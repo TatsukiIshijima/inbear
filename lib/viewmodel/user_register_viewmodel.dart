@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
-import 'package:inbear_app/custom_exceptions.dart';
+import 'package:inbear_app/exception/auth/auth_exception.dart';
+import 'package:inbear_app/exception/common_exception.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';

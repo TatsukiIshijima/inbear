@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:inbear_app/custom_exceptions.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/exception/database/firestore_exception.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
 class ScheduleRepository implements ScheduleRepositoryImpl {
