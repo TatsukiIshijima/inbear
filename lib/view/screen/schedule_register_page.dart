@@ -31,6 +31,7 @@ class ScheduleRegisterPage extends StatelessWidget {
           title: Text(
             resource.scheduleRegisterTitle,
           ),
+          centerTitle: true,
         ),
         body: ScheduleRegisterPageBody(),
       ),
