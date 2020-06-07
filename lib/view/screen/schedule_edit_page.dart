@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ScheduleEditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      body: Center(
+        child: Text('ScheduleEdit'),
+      ),
+    );
   }
 }

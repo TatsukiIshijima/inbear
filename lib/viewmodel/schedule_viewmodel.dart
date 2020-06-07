@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/exception/auth/auth_exception.dart';
 import 'package:inbear_app/exception/database/firestore_exception.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 import 'package:inbear_app/repository/user_repository_impl.dart';
@@ -26,6 +27,7 @@ class ScheduleViewModel extends BaseViewModel {
   final DateFormat _formatter = DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
 
   ScheduleEntity schedule;
+  bool isOwnerSchedule = false;
 
   Future<void> executeFetchSelectSchedule() async =>
       await executeFutureOperation(() => _fetchSelectSchedule());
@@ -46,5 +48,27 @@ class ScheduleViewModel extends BaseViewModel {
 
   String dateToString(DateTime dateTime) {
     return '${_formatter.format(dateTime)} ~';
+  }
+
+  Future<void> checkScheduleOwner() async {
+    try {
+      final user =
+          await fromCancelable(_userRepositoryImpl.fetchUser()) as UserEntity;
+      if (user.selectScheduleId.isEmpty) {
+        throw NoSelectScheduleException();
+      }
+      final schedule = await fromCancelable(
+              _scheduleRepositoryImpl.fetchSchedule(user.selectScheduleId))
+          as ScheduleEntity;
+      isOwnerSchedule = schedule.ownerUid == user.uid;
+    } on UnLoginException {
+      isOwnerSchedule = false;
+    } on UserDocumentNotExistException {
+      isOwnerSchedule = false;
+    } on NoSelectScheduleException {
+      isOwnerSchedule = false;
+    } on TimeoutException {
+      isOwnerSchedule = false;
+    }
   }
 }
