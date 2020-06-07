@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
@@ -14,13 +15,18 @@ import 'package:inbear_app/viewmodel/schedule_edit_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleEditPage extends StatelessWidget {
+  final ScheduleEntity scheduleEntity;
+
+  ScheduleEditPage(this.scheduleEntity);
+
   @override
   Widget build(BuildContext context) {
     return BasePage<ScheduleEditViewModel>(
       viewModel: ScheduleEditViewModel(
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false),
-          Provider.of<AddressRepository>(context, listen: false)),
+          Provider.of<AddressRepository>(context, listen: false),
+          scheduleEntity),
       child: Scaffold(
         appBar: AppBar(
           title: Text('スケジュール編集'),
@@ -59,6 +65,10 @@ class ScheduleEditForm extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<ScheduleEditViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      viewModel.initForm();
+      viewModel.setPostalCodeInputEvent();
+    });
     return Container(
       margin: EdgeInsets.all(24),
       child: Form(
@@ -221,7 +231,9 @@ class ScheduleEditForm extends StatelessWidget {
               height: MediaQuery.of(context).size.width * (3 / 4),
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
-                    target: LatLng(35.681236, 139.767125), zoom: 17.0),
+                    target: LatLng(viewModel.scheduleEntity.geoPoint.latitude,
+                        viewModel.scheduleEntity.geoPoint.longitude),
+                    zoom: 17.0),
                 mapType: MapType.normal,
                 myLocationButtonEnabled: false,
                 onMapCreated: (mapController) =>

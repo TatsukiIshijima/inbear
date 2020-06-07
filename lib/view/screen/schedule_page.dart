@@ -153,6 +153,7 @@ class ScheduleDetail extends StatelessWidget {
 class FloatingActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
     return Selector<ScheduleViewModel, bool>(
       selector: (context, viewModel) => viewModel.isOwnerSchedule,
       builder: (context, isOwner, child) => Column(
@@ -163,7 +164,15 @@ class FloatingActionButtons extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 16.0),
               child: FloatingActionButton(
                 heroTag: 'EditSchedule',
-                onPressed: () => Routes.goToScheduleEdit(context),
+                onPressed: () async {
+                  if (viewModel.schedule != null) {
+                    final isUpdate = await Routes.goToScheduleEdit(
+                        context, viewModel.schedule);
+                    if (isUpdate != null && isUpdate) {
+                      // TODO:スケジュール表示の更新
+                    }
+                  }
+                },
                 child: const Icon(Icons.edit),
               ),
             ),
