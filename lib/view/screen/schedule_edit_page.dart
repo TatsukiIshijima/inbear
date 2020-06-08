@@ -7,11 +7,14 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
+import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
+import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/viewmodel/schedule_edit_viewmodel.dart';
+import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ScheduleEditPage extends StatelessWidget {
@@ -46,7 +49,8 @@ class ScheduleEditBody extends StatelessWidget {
         children: <Widget>[
           SingleChildScrollView(
             child: ScheduleEditForm(),
-          )
+          ),
+          UpdateScheduleAlertDialog(),
         ],
       ),
     );
@@ -249,13 +253,71 @@ class ScheduleEditForm extends StatelessWidget {
               backgroundColor: Colors.pink[200],
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  // TODO:アップデート
+                  await viewModel.executeUpdateSchedule();
                 }
               },
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class UpdateScheduleAlertDialog extends StatelessWidget {
+  void _showUpdateError(BuildContext context, String title, String message) {
+    final resource = AppLocalizations.of(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      showDialog<DefaultDialog>(
+          context: context,
+          builder: (context) => DefaultDialog(
+                title,
+                message,
+                positiveButtonTitle: resource.defaultPositiveButtonTitle,
+                onPositiveButtonPressed: () {},
+              ));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
+    return Selector<ScheduleEditViewModel, Status>(
+      selector: (context, viewModel) => viewModel.status,
+      builder: (context, status, child) {
+        switch (status) {
+          case ScheduleEditStatus.updateScheduleSuccess:
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pop(context, true);
+            });
+            break;
+          case ScheduleRegisterStatus.unSelectDateError:
+            _showUpdateError(context, resource.inputFormErrorTitle,
+                resource.unselectDateError);
+            break;
+          case ScheduleRegisterStatus.invalidPostalCodeError:
+            _showUpdateError(context, resource.inputFormErrorTitle,
+                resource.invalidPostalCodeError);
+            break;
+          case ScheduleRegisterStatus.unableSearchAddressError:
+            _showUpdateError(context, resource.generalErrorTitle,
+                resource.unableSearchAddressError);
+            break;
+          case ScheduleRegisterStatus.overDailyLimitError:
+            _showUpdateError(context, resource.generalErrorTitle,
+                resource.overDailyLimitError);
+            break;
+          case ScheduleRegisterStatus.requestDeniedError:
+            _showUpdateError(context, resource.generalErrorTitle,
+                resource.requestDeniedError);
+            break;
+          case ScheduleRegisterStatus.invalidRequestError:
+            _showUpdateError(context, resource.generalErrorTitle,
+                resource.invalidRequestError);
+            break;
+        }
+        return Container();
+      },
     );
   }
 }

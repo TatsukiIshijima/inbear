@@ -57,10 +57,10 @@ class ScheduleEditViewModel extends ScheduleRegisterViewModel {
         user.uid,
         scheduleEntity.createdAt,
         DateTime.now());
-    final scheduleId = await fromCancelable(
-        scheduleRepositoryImpl.updateSchedule(newSchedule, user)) as String;
     await fromCancelable(
-        userRepositoryImpl.updateSchedule(scheduleId, newSchedule));
+        scheduleRepositoryImpl.updateSchedule(newSchedule, user));
+    await fromCancelable(
+        userRepositoryImpl.updateSchedule(user.selectScheduleId, newSchedule));
     status = ScheduleEditStatus.updateScheduleSuccess;
     notifyListeners();
   }
