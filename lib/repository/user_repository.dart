@@ -185,6 +185,24 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
+  Future<void> updateSchedule(
+      String scheduleId, ScheduleEntity scheduleEntity) async {
+    final uid = await getUid();
+    if (uid.isEmpty) {
+      throw UnLoginException();
+    }
+    await _db
+        .collection(_userCollection)
+        .document(uid)
+        .collection(_scheduleSubCollection)
+        .document(scheduleId)
+        .updateData(scheduleEntity.toMap())
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'UserRepository: updateSchedule Timeout.'));
+  }
+
+  @override
   Future<void> selectSchedule(String scheduleId) async {
     final uid = await getUid();
     if (uid.isEmpty) {
