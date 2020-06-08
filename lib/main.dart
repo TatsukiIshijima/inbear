@@ -51,7 +51,7 @@ void main() {
         create: (context) => UserRepository(_firebaseAuth, _firestore),
       ),
       Provider(
-        create: (context) => ScheduleRepository(_firebaseAuth, _firestore),
+        create: (context) => ScheduleRepository(_firestore),
       ),
       Provider(
         create: (context) => AddressRepository(_addressSearchApi, _geoCodeApi),

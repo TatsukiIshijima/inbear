@@ -6,6 +6,7 @@ import 'package:inbear_app/entity/user_entity.dart';
 abstract class ScheduleRepositoryImpl {
   Future<String> registerSchedule(ScheduleEntity schedule, UserEntity user,
       {bool isUpdate = false});
+  Future<void> updateSchedule(ScheduleEntity schedule, UserEntity user);
   Future<ScheduleEntity> fetchSchedule(String selectScheduleId);
   Future<void> postImage(String selectScheduleId, ImageEntity imageEntity);
   Future<void> deleteImage(String selectScheduleId, String imageDocumentId);
