@@ -30,12 +30,12 @@ class ScheduleRegisterStatus extends Status {
 }
 
 class ScheduleRegisterViewModel extends BaseViewModel {
-  final UserRepositoryImpl _userRepositoryImpl;
-  final ScheduleRepositoryImpl _scheduleRepositoryImpl;
+  final UserRepositoryImpl userRepositoryImpl;
+  final ScheduleRepositoryImpl scheduleRepositoryImpl;
   final AddressRepositoryImpl _addressRepositoryImpl;
 
-  ScheduleRegisterViewModel(this._userRepositoryImpl,
-      this._scheduleRepositoryImpl, this._addressRepositoryImpl);
+  ScheduleRegisterViewModel(this.userRepositoryImpl,
+      this.scheduleRepositoryImpl, this._addressRepositoryImpl);
 
   final TextEditingController groomTextEditingController =
       TextEditingController();
@@ -48,7 +48,7 @@ class ScheduleRegisterViewModel extends BaseViewModel {
   final DateFormat _formatter = DateFormat('yyyy年MM月dd日(E) HH:mm', 'ja_JP');
   final Completer<GoogleMapController> _googleMapController = Completer();
 
-  GeoPoint _addressGeoPoint;
+  GeoPoint addressGeoPoint;
   DateTime scheduledDateTime;
   bool isPostalCodeFormat = false;
 
@@ -123,7 +123,7 @@ class ScheduleRegisterViewModel extends BaseViewModel {
         final map = (await fromCancelable(_googleMapController.future))
             as GoogleMapController;
         final latLng = LatLng(location.latitude, location.longitude);
-        _addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
+        addressGeoPoint = GeoPoint(latLng.latitude, latLng.longitude);
         await fromCancelable(map.animateCamera(CameraUpdate.newLatLng(latLng)));
         status = ScheduleRegisterStatus.convertLocationSuccess;
       } else {
@@ -157,27 +157,27 @@ class ScheduleRegisterViewModel extends BaseViewModel {
       notifyListeners();
       return;
     }
-    if (_addressGeoPoint == null) {
+    if (addressGeoPoint == null) {
       status = ScheduleRegisterStatus.unableSearchAddressError;
       notifyListeners();
       return;
     }
     final user =
-        (await fromCancelable(_userRepositoryImpl.fetchUser())) as UserEntity;
+        (await fromCancelable(userRepositoryImpl.fetchUser())) as UserEntity;
     final schedule = ScheduleEntity(
         groomTextEditingController.text,
         brideTextEditingController.text,
         scheduledDateTime,
         addressTextEditingController.text,
-        _addressGeoPoint,
+        addressGeoPoint,
         user.uid,
         DateTime.now(),
         DateTime.now());
     final scheduleId = (await fromCancelable(
-        _scheduleRepositoryImpl.registerSchedule(schedule, user))) as String;
+        scheduleRepositoryImpl.registerSchedule(schedule, user))) as String;
     await fromCancelable(
-        _userRepositoryImpl.registerSchedule(scheduleId, schedule));
-    await fromCancelable(_userRepositoryImpl.selectSchedule(scheduleId));
+        userRepositoryImpl.registerSchedule(scheduleId, schedule));
+    await fromCancelable(userRepositoryImpl.selectSchedule(scheduleId));
     status = ScheduleRegisterStatus.registerScheduleSuccess;
     notifyListeners();
   }
