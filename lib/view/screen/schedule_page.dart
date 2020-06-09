@@ -168,8 +168,6 @@ class FloatingActionButtons extends StatelessWidget {
                     final isUpdate = await Routes.goToScheduleEdit(
                         context, viewModel.schedule);
                     if (isUpdate != null && isUpdate) {
-                      debugPrint('Schedule Update: $isUpdate');
-                      // FIXME:実行されてるけど、更新されない（selectorでないから？）
                       await viewModel.executeFetchSelectSchedule();
                     }
                   }

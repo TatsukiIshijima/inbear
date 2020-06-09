@@ -43,6 +43,9 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
         .timeout(Duration(seconds: 5),
             onTimeout: () => throw TimeoutException(
                 'ScheduleRepository: updateSchedule Timeout.'));
+    // 更新後に取得する場合にキャッシュが残ったままだと、以前のデータを取得してしまうので
+    // キャッシュを削除
+    _scheduleCache.clear();
   }
 
   @override
