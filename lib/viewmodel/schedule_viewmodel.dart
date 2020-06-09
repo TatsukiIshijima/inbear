@@ -70,5 +70,6 @@ class ScheduleViewModel extends BaseViewModel {
     } on TimeoutException {
       isOwnerSchedule = false;
     }
+    notifyListeners();
   }
 }

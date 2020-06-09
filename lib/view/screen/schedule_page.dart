@@ -58,7 +58,6 @@ class SchedulePageBody extends StatelessWidget {
           case Status.timeoutError:
             return ReloadButton(onPressed: () async {
               await viewModel.executeFetchSelectSchedule();
-              await viewModel.checkScheduleOwner();
             });
           case ScheduleStatus.fetchSelectScheduleSuccess:
             return ScheduleDetail();
@@ -169,7 +168,9 @@ class FloatingActionButtons extends StatelessWidget {
                     final isUpdate = await Routes.goToScheduleEdit(
                         context, viewModel.schedule);
                     if (isUpdate != null && isUpdate) {
-                      // TODO:スケジュール表示の更新
+                      debugPrint('Schedule Update: $isUpdate');
+                      // FIXME:実行されてるけど、更新されない（selectorでないから？）
+                      await viewModel.executeFetchSelectSchedule();
                     }
                   }
                 },
