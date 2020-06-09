@@ -24,11 +24,7 @@ class SchedulePage extends StatelessWidget {
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
         body: SchedulePageBody(),
-        floatingActionButton: FloatingActionButton(
-          heroTag: 'AddSchedule',
-          onPressed: () => Routes.goToScheduleRegister(context),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: FloatingActionButtons(),
       ),
     );
   }
@@ -39,8 +35,10 @@ class SchedulePageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback(
-        (_) async => await viewModel.executeFetchSelectSchedule());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await viewModel.executeFetchSelectSchedule();
+      await viewModel.checkScheduleOwner();
+    });
     return Selector<ScheduleViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
@@ -58,10 +56,9 @@ class SchedulePageBody extends StatelessWidget {
             return CenteringErrorMessage(resource,
                 message: resource.noSelectScheduleError);
           case Status.timeoutError:
-            return ReloadButton(
-              onPressed: () async =>
-                  await viewModel.executeFetchSelectSchedule(),
-            );
+            return ReloadButton(onPressed: () async {
+              await viewModel.executeFetchSelectSchedule();
+            });
           case ScheduleStatus.fetchSelectScheduleSuccess:
             return ScheduleDetail();
           default:
@@ -149,5 +146,42 @@ class ScheduleDetail extends StatelessWidget {
                 ],
               ),
             )));
+  }
+}
+
+class FloatingActionButtons extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+    return Selector<ScheduleViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isOwnerSchedule,
+      builder: (context, isOwner, child) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          if (isOwner)
+            Container(
+              margin: EdgeInsets.only(bottom: 16.0),
+              child: FloatingActionButton(
+                heroTag: 'EditSchedule',
+                onPressed: () async {
+                  if (viewModel.schedule != null) {
+                    final isUpdate = await Routes.goToScheduleEdit(
+                        context, viewModel.schedule);
+                    if (isUpdate != null && isUpdate) {
+                      await viewModel.executeFetchSelectSchedule();
+                    }
+                  }
+                },
+                child: const Icon(Icons.edit),
+              ),
+            ),
+          FloatingActionButton(
+            heroTag: 'AddSchedule',
+            onPressed: () => Routes.goToScheduleRegister(context),
+            child: const Icon(Icons.add),
+          )
+        ],
+      ),
+    );
   }
 }

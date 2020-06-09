@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
@@ -9,13 +8,12 @@ import 'package:inbear_app/exception/database/firestore_exception.dart';
 import 'package:inbear_app/repository/schedule_repository_impl.dart';
 
 class ScheduleRepository implements ScheduleRepositoryImpl {
-  final FirebaseAuth _auth;
   final Firestore _db;
   final String _scheduleCollection = 'schedule';
   final String _participantSubCollection = 'participant';
   final String _imageSubCollection = 'image';
 
-  ScheduleRepository(this._auth, this._db);
+  ScheduleRepository(this._db);
 
   final Map<String, ScheduleEntity> _scheduleCache = {};
 
@@ -34,6 +32,20 @@ class ScheduleRepository implements ScheduleRepositoryImpl {
             onTimeout: () => throw TimeoutException(
                 'ScheduleRepository: registerSchedule Timeout.'));
     return document.documentID;
+  }
+
+  @override
+  Future<void> updateSchedule(ScheduleEntity schedule, UserEntity user) async {
+    await _db
+        .collection(_scheduleCollection)
+        .document(user.selectScheduleId)
+        .updateData(schedule.toMap())
+        .timeout(Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException(
+                'ScheduleRepository: updateSchedule Timeout.'));
+    // 更新後に取得する場合にキャッシュが残ったままだと、以前のデータを取得してしまうので
+    // キャッシュを削除
+    _scheduleCache.clear();
   }
 
   @override

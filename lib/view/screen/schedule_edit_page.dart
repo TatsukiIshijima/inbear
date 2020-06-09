@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/address_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
@@ -12,50 +13,51 @@ import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/input_field.dart';
 import 'package:inbear_app/view/widget/label.dart';
 import 'package:inbear_app/view/widget/round_button.dart';
+import 'package:inbear_app/viewmodel/schedule_edit_viewmodel.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../routes.dart';
+class ScheduleEditPage extends StatelessWidget {
+  final ScheduleEntity scheduleEntity;
 
-class ScheduleRegisterPage extends StatelessWidget {
+  ScheduleEditPage(this.scheduleEntity);
+
   @override
   Widget build(BuildContext context) {
-    final resource = AppLocalizations.of(context);
-    return BasePage<ScheduleRegisterViewModel>(
-      viewModel: ScheduleRegisterViewModel(
+    return BasePage<ScheduleEditViewModel>(
+      viewModel: ScheduleEditViewModel(
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false),
-          Provider.of<AddressRepository>(context, listen: false)),
+          Provider.of<AddressRepository>(context, listen: false),
+          scheduleEntity),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            resource.scheduleRegisterTitle,
-          ),
+          title: Text('スケジュール編集'),
           centerTitle: true,
         ),
-        body: ScheduleRegisterPageBody(),
+        body: ScheduleEditBody(),
       ),
     );
   }
 }
 
-class ScheduleRegisterPageBody extends StatelessWidget {
+class ScheduleEditBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Stack(
         children: <Widget>[
           SingleChildScrollView(
-            child: RegisterScheduleForm(),
+            child: ScheduleEditForm(),
           ),
-          RegisterAlertDialog()
+          UpdateScheduleAlertDialog(),
         ],
       ),
     );
   }
 }
 
-class RegisterScheduleForm extends StatelessWidget {
+class ScheduleEditForm extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _groomNameFocus = FocusNode();
   final _brideNameFocus = FocusNode();
@@ -66,8 +68,11 @@ class RegisterScheduleForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel =
-        Provider.of<ScheduleRegisterViewModel>(context, listen: false);
-    viewModel.setPostalCodeInputEvent();
+        Provider.of<ScheduleEditViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      viewModel.initForm();
+      viewModel.setPostalCodeInputEvent();
+    });
     return Container(
       margin: EdgeInsets.all(24),
       child: Form(
@@ -115,7 +120,7 @@ class RegisterScheduleForm extends StatelessWidget {
             ),
             RaisedButton(
               padding: EdgeInsets.all(20),
-              child: Selector<ScheduleRegisterViewModel, DateTime>(
+              child: Selector<ScheduleEditViewModel, DateTime>(
                 selector: (context, viewModel) => viewModel.scheduledDateTime,
                 builder: (context, dateTime, child) => Text(
                   dateTime == null
@@ -174,7 +179,7 @@ class RegisterScheduleForm extends StatelessWidget {
                   flex: 2,
                   child: Container(
                     height: 60,
-                    child: Selector<ScheduleRegisterViewModel, bool>(
+                    child: Selector<ScheduleEditViewModel, bool>(
                       selector: (context, viewModel) =>
                           viewModel.isPostalCodeFormat,
                       builder: (context, isPostalCodeFormat, child) =>
@@ -208,7 +213,7 @@ class RegisterScheduleForm extends StatelessWidget {
             const SizedBox(
               height: 24,
             ),
-            Selector<ScheduleRegisterViewModel, TextEditingController>(
+            Selector<ScheduleEditViewModel, TextEditingController>(
               selector: (context, viewModel) =>
                   viewModel.addressTextEditingController,
               builder: (context, textEditingController, child) => InputField(
@@ -230,7 +235,9 @@ class RegisterScheduleForm extends StatelessWidget {
               height: MediaQuery.of(context).size.width * (3 / 4),
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
-                    target: LatLng(35.681236, 139.767125), zoom: 17.0),
+                    target: LatLng(viewModel.scheduleEntity.geoPoint.latitude,
+                        viewModel.scheduleEntity.geoPoint.longitude),
+                    zoom: 17.0),
                 mapType: MapType.normal,
                 myLocationButtonEnabled: false,
                 onMapCreated: (mapController) =>
@@ -246,7 +253,7 @@ class RegisterScheduleForm extends StatelessWidget {
               backgroundColor: Colors.pink[200],
               onPressed: () async {
                 if (_formKey.currentState.validate()) {
-                  await viewModel.executeRegisterSchedule();
+                  await viewModel.executeUpdateSchedule();
                 }
               },
             ),
@@ -257,8 +264,8 @@ class RegisterScheduleForm extends StatelessWidget {
   }
 }
 
-class RegisterAlertDialog extends StatelessWidget {
-  void _showRegisterError(BuildContext context, String title, String message) {
+class UpdateScheduleAlertDialog extends StatelessWidget {
+  void _showUpdateError(BuildContext context, String title, String message) {
     final resource = AppLocalizations.of(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       showDialog<DefaultDialog>(
@@ -275,37 +282,37 @@ class RegisterAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
-    return Selector<ScheduleRegisterViewModel, Status>(
+    return Selector<ScheduleEditViewModel, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
         switch (status) {
-          case ScheduleRegisterStatus.registerScheduleSuccess:
+          case ScheduleEditStatus.updateScheduleSuccess:
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
+              Navigator.pop(context, true);
             });
             break;
           case ScheduleRegisterStatus.unSelectDateError:
-            _showRegisterError(context, resource.inputFormErrorTitle,
+            _showUpdateError(context, resource.inputFormErrorTitle,
                 resource.unselectDateError);
             break;
           case ScheduleRegisterStatus.invalidPostalCodeError:
-            _showRegisterError(context, resource.inputFormErrorTitle,
+            _showUpdateError(context, resource.inputFormErrorTitle,
                 resource.invalidPostalCodeError);
             break;
           case ScheduleRegisterStatus.unableSearchAddressError:
-            _showRegisterError(context, resource.generalErrorTitle,
+            _showUpdateError(context, resource.generalErrorTitle,
                 resource.unableSearchAddressError);
             break;
           case ScheduleRegisterStatus.overDailyLimitError:
-            _showRegisterError(context, resource.generalErrorTitle,
+            _showUpdateError(context, resource.generalErrorTitle,
                 resource.overDailyLimitError);
             break;
           case ScheduleRegisterStatus.requestDeniedError:
-            _showRegisterError(context, resource.generalErrorTitle,
+            _showUpdateError(context, resource.generalErrorTitle,
                 resource.requestDeniedError);
             break;
           case ScheduleRegisterStatus.invalidRequestError:
-            _showRegisterError(context, resource.generalErrorTitle,
+            _showUpdateError(context, resource.generalErrorTitle,
                 resource.invalidRequestError);
             break;
         }
