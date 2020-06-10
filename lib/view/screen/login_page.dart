@@ -53,6 +53,8 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<LoginViewModel>(context, listen: false);
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) async => await viewModel.loadEmail());
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 24),
         child: Form(
@@ -67,15 +69,20 @@ class LoginForm extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              InputField(
-                resource.emailLabelText,
-                viewModel.emailTextEditingController,
-                maxLength: 32,
-                textInputType: TextInputType.emailAddress,
-                validator: (text) => text.isEmpty ? resource.emptyError : null,
-                focusNode: _emailFocus,
-                onFieldSubmitted: (text) =>
-                    FocusScope.of(context).requestFocus(_passwordFocus),
+              Selector<LoginViewModel, TextEditingController>(
+                selector: (context, viewModel) =>
+                    viewModel.emailTextEditingController,
+                builder: (context, textEditController, child) => InputField(
+                  resource.emailLabelText,
+                  textEditController,
+                  maxLength: 32,
+                  textInputType: TextInputType.emailAddress,
+                  validator: (text) =>
+                      text.isEmpty ? resource.emptyError : null,
+                  focusNode: _emailFocus,
+                  onFieldSubmitted: (text) =>
+                      FocusScope.of(context).requestFocus(_passwordFocus),
+                ),
               ),
               const SizedBox(
                 height: 30,
