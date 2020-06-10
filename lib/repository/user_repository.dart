@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:inbear_app/datasource/person_datasource_impl.dart';
 import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
 import 'package:inbear_app/exception/auth/auth_exception.dart';
@@ -24,12 +25,13 @@ const networkRequestFailed = 'ERROR_NETWORK_REQUEST_FAILED';
 class UserRepository implements UserRepositoryImpl {
   final FirebaseAuth _auth;
   final Firestore _db;
+  final PersonDataSourceImpl _personDataSourceImpl;
   final String _userCollection = 'user';
   final String _scheduleSubCollection = 'schedule';
 
   final Map<String, UserEntity> _userCache = {};
 
-  UserRepository(this._auth, this._db);
+  UserRepository(this._auth, this._db, this._personDataSourceImpl);
 
   void _rethrowAuthException(String errorCode) {
     switch (errorCode) {
@@ -134,6 +136,16 @@ class UserRepository implements UserRepositoryImpl {
       debugPrint('UserRepository: sendPasswordResetEmail Error: $errorCode');
       _rethrowAuthException(errorCode);
     }
+  }
+
+  @override
+  Future<String> loadEmailAddress() async {
+    return await _personDataSourceImpl.loadEmailAddress();
+  }
+
+  @override
+  Future<void> saveEmailAddress(String emailAddress) async {
+    await _personDataSourceImpl.saveEmailAddress(emailAddress);
   }
 
   @override
