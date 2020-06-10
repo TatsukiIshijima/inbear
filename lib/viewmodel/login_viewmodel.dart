@@ -41,6 +41,7 @@ class LoginViewModel extends BaseViewModel {
     try {
       await fromCancelable(_userRepository.signIn(
           emailTextEditingController.text, passwordTextEditingController.text));
+      await _userRepository.saveEmailAddress(emailTextEditingController.text);
       status = LoginStatus.loginSuccess;
     } on InvalidEmailException {
       status = AuthStatus.invalidEmailError;
@@ -53,6 +54,15 @@ class LoginViewModel extends BaseViewModel {
     } on TooManyRequestException {
       status = Status.tooManyRequestsError;
     }
+    notifyListeners();
+  }
+
+  Future<void> loadEmail() async {
+    final email = await _userRepository.loadEmailAddress();
+    if (email.isEmpty) {
+      return;
+    }
+    emailTextEditingController.text = email;
     notifyListeners();
   }
 

@@ -42,6 +42,15 @@ class ResetPasswordViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  Future<void> loadEmail() async {
+    final email = await _userRepository.loadEmailAddress();
+    if (email.isEmpty) {
+      return;
+    }
+    emailTextEditingController.text = email;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     emailTextEditingController.dispose();

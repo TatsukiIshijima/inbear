@@ -11,6 +11,8 @@ abstract class UserRepositoryImpl {
   Future<void> signOut();
   Future<bool> isSignIn();
   Future<void> sendPasswordResetEmail(String email);
+  Future<String> loadEmailAddress();
+  Future<void> saveEmailAddress(String emailAddress);
   Future<String> getUid();
   Future<UserEntity> fetchUser();
   Future<void> registerSchedule(

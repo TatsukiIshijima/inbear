@@ -47,7 +47,10 @@ dependencies:
   extended_image: ^0.7.3+1
   # pedantic
   pedantic: ^1.9.0
+  # async
   async: ^2.4.1
+  # Shared Preference
+  shared_preferences: ^0.5.7+3
 
 dev_dependencies:
   flutter_test:

@@ -56,6 +56,8 @@ class ResetPasswordForm extends StatelessWidget {
     final viewModel =
         Provider.of<ResetPasswordViewModel>(context, listen: false);
     final resource = AppLocalizations.of(context);
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) async => await viewModel.loadEmail());
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 24),
       child: Form(
@@ -76,14 +78,18 @@ class ResetPasswordForm extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            InputField(
-              resource.emailLabelText,
-              viewModel.emailTextEditingController,
-              maxLength: 32,
-              textInputType: TextInputType.emailAddress,
-              validator: (text) => text.isEmpty ? resource.emptyError : null,
-              focusNode: _emailFocus,
-              onFieldSubmitted: (text) => _emailFocus.unfocus(),
+            Selector<ResetPasswordViewModel, TextEditingController>(
+              selector: (context, viewModel) =>
+                  viewModel.emailTextEditingController,
+              builder: (context, textEditController, child) => InputField(
+                resource.emailLabelText,
+                textEditController,
+                maxLength: 32,
+                textInputType: TextInputType.emailAddress,
+                validator: (text) => text.isEmpty ? resource.emptyError : null,
+                focusNode: _emailFocus,
+                onFieldSubmitted: (text) => _emailFocus.unfocus(),
+              ),
             ),
             const SizedBox(
               height: 30,

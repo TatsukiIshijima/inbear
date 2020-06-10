@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:inbear_app/api/address_search_api.dart';
 import 'package:inbear_app/api/geocode_api.dart';
 import 'package:inbear_app/datasource/image_datasource.dart';
+import 'package:inbear_app/datasource/person_datasource.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/localize/fallback_cupertino_localizations_delegate.dart';
@@ -41,6 +42,7 @@ void main() {
   // TODO:APIKeyの切り替え
   final _geoCodeApi = GeoCodeApi(googleApiKey);
   final _imageDataSource = ImageDataSource(_firebaseStorage);
+  final _personDataSource = PersonDataSource();
 
   runApp(
       // アプリ全体で必要なものをProvider.createで生成,
@@ -48,7 +50,8 @@ void main() {
       MultiProvider(
     providers: [
       Provider(
-        create: (context) => UserRepository(_firebaseAuth, _firestore),
+        create: (context) =>
+            UserRepository(_firebaseAuth, _firestore, _personDataSource),
       ),
       Provider(
         create: (context) => ScheduleRepository(_firestore),

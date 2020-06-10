@@ -40,6 +40,7 @@ class UserRegisterViewModel extends BaseViewModel {
       await fromCancelable(
           _userRepository.insertNewUser(user, nameTextEditingController.text),
           onCancel: () => user.delete());
+      await _userRepository.saveEmailAddress(emailTextEditingController.text);
       status = UserRegisterStatus.registerSuccess;
     } on WeakPasswordException {
       status = AuthStatus.weakPasswordError;
