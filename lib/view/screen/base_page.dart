@@ -49,7 +49,7 @@ class OverlayLoading<T extends BaseViewModel> extends StatelessWidget {
     return Selector<T, Status>(
       selector: (context, viewModel) => viewModel.status,
       builder: (context, status, child) {
-        debugPrint('Status: $status');
+        debugPrint('Status<${T.toString()}>: $status');
         switch (status) {
           case Status.loading:
             return Container(
