@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
@@ -10,6 +12,7 @@ import 'package:inbear_app/view/screen/user_search_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
+import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -76,10 +79,17 @@ class ParticipantList extends StatelessWidget {
             return Container();
           default:
             if (snapshot.hasError) {
-              return CenteringErrorMessage(
-                resource,
-                exception: snapshot.error,
-              );
+              if (snapshot.error is TimeoutException) {
+                return ReloadButton(
+                  onPressed: () async =>
+                      await viewModel.executeFetchParticipantsStart(),
+                );
+              } else {
+                return CenteringErrorMessage(
+                  resource,
+                  exception: snapshot.error,
+                );
+              }
             } else if (!snapshot.hasData) {
               return CenteringErrorMessage(resource,
                   message: resource.participantsEmptyErrorMessage);

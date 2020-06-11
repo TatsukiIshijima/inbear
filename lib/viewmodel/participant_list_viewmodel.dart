@@ -91,6 +91,9 @@ class ParticipantListViewModel extends BaseViewModel {
     } on ParticipantsEmptyException {
       participantsSink.addError(ParticipantsEmptyException());
       status = Status.none;
+    } on TimeoutException {
+      participantsSink.addError(TimeoutException(''));
+      status = Status.none;
     }
     notifyListeners();
   }
