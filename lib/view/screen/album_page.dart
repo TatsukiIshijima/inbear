@@ -13,7 +13,6 @@ import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
@@ -86,7 +85,7 @@ class AlbumGridView extends StatelessWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Center(child: Loading());
+              return Container();
             default:
               if (snapshot.hasError) {
                 if (snapshot.error is TimeoutException) {
