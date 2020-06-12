@@ -15,9 +15,16 @@ import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 
-class SchedulePage extends StatelessWidget {
+class SchedulePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => SchedulePageState();
+}
+
+class SchedulePageState extends State<SchedulePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BasePage<ScheduleViewModel>(
       viewModel: ScheduleViewModel(
           Provider.of<UserRepository>(context, listen: false),
@@ -28,6 +35,9 @@ class SchedulePage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class SchedulePageBody extends StatelessWidget {

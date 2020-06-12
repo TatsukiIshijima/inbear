@@ -13,15 +13,21 @@ import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
-import 'package:inbear_app/view/widget/loading.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class AlbumPage extends StatelessWidget {
+class AlbumPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => AlbumPageState();
+}
+
+class AlbumPageState extends State<AlbumPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BasePage(
       viewModel: AlbumViewModel(
         Provider.of<UserRepository>(context, listen: false),
@@ -31,6 +37,9 @@ class AlbumPage extends StatelessWidget {
       child: AlbumPageContent(),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class AlbumPageContent extends StatelessWidget {
@@ -76,7 +85,7 @@ class AlbumGridView extends StatelessWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return Center(child: Loading());
+              return Container();
             default:
               if (snapshot.hasError) {
                 if (snapshot.error is TimeoutException) {

@@ -16,9 +16,16 @@ import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-class ParticipantListPage extends StatelessWidget {
+class ParticipantListPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => ParticipantListPageState();
+}
+
+class ParticipantListPageState extends State<ParticipantListPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BasePage<ParticipantListViewModel>(
       viewModel: ParticipantListViewModel(
           Provider.of<UserRepository>(context, listen: false),
@@ -29,6 +36,9 @@ class ParticipantListPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class ParticipantListPageBody extends StatelessWidget {
