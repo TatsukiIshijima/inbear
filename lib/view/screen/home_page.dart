@@ -13,7 +13,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage<HomeViewModel>(
       viewModel: HomeViewModel(),
-      // FIXME:SafeAreaで囲むとAndroidでStatusBarが黒くなるので一時的にSafeArea解除、Stackが原因か！？
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -48,10 +47,11 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomeViewModel, int>(
-      selector: (context, viewModel) => viewModel.selectIndex,
-      builder: (context, index, child) =>
-          IndexedStack(index: index, children: _pages),
+    final viewModel = Provider.of<HomeViewModel>(context, listen: false);
+    return PageView(
+      controller: viewModel.pageController,
+      onPageChanged: (index) => viewModel.updateIndex(index),
+      children: _pages,
     );
   }
 }
@@ -77,7 +77,7 @@ class HomePageBottomNavigationBar extends StatelessWidget {
               BottomNavigationBarItem(
                   icon: Icon(Icons.settings), title: Text('設定'))
             ],
-            onTap: (index) => viewModel.updateIndex(index));
+            onTap: (index) => viewModel.jumpToPage(index));
       },
     );
   }

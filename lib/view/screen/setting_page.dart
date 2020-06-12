@@ -10,9 +10,16 @@ import 'package:provider/provider.dart';
 
 import '../../routes.dart';
 
-class SettingPage extends StatelessWidget {
+class SettingPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => SettingPageState();
+}
+
+class SettingPageState extends State<SettingPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BasePage<SettingViewModel>(
       viewModel:
           SettingViewModel(Provider.of<UserRepository>(context, listen: false)),
@@ -20,6 +27,9 @@ class SettingPage extends StatelessWidget {
       child: SettingPageContent(),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class SettingPageContent extends StatelessWidget {
