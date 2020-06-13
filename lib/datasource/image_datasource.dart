@@ -10,10 +10,10 @@ class ImageDataSource implements ImageDataSourceImpl {
 
   ImageDataSource(this._storage);
 
-  static const _originalImageQuality = 75;
+  static const _originalImageQuality = 60;
   static const _originalDefaultWidth = 720;
   static const _originalDefaultHeight = 1280;
-  static const _thumbnailImageQuality = 75;
+  static const _thumbnailImageQuality = 60;
   static const _thumbnailDefaultWidth = 270;
   static const _thumbnailDefaultHeight = 480;
 
@@ -35,6 +35,11 @@ class ImageDataSource implements ImageDataSourceImpl {
     ByteData originalByteData;
     ByteData thumbnailByteData;
 
+    final originalReference =
+        _storage.ref().child('$documentId/original/$uuid.jpg');
+    final thumbnailReference =
+        _storage.ref().child('$documentId/thumbnail/$uuid-thumb.jpg');
+
     if (asset.originalWidth >= asset.originalHeight) {
       originalByteData = await asset.getThumbByteData(
           _originalDefaultHeight, _originalDefaultWidth,
@@ -52,35 +57,35 @@ class ImageDataSource implements ImageDataSourceImpl {
     }
 
     final originalData = originalByteData.buffer.asUint8List();
-    final originalReference =
-        _storage.ref().child('$documentId/original/$uuid.jpg');
-
     final thumbnailData = thumbnailByteData.buffer.asUint8List();
-    final thumbnailReference =
-        _storage.ref().child('$documentId/thumbnail/$uuid-thumb.jpg');
 
     final originalUploadTask =
         originalReference.putData(originalData, metadata);
     final thumbnailUploadTask =
         thumbnailReference.putData(thumbnailData, metadata);
-    final originalUploadTaskSnapshot = await originalUploadTask.onComplete;
-    var originalUrl = '';
-    if (originalUploadTaskSnapshot.error == null) {
-      originalUrl =
-          await originalUploadTaskSnapshot.ref.getDownloadURL() as String;
-    } else {
-      throw UploadImageException(originalUploadTaskSnapshot.error);
+
+    final uploadFutures = Future.wait<StorageTaskSnapshot>(
+        [originalUploadTask.onComplete, thumbnailUploadTask.onComplete]);
+    final uploadTaskResults = await uploadFutures;
+
+    if (uploadTaskResults[0].error != null) {
+      throw UploadImageException(uploadTaskResults[0].error);
     }
-    var thumbnailUrl = '';
-    final thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
-    if (thumbnailUploadTaskSnapshot.error == null) {
-      thumbnailUrl =
-          await thumbnailUploadTaskSnapshot.ref.getDownloadURL() as String;
-    } else {
-      await deleteImage(originalUrl);
-      throw UploadImageException(thumbnailUploadTaskSnapshot.error);
+    if (uploadTaskResults[1].error != null) {
+      throw UploadImageException(uploadTaskResults[1].error);
     }
-    return {_originalUrlKey: originalUrl, _thumbnailUrlKey: thumbnailUrl};
+
+    final getOriginalUrlTask = uploadTaskResults[0].ref.getDownloadURL();
+    final getThumbnailUrlTask = uploadTaskResults[1].ref.getDownloadURL();
+
+    final getUrlFutures =
+        Future.wait<dynamic>([getOriginalUrlTask, getThumbnailUrlTask]);
+    final getUrlTaskResults = await getUrlFutures;
+
+    return {
+      _originalUrlKey: getUrlTaskResults[0] as String,
+      _thumbnailUrlKey: getUrlTaskResults[1] as String
+    };
   }
 
   @override
