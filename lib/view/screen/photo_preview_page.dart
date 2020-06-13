@@ -115,12 +115,15 @@ class PhotoImage extends StatelessWidget {
         itemBuilder: (context, index) {
           final imageEntity =
               ImageEntity.fromMap(documentSnapshots[index].data);
-          return ExtendedImage.network(
-            imageEntity.originalUrl,
-            fit: BoxFit.contain,
-            mode: ExtendedImageMode.gesture,
-            initGestureConfigHandler: (state) => GestureConfig(
-                inPageView: true, initialScale: 1.0, cacheGesture: true),
+          return Container(
+            constraints: BoxConstraints.expand(),
+            child: ExtendedImage.network(
+              imageEntity.originalUrl,
+              fit: BoxFit.fitWidth,
+              mode: ExtendedImageMode.gesture,
+              initGestureConfigHandler: (state) => GestureConfig(
+                  inPageView: true, initialScale: 1.0, cacheGesture: true),
+            ),
           );
         },
         itemCount: documentSnapshots.length,
