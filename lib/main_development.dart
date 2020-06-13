@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:inbear_app/flavor.dart';
 import 'package:inbear_app/inbear_app.dart';
@@ -11,7 +11,7 @@ void main() {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
   runApp(Provider<Flavor>.value(
-    value: Flavor.production,
+    value: Flavor.development,
     child: InbearApp(),
   ));
 }
