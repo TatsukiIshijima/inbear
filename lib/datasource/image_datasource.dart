@@ -1,5 +1,4 @@
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/services.dart';
 import 'package:inbear_app/datasource/image_datasource_impl.dart';
 import 'package:inbear_app/exception/storage/firebase_storage_exception.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -10,10 +9,8 @@ class ImageDataSource implements ImageDataSourceImpl {
 
   ImageDataSource(this._storage);
 
-  static const _originalImageQuality = 60;
   static const _originalDefaultWidth = 720;
   static const _originalDefaultHeight = 1280;
-  static const _thumbnailImageQuality = 60;
   static const _thumbnailDefaultWidth = 270;
   static const _thumbnailDefaultHeight = 480;
 
@@ -31,30 +28,28 @@ class ImageDataSource implements ImageDataSourceImpl {
       String documentId, Asset asset) async {
     final uuid = Uuid().v4();
     final metadata = StorageMetadata(contentType: 'image/jpeg');
-
-    ByteData originalByteData;
-    ByteData thumbnailByteData;
-
     final originalReference =
         _storage.ref().child('$documentId/original/$uuid.jpg');
     final thumbnailReference =
         _storage.ref().child('$documentId/thumbnail/$uuid-thumb.jpg');
 
+    var originalWidth = _originalDefaultWidth;
+    var originalHeight = _originalDefaultHeight;
+    var thumbnailWidth = _thumbnailDefaultWidth;
+    var thumbnailHeight = _thumbnailDefaultHeight;
+
     if (asset.originalWidth >= asset.originalHeight) {
-      originalByteData = await asset.getThumbByteData(
-          _originalDefaultHeight, _originalDefaultWidth,
-          quality: _originalImageQuality);
-      thumbnailByteData = await asset.getThumbByteData(
-          _thumbnailDefaultHeight, _thumbnailDefaultWidth,
-          quality: _thumbnailImageQuality);
-    } else {
-      originalByteData = await asset.getThumbByteData(
-          _originalDefaultWidth, _originalDefaultHeight,
-          quality: _originalImageQuality);
-      thumbnailByteData = await asset.getThumbByteData(
-          _thumbnailDefaultWidth, _thumbnailDefaultHeight,
-          quality: _thumbnailImageQuality);
+      originalWidth = _originalDefaultHeight;
+      originalHeight = _originalDefaultWidth;
+      thumbnailWidth = _thumbnailDefaultHeight;
+      thumbnailHeight = _thumbnailDefaultWidth;
     }
+
+    // FIXME:ここはwaitが使えない!?
+    final originalByteData =
+        await asset.getThumbByteData(originalWidth, originalHeight);
+    final thumbnailByteData =
+        await asset.getThumbByteData(thumbnailWidth, thumbnailHeight);
 
     final originalData = originalByteData.buffer.asUint8List();
     final thumbnailData = thumbnailByteData.buffer.asUint8List();
@@ -64,9 +59,9 @@ class ImageDataSource implements ImageDataSourceImpl {
     final thumbnailUploadTask =
         thumbnailReference.putData(thumbnailData, metadata);
 
-    final uploadFutures = Future.wait<StorageTaskSnapshot>(
+    final uploadTasks = Future.wait(
         [originalUploadTask.onComplete, thumbnailUploadTask.onComplete]);
-    final uploadTaskResults = await uploadFutures;
+    final uploadTaskResults = await uploadTasks;
 
     if (uploadTaskResults[0].error != null) {
       throw UploadImageException(uploadTaskResults[0].error);
@@ -78,9 +73,9 @@ class ImageDataSource implements ImageDataSourceImpl {
     final getOriginalUrlTask = uploadTaskResults[0].ref.getDownloadURL();
     final getThumbnailUrlTask = uploadTaskResults[1].ref.getDownloadURL();
 
-    final getUrlFutures =
+    final getUrlTasks =
         Future.wait<dynamic>([getOriginalUrlTask, getThumbnailUrlTask]);
-    final getUrlTaskResults = await getUrlFutures;
+    final getUrlTaskResults = await getUrlTasks;
 
     return {
       _originalUrlKey: getUrlTaskResults[0] as String,
