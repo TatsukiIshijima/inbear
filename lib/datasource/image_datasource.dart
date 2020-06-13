@@ -9,9 +9,10 @@ class ImageDataSource implements ImageDataSourceImpl {
 
   ImageDataSource(this._storage);
 
-  static const _originalImageQuality = 50;
-  static const _thumbnailImageQuality = 30;
-  static const _thumbnailImageRate = 0.2;
+  static const _originalDefaultWidth = 720;
+  static const _originalDefaultHeight = 1280;
+  static const _thumbnailDefaultWidth = 270;
+  static const _thumbnailDefaultHeight = 480;
 
   static const _originalUrlKey = 'original_url';
   static const _thumbnailUrlKey = 'thumbnail_url';
@@ -27,40 +28,59 @@ class ImageDataSource implements ImageDataSourceImpl {
       String documentId, Asset asset) async {
     final uuid = Uuid().v4();
     final metadata = StorageMetadata(contentType: 'image/jpeg');
-    final originalByteData =
-        await asset.getByteData(quality: _originalImageQuality);
-    final originalData = originalByteData.buffer.asUint8List();
     final originalReference =
         _storage.ref().child('$documentId/original/$uuid.jpg');
-    final thumbnailByteData = await asset.getThumbByteData(
-        (asset.originalWidth * _thumbnailImageRate).round(),
-        (asset.originalHeight * _thumbnailImageRate).round(),
-        quality: _thumbnailImageQuality);
-    final thumbnailData = thumbnailByteData.buffer.asUint8List();
     final thumbnailReference =
         _storage.ref().child('$documentId/thumbnail/$uuid-thumb.jpg');
+
+    var originalWidth = _originalDefaultWidth;
+    var originalHeight = _originalDefaultHeight;
+    var thumbnailWidth = _thumbnailDefaultWidth;
+    var thumbnailHeight = _thumbnailDefaultHeight;
+
+    if (asset.originalWidth >= asset.originalHeight) {
+      originalWidth = _originalDefaultHeight;
+      originalHeight = _originalDefaultWidth;
+      thumbnailWidth = _thumbnailDefaultHeight;
+      thumbnailHeight = _thumbnailDefaultWidth;
+    }
+
+    // FIXME:ここはwaitが使えない!?
+    final originalByteData =
+        await asset.getThumbByteData(originalWidth, originalHeight);
+    final thumbnailByteData =
+        await asset.getThumbByteData(thumbnailWidth, thumbnailHeight);
+
+    final originalData = originalByteData.buffer.asUint8List();
+    final thumbnailData = thumbnailByteData.buffer.asUint8List();
+
     final originalUploadTask =
         originalReference.putData(originalData, metadata);
     final thumbnailUploadTask =
         thumbnailReference.putData(thumbnailData, metadata);
-    final originalUploadTaskSnapshot = await originalUploadTask.onComplete;
-    var originalUrl = '';
-    if (originalUploadTaskSnapshot.error == null) {
-      originalUrl =
-          await originalUploadTaskSnapshot.ref.getDownloadURL() as String;
-    } else {
-      throw UploadImageException(originalUploadTaskSnapshot.error);
+
+    final uploadTasks = Future.wait(
+        [originalUploadTask.onComplete, thumbnailUploadTask.onComplete]);
+    final uploadTaskResults = await uploadTasks;
+
+    if (uploadTaskResults[0].error != null) {
+      throw UploadImageException(uploadTaskResults[0].error);
     }
-    var thumbnailUrl = '';
-    final thumbnailUploadTaskSnapshot = await thumbnailUploadTask.onComplete;
-    if (thumbnailUploadTaskSnapshot.error == null) {
-      thumbnailUrl =
-          await thumbnailUploadTaskSnapshot.ref.getDownloadURL() as String;
-    } else {
-      await deleteImage(originalUrl);
-      throw UploadImageException(thumbnailUploadTaskSnapshot.error);
+    if (uploadTaskResults[1].error != null) {
+      throw UploadImageException(uploadTaskResults[1].error);
     }
-    return {_originalUrlKey: originalUrl, _thumbnailUrlKey: thumbnailUrl};
+
+    final getOriginalUrlTask = uploadTaskResults[0].ref.getDownloadURL();
+    final getThumbnailUrlTask = uploadTaskResults[1].ref.getDownloadURL();
+
+    final getUrlTasks =
+        Future.wait<dynamic>([getOriginalUrlTask, getThumbnailUrlTask]);
+    final getUrlTaskResults = await getUrlTasks;
+
+    return {
+      _originalUrlKey: getUrlTaskResults[0] as String,
+      _thumbnailUrlKey: getUrlTaskResults[1] as String
+    };
   }
 
   @override

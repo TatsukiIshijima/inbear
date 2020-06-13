@@ -96,7 +96,6 @@ class AlbumViewModel extends BaseViewModel {
         notifyListeners();
         return;
       }
-      // FIXME:バッチより処理がどうしても遅くなる
       for (final image in pickUpImages) {
         final uploadUrls = await fromCancelable(
                 _imageRepositoryImpl.uploadImage(user.selectScheduleId, image))
