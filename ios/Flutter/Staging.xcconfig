@@ -1,0 +1,4 @@
+FLUTTER_FLAVOR=Staging
+PRODUCT_BUNDLE_IDENTIFIER=com.inbear.inbear-app.stg
+DISPLAY_NAME=stg inbear
+FLUTTER_TARGET=lib/main_staging.dart

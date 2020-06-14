@@ -464,6 +464,6 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
 
-PODFILE CHECKSUM: 27c401570c54aadc9e90e45f4f20665ca5c6e909
+PODFILE CHECKSUM: d1d277c022df225091b51a4b0dbcbac4411804cb
 
 COCOAPODS: 1.9.1
