@@ -53,6 +53,11 @@ android {
             applicationIdSuffix ".dev"
             versionNameSuffix ".dev"
         }
+        staging {
+            dimension "default"
+            applicationIdSuffix ".stg"
+            versionNameSuffix ".stg"
+        }
         production {
             dimension "default"
         }
