@@ -1,4 +1,4 @@
 FLUTTER_FLAVOR=Development
 PRODUCT_BUNDLE_IDENTIFIER=com.inbear.inbear-app.dev
 DISPLAY_NAME=dev inbear
-FLUTTER_TARGET=lib/main.dart
+FLUTTER_TARGET=lib/main_development.dart
