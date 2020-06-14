@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,16 +18,18 @@ class ParticipantItem extends StatelessWidget {
 
   Widget _button(String text, VoidCallback onPressed) {
     return RaisedButton(
-        onPressed: () => onPressed(),
-        child: Text(
-          text,
-          style: TextStyle(color: Color(0xfff48fb1)),
-        ),
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          side: BorderSide(color: Color(0xfff48fb1)),
-        ));
+      onPressed: () => onPressed(),
+      child: AutoSizeText(
+        text,
+        maxLines: 1,
+        style: TextStyle(color: Color(0xfff48fb1)),
+      ),
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        side: BorderSide(color: Color(0xfff48fb1)),
+      ),
+    );
   }
 
   @override
@@ -37,46 +40,57 @@ class ParticipantItem extends StatelessWidget {
         // アイコンが中央寄せにならなかったため、カスタムして作成
         child: Row(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: const Icon(
-                Icons.person,
-                color: Colors.grey,
-                size: 30,
+            Expanded(
+              flex: 8,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.grey,
+                      size: 30,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        AutoSizeText(
+                          userName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        AutoSizeText(
+                          email,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  )
+                ],
               ),
             ),
-            SizedBox(
-              width: 10,
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  userName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-            Flexible(
-              fit: FlexFit.tight,
-              child: SizedBox(),
-            ),
-            if (showAddButton) _button('追加', () => addButtonClick()),
-            if (showDeleteButton) _button('削除', () => deleteButtonClick()),
+            if (showAddButton)
+              Expanded(flex: 2, child: _button('追加', () => addButtonClick())),
+            if (showDeleteButton)
+              Expanded(
+                  flex: 2, child: _button('削除', () => deleteButtonClick())),
           ],
         ));
   }
