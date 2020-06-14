@@ -59,6 +59,9 @@ class PhotoPreviewPageContent extends StatelessWidget {
     final resource = AppLocalizations.of(context);
     final viewModel =
         Provider.of<PhotoPreviewViewModel>(context, listen: false);
+    // プレビュー画面へ遷移したときに現在のインデックスになるよう更新
+    WidgetsBinding.instance.addPostFrameCallback(
+        (timeStamp) => viewModel.updateIndex(currentIndex));
     return Scaffold(
       appBar: AppBar(
         title: Text(resource.photoPreviewTitle),
@@ -75,13 +78,14 @@ class PhotoPreviewPageContent extends StatelessWidget {
                   if (snapshot.data) {
                     return IconButton(
                         icon: Icon(Icons.delete),
-                        onPressed: () => _showDeleteConfirmDialog(
-                            context,
-                            () async => await viewModel.executeDeleteImage(
-                                documentSnapshots[currentIndex])));
-                  } else {
-                    return Container();
+                        onPressed: () {
+                          _showDeleteConfirmDialog(
+                              context,
+                              () async => await viewModel.executeDeleteImage(
+                                  documentSnapshots[currentIndex]));
+                        });
                   }
+                  return Container();
                 },
               );
             },
