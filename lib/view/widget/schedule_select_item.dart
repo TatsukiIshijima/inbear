@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,10 +18,10 @@ class ScheduleSelectItem extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: ListTile(
             leading: const Icon(Icons.people),
-            title: Text(
+            title: AutoSizeText(
               pairName,
               maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+              //overflow: TextOverflow.ellipsis,
             ),
             trailing: isSelect
                 ? Icon(
