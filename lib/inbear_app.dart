@@ -34,6 +34,9 @@ class InbearApp extends StatelessWidget {
       case Flavor.development:
         googleApiKey = ApiKeys.devGoogleApiKey;
         break;
+      case Flavor.staging:
+        googleApiKey = ApiKeys.stgGoogleApiKey;
+        break;
       case Flavor.production:
         googleApiKey = ApiKeys.prodGoogleApiKey;
         break;

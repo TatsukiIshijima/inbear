@@ -9,7 +9,18 @@ import GoogleMaps
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    let googleMapApiKey = Flavor.current == .development ? googleMapApiKeyDev : googleMapApiKeyProd
+    var googleMapApiKey = googleMapApiKeyDev
+    switch Flavor.current {
+    case .production:
+        googleMapApiKey = googleMapApiKeyProd
+        break
+    case .staging:
+        googleMapApiKey = googleMapApiKeyStg
+        break
+    default:
+        googleMapApiKey = googleMapApiKeyDev
+        break;
+    }
     GMSServices.provideAPIKey(googleMapApiKey)
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

@@ -1,1 +1,1 @@
-enum Flavor { development, production }
+enum Flavor { development, staging, production }

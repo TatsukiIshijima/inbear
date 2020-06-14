@@ -7,7 +7,7 @@
 import Foundation
 
 enum Flavor: String, CaseIterable {
-    case development, production
+    case development, staging, production
 
     static let current: Flavor = {
         let value = Bundle.main.infoDictionary?["FlutterFlavor"]
