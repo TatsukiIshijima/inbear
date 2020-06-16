@@ -13,3 +13,8 @@ google-services.json
 app/src/development/res/values/string.xml
 app/src/production/res/values/string.xml
 app/src/staging/res/values/string.xml
+
+# keystore
+*.keystore
+*.keystore.old
+key.properties
