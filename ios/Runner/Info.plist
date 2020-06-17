@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>位置を検索するために使用します。</string>
+	<key>NSCameraUsageDescription</key>
+	<string>写真を撮影するためにこのアプリはカメラにアクセスする必要があります。</string>
 	<key>FlutterFlavor</key>
 	<string>$(FLUTTER_FLAVOR)</string>
 	<key>CFBundleDisplayName</key>
@@ -48,6 +52,6 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>アップロードする写真を選択するためにこのアプリは写真にアクセスする必要がります。</string>
+	<string>アップロードする写真を選択するためにこのアプリは写真にアクセスする必要があります。</string>
 </dict>
 </plist>
