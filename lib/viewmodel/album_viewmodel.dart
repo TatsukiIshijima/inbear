@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/entity/image_entity.dart';
 import 'package:inbear_app/entity/user_entity.dart';
+import 'package:inbear_app/exception/auth/auth_exception.dart';
 import 'package:inbear_app/exception/database/firestore_exception.dart';
 import 'package:inbear_app/exception/storage/firebase_storage_exception.dart';
 import 'package:inbear_app/repository/image_repository_impl.dart';
@@ -48,6 +49,7 @@ class AlbumViewModel extends BaseViewModel {
       _imagesStreamController.sink;
 
   DocumentSnapshot _lastSnapshot;
+  bool isSelectedSchedule = false;
   bool _isLoading = false;
 
   @override
@@ -200,5 +202,19 @@ class AlbumViewModel extends BaseViewModel {
       status = Status.none;
     }
     notifyListeners();
+  }
+
+  Future<void> checkSelectedSchedule() async {
+    try {
+      final user =
+          await fromCancelable(_userRepositoryImpl.fetchUser()) as UserEntity;
+      isSelectedSchedule = user.selectScheduleId.isNotEmpty;
+    } on UnLoginException {
+      isSelectedSchedule = false;
+    } on UserDocumentNotExistException {
+      isSelectedSchedule = false;
+    } on TimeoutException {
+      isSelectedSchedule = false;
+    }
   }
 }
