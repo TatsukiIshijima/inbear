@@ -48,6 +48,7 @@ class AlbumPageContent extends StatelessWidget {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       viewModel.setScrollListener();
+      await viewModel.checkSelectedSchedule();
       await viewModel.executeFetchImageAtStart();
     });
     return Scaffold(
@@ -57,11 +58,7 @@ class AlbumPageContent extends StatelessWidget {
           UploadResult(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'AddPhoto',
-        onPressed: () async => await viewModel.executeUploadSelectImages(),
-        child: const Icon(Icons.add_photo_alternate),
-      ),
+      floatingActionButton: AddPhotoButton(),
     );
   }
 }
@@ -178,6 +175,26 @@ class UploadResult extends StatelessWidget {
             _showErrorDialog(context, resource.uploadImageErrorTitle,
                 resource.uploadImageError);
             break;
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class AddPhotoButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
+    return Selector<AlbumViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isSelectedSchedule,
+      builder: (context, isSelectedSchedule, child) {
+        if (isSelectedSchedule) {
+          return FloatingActionButton(
+            heroTag: 'AddPhoto',
+            onPressed: () async => await viewModel.executeUploadSelectImages(),
+            child: const Icon(Icons.add_photo_alternate),
+          );
         }
         return Container();
       },
