@@ -5,6 +5,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/title_icon_list_item.dart';
+import 'package:inbear_app/viewmodel/home_viewmodel.dart';
 import 'package:inbear_app/viewmodel/setting_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -54,6 +55,9 @@ class SettingPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<SettingViewModel>(context, listen: false);
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+    // お試し
+    debugPrint('${homeViewModel.isSelectScheduleChanged}');
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[

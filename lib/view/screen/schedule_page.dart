@@ -10,6 +10,7 @@ import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/label.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
+import 'package:inbear_app/viewmodel/home_viewmodel.dart';
 import 'package:inbear_app/viewmodel/schedule_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +31,9 @@ class SchedulePageState extends State<SchedulePage>
           Provider.of<UserRepository>(context, listen: false),
           Provider.of<ScheduleRepository>(context, listen: false)),
       child: Scaffold(
-        body: SchedulePageBody(),
+        body: Stack(
+          children: <Widget>[SchedulePageBody(), ScheduleChangeReceiver()],
+        ),
         floatingActionButton: FloatingActionButtons(),
       ),
     );
@@ -192,6 +195,24 @@ class FloatingActionButtons extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class ScheduleChangeReceiver extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+    return Selector<HomeViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isSelectScheduleChanged,
+      builder: (context, isSelectScheduleChanged, child) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await viewModel.executeFetchSelectSchedule();
+          await viewModel.checkScheduleOwner();
+          debugPrint('スケジュール切り替えました : $isSelectScheduleChanged}');
+        });
+        return Container();
+      },
     );
   }
 }
