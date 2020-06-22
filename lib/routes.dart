@@ -72,8 +72,8 @@ class Routes {
             builder: (context) => ScheduleEditPage(scheduleEntity)));
   }
 
-  static void goToScheduleSelect(BuildContext context) {
-    Navigator.push<MaterialPageRoute>(
+  static Future<bool> goToScheduleSelect(BuildContext context) async {
+    return await Navigator.push(
         context, MaterialPageRoute(builder: (context) => ScheduleSelectPage()));
   }
 

@@ -209,7 +209,6 @@ class ScheduleChangeReceiver extends StatelessWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           await viewModel.executeFetchSelectSchedule();
           await viewModel.checkScheduleOwner();
-          debugPrint('スケジュール切り替えました : $isSelectScheduleChanged}');
         });
         return Container();
       },
