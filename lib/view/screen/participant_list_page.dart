@@ -13,6 +13,7 @@ import 'package:inbear_app/view/widget/centering_error_message.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/participant_item.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
+import 'package:inbear_app/viewmodel/home_viewmodel.dart';
 import 'package:inbear_app/viewmodel/participant_list_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -51,7 +52,11 @@ class ParticipantListPageBody extends StatelessWidget {
       await viewModel.checkScheduleOwner();
     });
     return Stack(
-      children: <Widget>[ParticipantList(), DeleteResult()],
+      children: <Widget>[
+        ParticipantList(),
+        DeleteResult(),
+        ScheduleChangeReceiver()
+      ],
     );
   }
 }
@@ -187,6 +192,22 @@ class AddParticipantButton extends StatelessWidget {
         } else {
           return Container();
         }
+      },
+    );
+  }
+}
+
+class ScheduleChangeReceiver extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel =
+        Provider.of<ParticipantListViewModel>(context, listen: false);
+    return Selector<HomeViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isSelectScheduleChanged,
+      builder: (context, isSelectScheduleChanged, child) {
+        WidgetsBinding.instance.addPostFrameCallback(
+            (_) async => await viewModel.executeFetchParticipantsStart());
+        return Container();
       },
     );
   }
