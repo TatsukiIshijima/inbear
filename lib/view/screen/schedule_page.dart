@@ -166,6 +166,10 @@ class FloatingActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+    // 親のHomeViewModelを使用して、スケジュール登録画面で登録した（≒スケジュール切り替え）際に
+    // 画面遷移（戻る）で更新フラグを受け取り、登録されたことを
+    // HomeViewのフラグを更新して BottomNavigationBar の各画面に伝える
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     return Selector<ScheduleViewModel, bool>(
       selector: (context, viewModel) => viewModel.isOwnerSchedule,
       builder: (context, isOwner, child) => Column(
@@ -190,7 +194,13 @@ class FloatingActionButtons extends StatelessWidget {
             ),
           FloatingActionButton(
             heroTag: 'AddSchedule',
-            onPressed: () => Routes.goToScheduleRegister(context),
+            onPressed: () async {
+              final isSelectScheduleChanged =
+                  await Routes.goToScheduleRegister(context);
+              if (isSelectScheduleChanged != null && isSelectScheduleChanged) {
+                homeViewModel.updateSelectScheduleChangedFlag();
+              }
+            },
             child: const Icon(Icons.add),
           )
         ],

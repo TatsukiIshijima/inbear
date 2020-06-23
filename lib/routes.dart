@@ -5,7 +5,6 @@ import 'package:inbear_app/entity/schedule_entity.dart';
 import 'package:inbear_app/view/screen/home_page.dart';
 import 'package:inbear_app/view/screen/login_page.dart';
 import 'package:inbear_app/view/screen/photo_preview_page.dart';
-import 'package:inbear_app/view/screen/prepare_page.dart';
 import 'package:inbear_app/view/screen/reset_password_page.dart';
 import 'package:inbear_app/view/screen/schedule_edit_page.dart';
 import 'package:inbear_app/view/screen/schedule_register_page.dart';
@@ -56,12 +55,9 @@ class Routes {
         (_) => false);
   }
 
-  static void goToScheduleRegister(BuildContext context) {
-    Navigator.push<MaterialPageRoute>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ScheduleRegisterPage(),
-        ));
+  static Future<bool> goToScheduleRegister(BuildContext context) async {
+    return await Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ScheduleRegisterPage()));
   }
 
   static Future<bool> goToScheduleEdit(
@@ -75,16 +71,6 @@ class Routes {
   static Future<bool> goToScheduleSelect(BuildContext context) async {
     return await Navigator.push(
         context, MaterialPageRoute(builder: (context) => ScheduleSelectPage()));
-  }
-
-  // スケジュールの切り替えはアプリ全体に影響があるので、ホーム画面更新のため、
-  // 一旦ホーム前の適当な画面へ遷移させて、ホームへ再遷移させる
-  static void goToPrepareWhenRegisterOrSelectSchedule(BuildContext context) {
-    Navigator.pushAndRemoveUntil<MaterialPageRoute>(
-        context,
-        MaterialPageRoute(
-            builder: (context) => PreparePage(), fullscreenDialog: true),
-        (_) => false);
   }
 
   static Future<bool> goToPhotoPreview(BuildContext context,
