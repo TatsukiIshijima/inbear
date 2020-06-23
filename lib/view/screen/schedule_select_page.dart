@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/model/schedule_select_item_model.dart';
 import 'package:inbear_app/repository/user_repository.dart';
-import 'package:inbear_app/routes.dart';
 import 'package:inbear_app/status.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
@@ -47,9 +46,8 @@ class ScheduleSelectPageBody extends StatelessWidget {
             case ScheduleSelectStatus.fetchEntryScheduleSuccess:
               return ScheduleList();
             case ScheduleSelectStatus.selectScheduleSuccess:
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
-              });
+              WidgetsBinding.instance.addPostFrameCallback(
+                  (timeStamp) => Navigator.pop(context, true));
               break;
           }
           return Container();

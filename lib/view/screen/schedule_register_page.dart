@@ -15,8 +15,6 @@ import 'package:inbear_app/view/widget/round_button.dart';
 import 'package:inbear_app/viewmodel/schedule_register_viewmodel.dart';
 import 'package:provider/provider.dart';
 
-import '../../routes.dart';
-
 class ScheduleRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -280,9 +278,8 @@ class RegisterAlertDialog extends StatelessWidget {
       builder: (context, status, child) {
         switch (status) {
           case ScheduleRegisterStatus.registerScheduleSuccess:
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Routes.goToPrepareWhenRegisterOrSelectSchedule(context);
-            });
+            WidgetsBinding.instance
+                .addPostFrameCallback((_) => Navigator.pop(context, true));
             break;
           case ScheduleRegisterStatus.unSelectDateError:
             _showRegisterError(context, resource.inputFormErrorTitle,

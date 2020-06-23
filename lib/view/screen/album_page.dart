@@ -16,6 +16,7 @@ import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/photo_item.dart';
 import 'package:inbear_app/view/widget/reload_button.dart';
 import 'package:inbear_app/viewmodel/album_viewmodel.dart';
+import 'package:inbear_app/viewmodel/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class AlbumPage extends StatefulWidget {
@@ -56,6 +57,7 @@ class AlbumPageContent extends StatelessWidget {
         children: <Widget>[
           AlbumGridView(),
           UploadResult(),
+          ScheduleChangeReceiver()
         ],
       ),
       floatingActionButton: AddPhotoButton(),
@@ -73,7 +75,7 @@ class AlbumGridView extends StatelessWidget {
     final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
     return RefreshIndicator(
       key: _refreshIndicatorKey,
-      onRefresh: () async => viewModel.executeFetchImageAtStart(),
+      onRefresh: () async => await viewModel.executeFetchImageAtStart(),
       // プレビュー画面でPageViewを使用する場合、documentId が使えた方が
       // 都合が良いので、あえて documentSnapshot 形式で流している
       child: StreamBuilder<List<DocumentSnapshot>>(
@@ -196,6 +198,21 @@ class AddPhotoButton extends StatelessWidget {
             child: const Icon(Icons.add_photo_alternate),
           );
         }
+        return Container();
+      },
+    );
+  }
+}
+
+class ScheduleChangeReceiver extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = Provider.of<AlbumViewModel>(context, listen: false);
+    return Selector<HomeViewModel, bool>(
+      selector: (context, viewModel) => viewModel.isSelectScheduleChanged,
+      builder: (context, isSelectScheduleChanged, child) {
+        WidgetsBinding.instance.addPostFrameCallback(
+            (_) async => await viewModel.executeFetchImageAtStart());
         return Container();
       },
     );

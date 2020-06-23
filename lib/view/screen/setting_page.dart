@@ -5,6 +5,7 @@ import 'package:inbear_app/repository/user_repository.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/widget/default_dialog.dart';
 import 'package:inbear_app/view/widget/title_icon_list_item.dart';
+import 'package:inbear_app/viewmodel/home_viewmodel.dart';
 import 'package:inbear_app/viewmodel/setting_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -54,13 +55,23 @@ class SettingPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<SettingViewModel>(context, listen: false);
+    // 親のHomeViewModelを使用して、スケジュール切り替え画面で切り替えた際に
+    // 画面遷移（戻る）で更新フラグを受け取り、スケジュールが切り替わったことを
+    // HomeViewのフラグを更新して BottomNavigationBar の各画面に伝える
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
           TitleAndIconListItem(
             title: resource.scheduleSelectTitle,
             iconData: Icons.compare_arrows,
-            onTap: () => Routes.goToScheduleSelect(context),
+            onTap: () async {
+              final isSelectScheduleChanged =
+                  await Routes.goToScheduleSelect(context);
+              if (isSelectScheduleChanged != null && isSelectScheduleChanged) {
+                homeViewModel.updateSelectScheduleChangedFlag();
+              }
+            },
           ),
           TitleAndIconListItem(
             title: resource.licenseTitle,
