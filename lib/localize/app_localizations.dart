@@ -92,9 +92,11 @@ class AppLocalizations {
   static const _addParticipantErrorTitle = 'add_participant_error_title';
 
   // 設定画面
+  static const _userTitleKey = 'user_title';
   static const _logoutTitleKey = 'logout_title';
   static const _logoutMessageKey = 'logout_message';
   static const _licenseTitleKey = 'license_title';
+  static const _versionTitleKey = 'version_title';
 
   // 警告
   static const _warningEmptyMessageKey = 'wraning_empty_message';
@@ -226,9 +228,11 @@ class AppLocalizations {
       _addParticipantErrorTitle: '追加エラー',
 
       // 設定画面
+      _userTitleKey: 'ユーザー',
       _logoutTitleKey: 'ログアウト',
       _logoutMessageKey: 'ログアウトしますか？',
       _licenseTitleKey: 'ライセンス',
+      _versionTitleKey: 'バージョン',
 
       // 警告
       _warningEmptyMessageKey: '未入力です。',
@@ -356,9 +360,11 @@ class AppLocalizations {
       _getText(_notFountEmailAddressUserMessageKey);
   String get addParticipantErrorTitle => _getText(_addParticipantErrorTitle);
 
+  String get userTitle => _getText(_userTitleKey);
   String get logoutTitle => _getText(_logoutTitleKey);
   String get logoutMessage => _getText(_logoutMessageKey);
   String get licenseTitle => _getText(_licenseTitleKey);
+  String get versionTitle => _getText(_versionTitleKey);
 
   String get warningEmptyMessage => _getText(_warningEmptyMessageKey);
 
