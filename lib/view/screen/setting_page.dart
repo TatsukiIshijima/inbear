@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
@@ -62,6 +63,18 @@ class SettingPageContent extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(12.0),
+            child: ListTile(
+              title: Text('ユーザー'),
+              leading: Icon(Icons.person),
+              trailing: AutoSizeText(
+                'sample@example.com',
+                maxLines: 1,
+              ),
+            ),
+          ),
           TitleAndIconListItem(
             title: resource.scheduleSelectTitle,
             iconData: Icons.compare_arrows,
@@ -83,6 +96,14 @@ class SettingPageContent extends StatelessWidget {
             iconData: Icons.exit_to_app,
             onTap: () =>
                 _showLogoutDialog(context, resource, () => viewModel.signOut()),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(12.0),
+            child: ListTile(
+              title: Text('バージョン'),
+              trailing: Text('1.0.0'),
+            ),
           )
         ],
       ),
