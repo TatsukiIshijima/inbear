@@ -138,7 +138,16 @@ class SettingPageContent extends StatelessWidget {
             padding: EdgeInsets.all(12.0),
             child: ListTile(
               title: Text(resource.versionTitle),
-              trailing: Text('1.0.0'),
+              trailing: FutureBuilder<String>(
+                future: viewModel.fetchAppVersion(),
+                builder: (context, snapshot) {
+                  var appVersion = '';
+                  if (snapshot.hasData) {
+                    appVersion = snapshot.data;
+                  }
+                  return Text(appVersion);
+                },
+              ),
             ),
           )
         ],
