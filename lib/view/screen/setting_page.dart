@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/localize/app_localizations.dart';
@@ -62,6 +63,54 @@ class SettingPageContent extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
+          // ListTile の場合、メールアドレスがアイコンの方まで伸びてくるので、
+          // カスタムレイアウトを使用
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(12.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.grey,
+                    size: 30,
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                Text(
+                  resource.userTitle,
+                  style: TextStyle(fontSize: 16),
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Container(
+                      child: FutureBuilder<String>(
+                    future: viewModel.fetchUserEmail(),
+                    builder: (context, snapshot) {
+                      var email = '';
+                      if (snapshot.hasData) {
+                        email = snapshot.data;
+                      }
+                      return AutoSizeText(
+                        email,
+                        maxLines: 1,
+                        maxFontSize: 18,
+                        minFontSize: 16,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                      );
+                    },
+                  )),
+                )
+              ],
+            ),
+          ),
           TitleAndIconListItem(
             title: resource.scheduleSelectTitle,
             iconData: Icons.compare_arrows,
@@ -83,6 +132,23 @@ class SettingPageContent extends StatelessWidget {
             iconData: Icons.exit_to_app,
             onTap: () =>
                 _showLogoutDialog(context, resource, () => viewModel.signOut()),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(12.0),
+            child: ListTile(
+              title: Text(resource.versionTitle),
+              trailing: FutureBuilder<String>(
+                future: viewModel.fetchAppVersion(),
+                builder: (context, snapshot) {
+                  var appVersion = '';
+                  if (snapshot.hasData) {
+                    appVersion = snapshot.data;
+                  }
+                  return Text(appVersion);
+                },
+              ),
+            ),
           )
         ],
       ),
