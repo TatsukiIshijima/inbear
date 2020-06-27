@@ -82,9 +82,9 @@ class Tutorial extends StatelessWidget {
               children: <Widget>[
                 Row(
                   mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     IconButton(
-                      alignment: Alignment.topRight,
                       icon: Icon(Icons.close),
                       onPressed: () {
                         // TODO:非表示切り替え&初回起動フラグ切り替え
@@ -115,8 +115,7 @@ class Tutorial extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding:
-                      EdgeInsets.only(left: 8, top: 10, right: 8, bottom: 10),
+                  padding: EdgeInsets.all(12),
                   child: SmoothPageIndicator(
                     controller: viewModel.tutorialPageController,
                     count: 5,
