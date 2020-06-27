@@ -8,6 +8,7 @@ class HomeViewModel extends BaseViewModel {
   HomeViewModel(this._appConfigRepositoryImpl);
 
   final PageController pageController = PageController();
+  final PageController tutorialPageController = PageController();
 
   int selectIndex = 0;
   // スケジュール切り替え用のフラグ
