@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/repository/app_config_repository.dart';
 import 'package:inbear_app/view/screen/album_page.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
 import 'package:inbear_app/view/screen/participant_list_page.dart';
@@ -12,7 +13,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasePage<HomeViewModel>(
-      viewModel: HomeViewModel(),
+      viewModel: HomeViewModel(
+          Provider.of<AppConfigRepository>(context, listen: false)),
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,

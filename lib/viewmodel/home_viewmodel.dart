@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:inbear_app/repository/app_config_repository_impl.dart';
 import 'package:inbear_app/viewmodel/base_viewmodel.dart';
 
 class HomeViewModel extends BaseViewModel {
+  final AppConfigRepositoryImpl _appConfigRepositoryImpl;
+
+  HomeViewModel(this._appConfigRepositoryImpl);
+
   final PageController pageController = PageController();
 
   int selectIndex = 0;
