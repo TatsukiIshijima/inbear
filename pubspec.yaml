@@ -55,6 +55,8 @@ dependencies:
   auto_size_text: ^2.1.0
   # package info
   package_info: ^0.4.1
+  # smooth page indicator
+  smooth_page_indicator: ^0.1.5
 
 dev_dependencies:
   flutter_test:
