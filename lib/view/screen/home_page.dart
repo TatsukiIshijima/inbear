@@ -167,10 +167,10 @@ class Tutorial extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Image.asset(
-                                  'assets/icon/tutorial_icon_01.png',
+                                  'assets/tutorial_image_01.png',
                                   fit: BoxFit.cover,
-                                  width: 80,
-                                  height: 80,
+                                  width: 240,
+                                  height: 100,
                                 ),
                               ),
                             ),
