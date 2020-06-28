@@ -100,10 +100,10 @@ class Tutorial extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.all(12),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              margin: EdgeInsets.symmetric(vertical: 12),
+                              margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
                                 'はじめに',
                                 maxLines: 1,
@@ -116,20 +116,33 @@ class Tutorial extends StatelessWidget {
                                     fontSize: 20),
                               ),
                             ),
-                            Text(
-                              'inbearは結婚式の写真、\nスケジュール、参加者などを\n共有できるアプリです。',
-                              textAlign: TextAlign.center,
-                            )
+                            Container(
+                              margin: EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                'inbearは結婚式の写真、\nスケジュール、参加者などを\n共有できるアプリです。',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/icon/tutorial_icon_01.png',
+                                  fit: BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.all(12),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              margin: EdgeInsets.symmetric(vertical: 12),
+                              margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
                                 '新郎、新婦の方へ',
                                 maxLines: 1,
@@ -142,22 +155,35 @@ class Tutorial extends StatelessWidget {
                                     fontSize: 20),
                               ),
                             ),
-                            Text(
-                              'まずはスケジュールを\n登録しましょう。'
-                              '\n新郎、新婦のどちらかがスケジュール登録済みの場合は'
-                              '参加者一覧から一方を追加してみましょう。',
-                              textAlign: TextAlign.center,
-                            )
+                            Container(
+                              margin: EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                'まずはスケジュールを\n登録しましょう。'
+                                '\n新郎、新婦のどちらかがスケジュール登録済みの場合は'
+                                '参加者一覧から一方を追加してみましょう。',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/icon/tutorial_icon_01.png',
+                                  fit: BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       Container(
                         margin: EdgeInsets.all(12),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Container(
-                              margin: EdgeInsets.symmetric(vertical: 12),
+                              margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
                                 '参加者の方へ',
                                 maxLines: 1,
@@ -170,12 +196,25 @@ class Tutorial extends StatelessWidget {
                                     fontSize: 20),
                               ),
                             ),
-                            Text(
-                              '表示するスケジュールの\n選択をしましょう。'
-                              '\n新郎、新婦からスケジュールへの参加を許可されている場合は'
-                              '一覧に表示されるので、選択してみましょう。',
-                              textAlign: TextAlign.center,
-                            )
+                            Container(
+                              margin: EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                '表示するスケジュールの\n選択をしましょう。'
+                                '\n新郎、新婦からスケジュールへの参加を許可されている場合は'
+                                '一覧に表示されるので、選択してみましょう。',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/icon/tutorial_icon_01.png',
+                                  fit: BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
