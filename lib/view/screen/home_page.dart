@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:inbear_app/repository/app_config_repository.dart';
@@ -97,20 +98,87 @@ class Tutorial extends StatelessWidget {
                     controller: viewModel.tutorialPageController,
                     children: <Widget>[
                       Container(
-                        color: Colors.grey[300],
+                        margin: EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 12),
+                              child: AutoSizeText(
+                                'はじめに',
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                minFontSize: 16,
+                                maxFontSize: 24,
+                                style: TextStyle(
+                                    color: Color(0xfff48fb1),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
+                            Text(
+                              'inbearは結婚式の写真、\nスケジュール、参加者などを\n共有できるアプリです。',
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        ),
                       ),
                       Container(
-                        color: Colors.blue[100],
+                        margin: EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 12),
+                              child: AutoSizeText(
+                                '新郎、新婦の方へ',
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                minFontSize: 16,
+                                maxFontSize: 24,
+                                style: TextStyle(
+                                    color: Color(0xfff48fb1),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
+                            Text(
+                              'まずはスケジュールを\n登録しましょう。'
+                              '\n新郎、新婦のどちらかがスケジュール登録済みの場合は'
+                              '参加者一覧から一方を追加してみましょう。',
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        ),
                       ),
                       Container(
-                        color: Colors.yellow[100],
+                        margin: EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 12),
+                              child: AutoSizeText(
+                                '参加者の方へ',
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                minFontSize: 16,
+                                maxFontSize: 24,
+                                style: TextStyle(
+                                    color: Color(0xfff48fb1),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                            ),
+                            Text(
+                              '表示するスケジュールの\n選択をしましょう。'
+                              '\n新郎、新婦からスケジュールへの参加を許可されている場合は'
+                              '一覧に表示されるので、選択してみましょう。',
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        ),
                       ),
-                      Container(
-                        color: Colors.green[100],
-                      ),
-                      Container(
-                        color: Colors.red[100],
-                      )
                     ],
                   ),
                 ),
@@ -118,7 +186,7 @@ class Tutorial extends StatelessWidget {
                   padding: EdgeInsets.all(12),
                   child: SmoothPageIndicator(
                     controller: viewModel.tutorialPageController,
-                    count: 5,
+                    count: 3,
                     effect: JumpingDotEffect(
                         dotWidth: 10,
                         dotHeight: 10,
