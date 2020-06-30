@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/repository/app_config_repository.dart';
 import 'package:inbear_app/view/screen/album_page.dart';
 import 'package:inbear_app/view/screen/base_page.dart';
@@ -68,6 +69,7 @@ class HomePageBody extends StatelessWidget {
 class Tutorial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final resource = AppLocalizations.of(context);
     final viewModel = Provider.of<HomeViewModel>(context, listen: false);
     return Container(
         decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.3)),
@@ -105,7 +107,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
-                                'はじめに',
+                                resource.introductionTitle,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 minFontSize: 16,
@@ -119,7 +121,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: Text(
-                                'inbearは結婚式の写真、\nスケジュール、参加者などを\n共有できるアプリです。',
+                                resource.introductionMessage,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -144,7 +146,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
-                                '新郎、新婦の方へ',
+                                resource.dearNewPairTitle,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 minFontSize: 16,
@@ -158,9 +160,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: Text(
-                                'まずはスケジュールを\n登録しましょう。'
-                                '\n新郎、新婦のどちらかがスケジュール登録済みの場合は'
-                                '参加者一覧から一方を追加してみましょう。',
+                                resource.dearNewPairMessage,
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -185,7 +185,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: AutoSizeText(
-                                '参加者の方へ',
+                                resource.dearOrdinaryPersonTitle,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
                                 minFontSize: 16,
@@ -199,9 +199,7 @@ class Tutorial extends StatelessWidget {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               child: Text(
-                                '表示するスケジュールの\n選択をしましょう。'
-                                '\n新郎、新婦からスケジュールへの参加を許可されている場合は'
-                                '一覧に表示されるので、選択してみましょう。',
+                                resource.dearOrdinaryPersonMessage,
                                 textAlign: TextAlign.center,
                               ),
                             ),
