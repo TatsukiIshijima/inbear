@@ -53,6 +53,8 @@ class HomePageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<HomeViewModel>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback(
+        (_) async => await viewModel.loadFirstLaunchState());
     return Stack(
       children: <Widget>[
         PageView(
@@ -60,7 +62,11 @@ class HomePageBody extends StatelessWidget {
           onPageChanged: (index) => viewModel.updateIndex(index),
           children: _pages,
         ),
-        Tutorial()
+        Selector<HomeViewModel, bool>(
+          selector: (context, viewModel) => viewModel.isFirstLaunchDone,
+          builder: (context, isDone, child) =>
+              isDone ? Container() : Tutorial(),
+        )
       ],
     );
   }
@@ -89,9 +95,8 @@ class Tutorial extends StatelessWidget {
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.close),
-                      onPressed: () {
-                        // TODO:非表示切り替え&初回起動フラグ切り替え
-                      },
+                      onPressed: () async =>
+                          await viewModel.saveFirstLaunchState(),
                     )
                   ],
                 ),

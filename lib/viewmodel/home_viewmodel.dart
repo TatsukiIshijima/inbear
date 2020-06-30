@@ -13,6 +13,7 @@ class HomeViewModel extends BaseViewModel {
   int selectIndex = 0;
   // スケジュール切り替え用のフラグ
   bool isSelectScheduleChanged = false;
+  bool isFirstLaunchDone = false;
 
   void jumpToPage(int index) {
     pageController.jumpToPage(index);
@@ -25,6 +26,17 @@ class HomeViewModel extends BaseViewModel {
 
   void updateSelectScheduleChangedFlag() {
     isSelectScheduleChanged = !isSelectScheduleChanged;
+    notifyListeners();
+  }
+
+  Future<void> saveFirstLaunchState() async {
+    await _appConfigRepositoryImpl.saveFirstLaunchState(true);
+    isFirstLaunchDone = true;
+    notifyListeners();
+  }
+
+  Future<void> loadFirstLaunchState() async {
+    isFirstLaunchDone = await _appConfigRepositoryImpl.loadFirstLaunchState();
     notifyListeners();
   }
 }

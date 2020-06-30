@@ -7,7 +7,7 @@ class AppConfigDataSource implements AppConfigDataSourceImpl {
   @override
   Future<bool> isFirstLaunch() async {
     final sharedPreference = await SharedPreferences.getInstance();
-    return sharedPreference.getBool(_isAppFirstLaunchKey);
+    return sharedPreference.getBool(_isAppFirstLaunchKey) ?? false;
   }
 
   @override
