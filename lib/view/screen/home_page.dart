@@ -125,9 +125,12 @@ class Tutorial extends StatelessWidget {
                             ),
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
-                              child: Text(
+                              child: AutoSizeText(
                                 resource.introductionMessage,
                                 textAlign: TextAlign.center,
+                                maxLines: 3,
+                                minFontSize: 8,
+                                maxFontSize: 12,
                               ),
                             ),
                             Expanded(
@@ -164,9 +167,12 @@ class Tutorial extends StatelessWidget {
                             ),
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
-                              child: Text(
+                              child: AutoSizeText(
                                 resource.dearNewPairMessage,
                                 textAlign: TextAlign.center,
+                                maxLines: 6,
+                                minFontSize: 8,
+                                maxFontSize: 12,
                               ),
                             ),
                             Expanded(
@@ -175,7 +181,7 @@ class Tutorial extends StatelessWidget {
                                   'assets/tutorial_image_01.png',
                                   fit: BoxFit.cover,
                                   width: 240,
-                                  height: 100,
+                                  height: 105,
                                 ),
                               ),
                             ),
@@ -203,9 +209,12 @@ class Tutorial extends StatelessWidget {
                             ),
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
-                              child: Text(
+                              child: AutoSizeText(
                                 resource.dearOrdinaryPersonMessage,
                                 textAlign: TextAlign.center,
+                                maxLines: 6,
+                                minFontSize: 8,
+                                maxFontSize: 12,
                               ),
                             ),
                             Expanded(
