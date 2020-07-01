@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:inbear_app/api/address_search_api.dart';
 import 'package:inbear_app/api/geocode_api.dart';
 import 'package:inbear_app/api_keys.dart';
+import 'package:inbear_app/datasource/app_config_datasource.dart';
 import 'package:inbear_app/datasource/image_datasource.dart';
 import 'package:inbear_app/datasource/person_datasource.dart';
 import 'package:inbear_app/flavor.dart';
@@ -13,6 +14,7 @@ import 'package:inbear_app/localize/app_localizations.dart';
 import 'package:inbear_app/localize/app_localizations_delegate.dart';
 import 'package:inbear_app/localize/fallback_cupertino_localizations_delegate.dart';
 import 'package:inbear_app/repository/address_repository.dart';
+import 'package:inbear_app/repository/app_config_repository.dart';
 import 'package:inbear_app/repository/image_repository.dart';
 import 'package:inbear_app/repository/schedule_respository.dart';
 import 'package:inbear_app/repository/user_repository.dart';
@@ -50,6 +52,7 @@ class InbearApp extends StatelessWidget {
     final _geoCodeApi = GeoCodeApi(googleApiKey);
     final _imageDataSource = ImageDataSource(_firebaseStorage);
     final _personDataSource = PersonDataSource();
+    final _appConfigDataSource = AppConfigDataSource();
 
     return MultiProvider(
       // アプリ全体で必要なものをProvider.createで生成,
@@ -68,6 +71,9 @@ class InbearApp extends StatelessWidget {
         ),
         Provider(
           create: (context) => ImageRepository(_imageDataSource),
+        ),
+        Provider(
+          create: (context) => AppConfigRepository(_appConfigDataSource),
         )
       ],
       child: MaterialApp(

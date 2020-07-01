@@ -36,6 +36,12 @@ class AppLocalizations {
   static const _homeTitleKey = 'home_title';
   static const _scheduleTitleKey = 'schedule_title';
   static const _settingTitleKey = 'setting_title';
+  static const _introductionTitleKey = 'introduction_title';
+  static const _introductionMessageKey = 'introduction_message';
+  static const _dearNewPairTitleKey = 'dear_new_pair_title';
+  static const _dearNewPairMessageKey = 'dear_new_pair_message';
+  static const _dearOrdinaryPersonTitleKey = 'person_ordinary_person_title';
+  static const _dearOrdinaryPersonMessageKey = 'person_ordinary_person_message';
 
   // 画像一覧画面
   static const _albumNotRegisterKey = 'album_not_register';
@@ -184,6 +190,14 @@ class AppLocalizations {
       _homeTitleKey: 'ホーム',
       _scheduleTitleKey: 'スケジュール',
       _settingTitleKey: '設定',
+      _introductionTitleKey: 'はじめに',
+      _introductionMessageKey: 'inbearは結婚式の写真、\nスケジュール、参加者などを\n共有できるアプリです。',
+      _dearNewPairTitleKey: '新郎、新婦の方へ',
+      _dearNewPairMessageKey:
+          'まずはスケジュールを\n登録しましょう。\n新郎、新婦のどちらかがスケジュール登録済みの場合は参加者一覧から一方を追加してみましょう。',
+      _dearOrdinaryPersonTitleKey: '参加者の方へ',
+      _dearOrdinaryPersonMessageKey:
+          '表示するスケジュールの\n選択をしましょう。\n新郎、新婦からスケジュールへの参加を許可されている場合は一覧に表示されるので、選択してみましょう。',
 
       // 画像一覧画面
       _albumNotRegisterKey: '画像が登録されていません。\n「+」ボタンより画像を追加してみましょう。',
@@ -311,6 +325,13 @@ class AppLocalizations {
   String get homeTitle => _getText(_homeTitleKey);
   String get scheduleTitle => _getText(_scheduleTitleKey);
   String get settingTitle => _getText(_settingTitleKey);
+  String get introductionTitle => _getText(_introductionTitleKey);
+  String get introductionMessage => _getText(_introductionMessageKey);
+  String get dearNewPairTitle => _getText(_dearNewPairTitleKey);
+  String get dearNewPairMessage => _getText(_dearNewPairMessageKey);
+  String get dearOrdinaryPersonTitle => _getText(_dearOrdinaryPersonTitleKey);
+  String get dearOrdinaryPersonMessage =>
+      _getText(_dearOrdinaryPersonMessageKey);
 
   String get albumNotRegisterMessage => _getText(_albumNotRegisterKey);
 
