@@ -103,10 +103,10 @@ flutter build [appbundle or apk] --obfuscate --split-debug-info="~/." --[debug o
 ### スクリーンショット
 <img src="documents/screenshots/0_splash.png" width="200">　
 <img src="documents/screenshots/1_login.png" width="200">　
-<img src="documents/screenshots/2_album.png" width="200">　
+<img src="documents/screenshots/2_album.png" width="200"><br><br>
 <img src="documents/screenshots/3_photo.png" width="200">　
-<img src="documents/screenshots/4_schedule.png" width="200"><br><br>
-<img src="documents/screenshots/5_register_schedule.png" width="200">　
+<img src="documents/screenshots/4_schedule.png" width="200">　
+<img src="documents/screenshots/5_register_schedule.png" width="200"><br><br>
 <img src="documents/screenshots/6_participant_list.png" width="200">　
 <img src="documents/screenshots/7_search_participant.png" width="200">　
 <img src="documents/screenshots/8_settings.png" width="200">
